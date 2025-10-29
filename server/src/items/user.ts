@@ -12,7 +12,7 @@ export interface UserInterface {
   password: string;
   profilePic?: string;   // URL de la foto de perfil
   bio?: string;          // Descripción opcional
-  posts: Schema.Types.ObjectId[];     // Recetas creadas por el usuario
+ 
   createdAt: Date;
 }
 
@@ -52,11 +52,6 @@ const UserSchema = new Schema<UserInterface>({
     type: String,
     maxlength: [200, 'La biografía no puede superar los 200 caracteres.']
   },
-  posts: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Recipe',
-    default: []
-  }],
   createdAt: {
     type: Date,
     default: Date.now
