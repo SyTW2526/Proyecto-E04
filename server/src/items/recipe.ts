@@ -1,7 +1,9 @@
 import { connect, model, Schema } from 'mongoose';
 import validator from 'validator';
-import { IngredientInterface, Ingredient } from './ingredient.js';
 import { ReviewInterface, Review } from './review.js';
+
+enum Ingredients { harina, azucar, sal, huevo, leche, mantequilla, aceite, levadura, chocolate, vainilla, frutas, verduras, carne, pescado, especias }
+enum Tools { cuchillo, tablaDeCortar, sartén, olla, batidora, horno, microondas, espátula, cucharón, colador, caldero, rodillo, rallador }
 
 /**
  * Interfaz Recipe. Representa una receta.
@@ -9,8 +11,8 @@ import { ReviewInterface, Review } from './review.js';
 export interface RecipeInterface {
   name: string;
   steps: string;
-  ingredients: IngredientInterface[];
-  tools: string[];
+  ingredients: Ingredients[];
+  tools: Tools[];
   userId: Schema.Types.ObjectId; 
   category: string; // Pasta, postre, carne, etc. 
   images: string[]; // URLs de imágenes o vídeos 
@@ -35,11 +37,11 @@ const RecipeSchema = new Schema<RecipeInterface>({
     required: true,
   },
   ingredients: {
-    type: [Ingredient], // Lista de ingredientes
+    type: [Ingredients], // Lista de ingredientes
     required: true,
   },
   tools: { // Lista de utensilios 
-    type: [String],
+    type: [Tools],
     required: true,
   },
   userId: { 
