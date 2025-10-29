@@ -1,9 +1,5 @@
 import { connect, model, Schema } from 'mongoose';
 import validator from 'validator';
-import { ReviewInterface, Review } from './review.js';
-
-enum Ingredients { harina, azucar, sal, huevo, leche, mantequilla, aceite, levadura, chocolate, vainilla, frutas, verduras, carne, pescado, especias }
-enum Tools { cuchillo, tablaDeCortar, sartén, olla, batidora, horno, microondas, espátula, cucharón, colador, caldero, rodillo, rallador }
 
 /**
  * Interfaz Recipe. Representa una receta.
@@ -11,13 +7,12 @@ enum Tools { cuchillo, tablaDeCortar, sartén, olla, batidora, horno, microondas
 export interface RecipeInterface {
   name: string;
   steps: string;
-  ingredients: Ingredients[];
-  tools: Tools[];
+  ingredients: string[];
+  tools: string[];
   userId: Schema.Types.ObjectId; 
   category: string; // Pasta, postre, carne, etc. 
   images: string[]; // URLs de imágenes o vídeos 
   videos?: string[]; // URLs de vídeos 
-  reviews: ReviewInterface[];
   creacionDate: Date;
 }
 
@@ -37,12 +32,14 @@ const RecipeSchema = new Schema<RecipeInterface>({
     required: true,
   },
   ingredients: {
-    type: [Ingredients], // Lista de ingredientes
+    type: [String], // Lista de ingredientes
     required: true,
+    enum: [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'mantequilla', 'aceite', 'levadura', 'chocolate', 'vainilla', 'frutas', 'verduras', 'carne', 'pescado', 'especias' ],
   },
   tools: { // Lista de utensilios 
-    type: [Tools],
+    type: [String],
     required: true,
+    enum: [ 'cuchillo', 'tablaDeCortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
   },
   userId: { 
     type: Schema.Types.ObjectId,
@@ -84,22 +81,10 @@ const RecipeSchema = new Schema<RecipeInterface>({
     type: [String],
     default: [],
   },
-  reviews: {
-    type: [Review], 
-    default: [],
-  },
   creacionDate: {
     type: Date,
     default: Date.now,
   },
-});
-
-RecipeSchema.virtual('valoracionMedia').get(function() {
-  if (this.reviews.length === 0) {
-    return 0;
-  }
-  const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-  return sum / this.reviews.length;
 });
 
 export const Recipe = model<RecipeInterface>('Recipe', RecipeSchema);
