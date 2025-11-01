@@ -1,9 +1,13 @@
 import express from 'express';
 import './db/mongoose.js';
+import { userRouter } from './routes/user_route.js';
+import { recipeRouter } from './routes/recipes-route.js';
 
-const app = express();
+export const app = express();
 
 app.use(express.json());
+app.use(userRouter);
+app.use(recipeRouter);
 
 const port = process.env.PORT || 3000;
 
