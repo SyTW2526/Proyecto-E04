@@ -1,7 +1,20 @@
 import { Home, Search, User, LogOut } from "lucide-react";
+import React, { useState, useEffect } from 'react'; 
+import axios from 'axios';
 import './receipt.css';
 
 function Receipt() {
+    const [recetas, setRecetas] = useState([]);
+    useEffect(() => {
+        axios.get('http://localhost:3000/recipes')
+        .then(response => {
+            setRecetas(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    })
+
     return (
         <>
             <div className="ContenedorGeneralReceta">
