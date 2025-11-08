@@ -67,7 +67,6 @@
 
 .CategoriasReceta {
     width:95%;
-    overflow-x: scroll;
 }
 
 .CategoriasReceta div {
@@ -84,6 +83,10 @@
 
 .IngredientesReceta p {
     overflow-wrap:break-word;
+}
+
+.IngredientesReceta ul {
+    margin-left:20px;
 }
 
 .TextoReceta {

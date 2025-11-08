@@ -3,48 +3,68 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './receipt.css';
 
-function Receipt() {
-    const [recetas, setRecetas] = useState([]);
+//https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
+//https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
+
+interface Recipe {
+    name: string;
+    steps: string;
+    ingredients: string[];
+    tools: string[];
+    userId: {_id: string, username: string, profilePic:string}; 
+    category: string; // Pasta, postre, carne, etc. 
+    images: string[]; // URLs de imágenes o vídeos 
+    videos?: string[]; // URLs de vídeos 
+    creacionDate: Date;
+}
+
+function Receipt({id}: {id: string}) {
+    const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
-        axios.get('http://localhost:3000/recipes')
+        axios.get('http://localhost:3000/recipes/' + id)
         .then(response => {
-            setRecetas(response.data);
+            setReceta(response.data);
         })
         .catch(error => {
             console.error(error);
         });
-    })
+    }, [id]);
+
+    if (!receta) return <div></div>;
 
     return (
         <>
             <div className="ContenedorGeneralReceta">
                 <div className="NombreReceta">
-                    <h2>Pastel de pistacho</h2>
+                    <h2>{receta!.name}</h2>
                 </div>
                 <div className="ContenedorReceta">
                     <div className="InformacionReceta">
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
-                                <img src="https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png"></img>
-                                <p>Usuario</p>
+                                <img src={receta!.userId.profilePic}></img>
+                                <p>{receta!.userId.username}</p>
                             </div>
                             <div className="ImagenesReceta">
-                                <img src="https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg" className="d-block w-100" alt="..."/>
+                                <img src={receta!.images[0]} className="d-block w-100" alt="..."/>
                             </div>
                             <div className="CategoriasReceta">
                                 <h3>Categorías</h3>
-                                <div>Postre</div>
-                                <div>Dulce</div>
+                                <div>{receta!.category}</div>
                             </div>
                             <div className="IngredientesReceta">
                                 <h3>Ingredientes</h3>
-                                <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                                <ul>
+                                    {receta.ingredients.map((ingrediente: string) => (
+                                    <li>{ingrediente}</li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
                         <div className="DerechaReceta">
                             <div className="TextoReceta">
                                 <h3>Receta</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros augue, mattis eu hendrerit ullamcorper, vulputate vel risus. Donec elementum erat eget enim tempor varius et id lorem. Aliquam luctus ornare dui id hendrerit. Etiam luctus iaculis nisi. Curabitur elementum, justo sed vestibulum dapibus, dolor enim aliquet diam, sed consequat sem turpis vel nibh. Vestibulum in leo a neque luctus molestie ut sed diam. Etiam nec volutpat elit. Sed vulputate auctor velit, ut volutpat dolor bibendum ac. Ut id metus sed nibh accumsan egestas. Duis posuere accumsan lectus, vitae sollicitudin massa feugiat vitae. Duis tincidunt, libero id congue pulvinar, lacus sapien consequat est, vitae laoreet dolor turpis vel lorem. Vestibulum eu diam ipsum. Maecenas pulvinar diam dignissim vehicula semper. Morbi auctor auctor justo, quis rutrum magna vulputate a. Cras dictum velit lacus, quis posuere augue lobortis vitae. Morbi vitae est sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros augue, mattis eu hendrerit ullamcorper, vulputate vel risus. Donec elementum erat eget enim tempor varius et id lorem. Aliquam luctus ornare dui id hendrerit. Etiam luctus iaculis nisi. Curabitur elementum, justo sed vestibulum dapibus, dolor enim aliquet diam, sed consequat sem turpis vel nibh. Vestibulum in leo a neque luctus molestie ut sed diam. Etiam nec volutpat elit. Sed vulputate auctor velit, ut volutpat dolor bibendum ac. Ut id metus sed nibh accumsan egestas. Duis posuere accumsan lectus, vitae sollicitudin massa feugiat vitae. Duis tincidunt, libero id congue pulvinar, lacus sapien consequat est, vitae laoreet dolor turpis vel lorem. Vestibulum eu diam.</p>
+                                <p>{receta!.steps}</p>
                             </div>
                         </div>
                     </div>
