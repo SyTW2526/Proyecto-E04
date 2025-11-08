@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 //import { RecipeInterface, Recipe } from './recipe.js';
 
 /**
@@ -58,13 +59,22 @@ const UserSchema = new Schema<UserInterface>({
   }
 });
 
-
+/**
+ * Middleware para hashear la contraseña antes de guardar el usuario.
+ */
+UserSchema.pre('save', async function (next) {
+    const user = this;
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8);
+    }
+    next();
+});
 
 /**
  * Virtual para obtener el número de recetas creadas por el usuario.
  */
-UserSchema.virtual('recipesCount').get(function () {
-  return this.posts.length;
-});
+// UserSchema.virtual('recipesCount').get(function () {
+//   return this.posts.length;
+// });
 
 export const User = model<UserInterface>('User', UserSchema);
