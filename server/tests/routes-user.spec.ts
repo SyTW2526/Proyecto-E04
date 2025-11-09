@@ -154,3 +154,27 @@ describe('Users Routes delete', () => {
       .expect(404);
   });
 });
+
+describe('User Routes DELETE (by ID)', () => {
+    beforeEach(async () => {
+        await User.deleteMany();
+        const user = await new User(testUserData).save(); 
+        userId = user._id;
+    });
+
+    test('Should delete a user by ID', async () => {
+        await request(app)
+            .delete(`/users/${userId.toString()}`)
+            .expect(200);
+
+        const userInDb = await User.findById(userId);
+        expect(userInDb).toBeNull();
+    });
+
+    test('Should return 404 when trying to delete a non-existent user', async () => {
+        const nonExistentId = new mongoose.Types.ObjectId();
+        await request(app)
+            .delete(`/users/${nonExistentId.toString()}`)
+            .expect(404);
+    });
+});
