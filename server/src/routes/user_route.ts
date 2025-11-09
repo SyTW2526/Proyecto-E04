@@ -1,6 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { User } from '../items/user.js';
+import { auth, AuthRequest } from '../middleware/auth.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 /**
  * Router de usuarios.
@@ -10,6 +13,8 @@ export const userRouter = express.Router();
 const port = process.env.PORT || 3000;
 
 userRouter.use(express.json());
+
+const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
 
 /**
  * Manejador POST de /users. Permite crear un nuevo usuario.
@@ -23,6 +28,83 @@ userRouter.post('/users', async (req, res) => {
   } catch (err) {
     res.status(400).send(err);
   }
+});
+
+userRouter.post('/users/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).send({ error: 'Credenciales inválidas.' });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send({ error: 'Credenciales inválidas.' });
+        }
+        const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET, { expiresIn: '7 days' });
+        res.status(200).send({ user, token });
+    } catch (e) {
+        res.status(500).send({ error: 'Error del servidor durante la autenticación.' });
+    }
+});
+
+/**
+ * GET /users/me: Obtiene el perfil del usuario autenticado. 
+ */
+userRouter.get('/users/me', auth, async (req, res) => {
+    const authenticatedRequest = req as AuthRequest;
+    res.status(200).send(authenticatedRequest.user); 
+});
+
+/**
+ * PATCH /users/me: Permite actualizar el perfil del usuario autenticado.
+ */
+userRouter.patch('/users/me', auth, async (req, res) => { 
+    const authenticatedRequest = req as AuthRequest;
+    const updates = Object.keys(authenticatedRequest.body);
+    const allowedUpdates = ['username', 'email', 'password', 'profilePic', 'bio']; 
+    const isValidUpdate = updates.every((update) => allowedUpdates.includes(update));
+
+    if (!isValidUpdate) {
+        return res.status(400).send({ error: 'La actualización contiene campos no permitidos o inválidos.' });
+    }
+    
+    if (updates.length === 0) {
+        return res.status(400).send({ error: 'Los campos a modificar deben proporcionarse en el cuerpo de la solicitud.' });
+    }
+    try {
+        const user = authenticatedRequest.user;
+        updates.forEach((update) => {
+            (user as any)[update] = authenticatedRequest.body[update];
+        });
+        await (user as any).save(); 
+        const userObject = (user as any).toObject();
+        delete userObject.password;
+        res.status(200).send(userObject);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
+/**
+ * DELETE /users/me: Permite eliminar la cuenta del usuario autenticado. (PROTEGIDA)
+ */
+userRouter.delete('/users/me', auth, async (req, res) => {
+    try {
+        await User.findByIdAndDelete((req as AuthRequest).user._id);
+        res.status(200);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+userRouter.post('/users/logout', auth, async (req, res) => {
+    const authenticatedRequest = req as AuthRequest;
+    try { 
+        res.status(200).send({ message: `${authenticatedRequest.user.username} ha cerrado sesión exitosamente.` });
+    } catch (e) {
+        res.status(500).send({ error: 'Fallo al procesar el cierre de sesión.' });
+    }
 });
 
 /**
