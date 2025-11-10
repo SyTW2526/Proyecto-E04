@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
 import axios from 'axios';
 import './login.css';
+import { useNavigate } from 'react-router-dom';
 
 interface SignUpFormState  {
   username: string;
@@ -9,11 +10,13 @@ interface SignUpFormState  {
 }
 
 interface SignInFormState  {
-  username: string;
+  email: string;
   password: string;
 }
 
 function LogIn() {
+    const navigate = useNavigate();
+
     const [signUpData, setSignUpData] = useState<SignUpFormState> ({
         username: '',
         email: '',
@@ -21,7 +24,7 @@ function LogIn() {
     });
 
     const [signInData, setSignInData] = useState<SignInFormState> ({
-        username: '',
+        email: '',
         password: ''    
     });
 
@@ -40,6 +43,32 @@ function LogIn() {
         try {
             const response = await axios.post('http://localhost:3000/users', signUpData);
             console.log(response);
+
+            if (response.status === 201) {
+                signInData.email = signUpData.email;
+                signInData.password = signUpData.password;
+
+                signIn(signInData);
+            }
+        }catch (error) {
+            console.error(error);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async function signIn(signInData: any) {
+        const responseSignIn = await axios.post('http://localhost:3000/users/login', signInData);
+        console.log(responseSignIn);
+
+        if (responseSignIn.status === 200) {
+            navigate("/home");
+        }
+    }
+
+    const handleSignInSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            signIn(signInData);
         }catch (error) {
             console.error(error);
         }
@@ -50,17 +79,17 @@ function LogIn() {
             <div className="ContenedorGeneral">
                 <div className="ContenedorInicio">
                     <div className="Logo">
-                        <img src="/logo.png" alt="Logo de ReceiptVault" width="50%" height="50%"></img>
+                        <img src="/logo.png" alt="Logo de RecipeVault" width="50%" height="50%"></img>
                     </div>
                     <div className="InicioRegistro">
                         <h1>Iniciar sesión</h1>
-
-                            <label htmlFor="luser">Nombre de usuario:</label><br />
-                            <input type="text" className="inputTexto" name= "username" id="luser" onChange={handleSignInChange} value={signInData.username} required maxLength={20}></input><br />
-                            <label htmlFor="lpassword">Contraseña:</label><br />
-                            <input type="text" className="inputTexto" name="password" id="lpassword" onChange={handleSignInChange} value={signInData.password} required maxLength={20}></input><br />
-                            <input type="submit" className="submit" value="Iniciar sesión"></input>
-
+                            <form onSubmit={handleSignInSubmit}>
+                                <label htmlFor="lemail">Nombre de usuario:</label><br />
+                                <input type="email" className="inputTexto" name= "email" id="lemail" onChange={handleSignInChange} value={signInData.email} required maxLength={20}></input><br />
+                                <label htmlFor="lpassword">Contraseña:</label><br />
+                                <input type="password" className="inputTexto" name="password" id="lpassword" onChange={handleSignInChange} value={signInData.password} required maxLength={20}></input><br />
+                                <input type="submit" className="submit" value="Iniciar sesión"></input>
+                            </form>
                     </div>
                     <div className="lineaVertical" />
                     <div className="InicioRegistro">

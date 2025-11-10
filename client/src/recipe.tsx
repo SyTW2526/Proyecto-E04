@@ -1,7 +1,8 @@
 import { Home, Search, User, LogOut } from "lucide-react";
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
-import './receipt.css';
+import './recipe.css';
+import { useParams } from "react-router-dom";
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -18,7 +19,9 @@ interface Recipe {
     creacionDate: Date;
 }
 
-function Receipt({id}: {id: string}) {
+function Recipe() {
+    const { id } = useParams();
+
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
         axios.get('http://localhost:3000/recipes/' + id)
@@ -75,7 +78,7 @@ function Receipt({id}: {id: string}) {
             </div>
             <div className="ContenedorDerecha">
                 <div className="ContenedorPerfilSimp">
-                    <img className="LogoImagen" src="/logo.png" alt="Logo de ReceiptVault"></img>
+                    <img className="LogoImagen" src="/logo.png" alt="Logo de RecipeVault"></img>
                     <img className="PerfilImagen" src="https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png"></img>
                     <p>Usuario</p>
                     <div className="InformacionUsuario">
@@ -116,4 +119,4 @@ function Receipt({id}: {id: string}) {
     )
 }
 
-export default Receipt;
+export default Recipe;
