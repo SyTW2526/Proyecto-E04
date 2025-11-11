@@ -63,7 +63,7 @@ recipeRouter.get('/recipes', async (req, res) => {
   }
 
   try {
-    const recipes = await Recipe.find(filter);
+    const recipes = await Recipe.find(filter).populate({path: 'userId', select: ['username', 'profilePic']});
 
     if (recipes.length > 0) {
       res.status(200).send(recipes);
@@ -80,7 +80,7 @@ recipeRouter.get('/recipes', async (req, res) => {
  */
 recipeRouter.get('/recipes/:id', async (req, res) => {
   try {
-    const recipe = await Recipe.findById(req.params.id);
+    const recipe = await Recipe.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
       if (recipe) {
         res.send(recipe);
       } else {
