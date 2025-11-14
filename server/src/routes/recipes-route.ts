@@ -44,11 +44,7 @@ recipeRouter.get('/recipes', async (req, res) => {
   }
   if (tools) filter.tools = tools;
   if (ingredientName) {
-    filter.ingredients = {
-      $elemMatch: {
-        nombre: { $regex: new RegExp(ingredientName as string, 'i') }
-      }
-    };
+    filter.ingredients = { $in: [new RegExp(ingredientName as string, 'i')] };
   }
 
 	if (creacionDate) {

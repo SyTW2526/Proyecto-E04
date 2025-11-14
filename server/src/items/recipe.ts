@@ -10,7 +10,7 @@ export interface RecipeInterface {
   ingredients: string[];
   tools: string[];
   userId: Schema.Types.ObjectId; 
-  category: string; // Pasta, postre, carne, etc. 
+  category: string[]; // Pasta, postre, carne, etc. 
   images: string[]; // URLs de imágenes o vídeos 
   videos?: string[]; // URLs de vídeos 
   creacionDate: Date;
@@ -47,7 +47,7 @@ const RecipeSchema = new Schema<RecipeInterface>({
     ref: 'User',
   },
   category: { // Categoría (tipo de plato o dieta)
-    type: String,
+    type: [String],
     required: true,
     enum: [
         'entrante',
