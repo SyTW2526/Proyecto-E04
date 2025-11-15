@@ -1,0 +1,239 @@
+.contenedor {
+    display: flex;
+    height: 100vh;
+    width: 100vw; 
+    background-color: #fdf4e3; /* Fondo principal muy claro */
+    color: #3b2b2b; /* Color de texto principal */
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+}
+
+/* 🎯 CAMBIO DE ESTILO PRINCIPAL: Color de fondo más claro para el filtro */
+.principal {
+    flex: 1;
+    /* Mantenemos el fondo base deseado: #f7e1c0 */
+    background-color: #f7e1c0; 
+    /* Ajustamos el padding para que se vea bien el filtro */
+    padding: 40px 80px; 
+    border-radius: 0;
+    height: 100vh;
+    overflow-y: auto; 
+}
+
+/* 🎯 NUEVA CLASE: Contenedor específico para la vista de Búsqueda/Filtro (Fondo más claro) */
+.panel-derecho {
+    width: 350px; 
+    background-color: #fdf4e3; /* Fondo de la barra lateral */
+    border-left: 2px solid #e0cfa8; /* Separador */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 25px;
+    min-height: 100vh;
+}
+
+/* ======================================= */
+/* 2. BARRA LATERAL (Perfil y Navegación) */
+/* ======================================= */
+/* Se mantienen todos los estilos de la barra lateral: */
+.recipe-vault-title { font-family: 'Georgia', serif; font-size: 28px; color: #5d4037; margin-bottom: 30px; }
+.recipe-vault-logo { width: 80%; max-width: 250px; height: auto; margin-bottom: 30px; }
+.user-profile-info { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; margin-bottom: 20px; width: 100%; }
+.foto-perfil-grande { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #d2a679; }
+.user-name { font-size: 20px; font-weight: 700; margin: 0 0 5px; color: #333; }
+.user-handle { font-size: 14px; color: #a0a0a0; margin-bottom: 20px; }
+.stats-row { display: flex; justify-content: space-around; width: 100%; margin-bottom: 15px; }
+.stat-number { font-size: 18px; font-weight: bold; color: #333; }
+.stat-label { font-size: 12px; color: #6a6a6a; }
+.user-description { font-size: 14px; color: #555; padding: 0 10px; }
+.sidebar-navigation { width: 100%; padding-top: 10px; }
+.boton-panel { display: flex; flex-direction: row; justify-content: flex-start; gap: 10px; background: none; border: none; color: #3b2b2b; cursor: pointer; font-size: 16px; transition: background-color 0.2s ease, color 0.2s ease; padding: 12px 15px; width: 100%; border-radius: 10px; margin-bottom: 5px; }
+.boton-panel:hover { background-color: #f0f0f0; }
+.boton-panel.active { background-color: #f5e4c8; color: #5d4037; font-weight: bold; }
+.linea { width: 80%; border-bottom: 1px solid #e0cfa8; margin: 15px auto; }
+.logout { margin-top: auto; color: #a33; }
+.logout:hover { color: #e00; }
+.layout-link { font-size: 12px; color: #a0a0a0; text-align: center; margin-top: 20px; }
+
+
+/* ======================================= */
+/* 3. VISTA DE BÚSQUEDA Y FILTRADO (MAIN) */
+/* ======================================= */
+
+.search-filter-view {
+    background-color: #f7f0e6; /* Fondo más claro para simular el mockup */
+    padding: 40px 80px; /* Un poco más de padding lateral */
+}
+
+.section-title {
+    font-size: 35px;
+    font-weight: bold;
+    color: #4c4c4c;
+    margin-bottom: 30px;
+}
+
+/* Campo de búsqueda principal */
+.search-bar-main {
+    display: flex;
+    align-items: center;
+    background-color: #fffaf4;
+    border-radius: 15px; 
+    padding: 12px 20px;
+    margin-bottom: 40px;
+    border: 1px solid #e0cfa8;
+    width: 100%;
+    max-width: 500px;
+}
+
+.search-bar-main svg {
+    color: #a0a0a0;
+}
+
+.search-bar-main input {
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    font-size: 16px;
+    width: 100%;
+    background: #fffaf4; 
+    color: #3b2b2b;
+}
+
+/* === Etiquetas Recientes (Recent Tags) === */
+.recent-tags-section {
+    margin-bottom: 40px;
+}
+
+.recent-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #5d4037; 
+    margin-bottom: 15px;
+}
+
+.recent-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.recent-tag {
+    /* Estilos para alinear el icono y el texto */
+    display: flex;
+    align-items: center; 
+    gap: 8px; 
+
+    background-color: #ffffff; 
+    color: #5d4037; 
+    border: 1px solid #e0cfa8; 
+    font-size: 15px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.recent-tag:hover {
+    background-color: #f5e4c8;
+}
+
+/* Estilo para el icono de receta reciente */
+.recent-tag-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+/* === Búsqueda Avanzada (Advanced Search) === */
+.advanced-search-section {
+    position: relative;
+}
+
+.advanced-search-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #5d4037;
+    margin-bottom: 25px;
+}
+
+/* Botón de búsqueda flotante */
+.final-search-button {
+    position: absolute;
+    top: 0px; 
+    right: 0;
+    /* Color salmón suave */
+    background-color: #d49692; 
+    color: #2d2a2a;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.final-search-button:hover {
+    background-color: #d2a679;
+}
+
+/* Estilo para cada grupo de etiquetas (Label + Tags + Botón +) */
+.advanced-input-group {
+    margin-bottom: 30px;
+}
+
+.advanced-input-group label {
+    display: block;
+    font-size: 16px;
+    color: #5d4037;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Contenedor de todas las etiquetas y el botón de añadir */
+.enum-tags-container {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+}
+
+/* Etiqueta (Enum) ya seleccionada */
+.selected-enum-tag {
+    /* Color del fondo del post: #d2a679 (Post Card)
+    */
+    background-color: #d2a679; 
+    color: #2d2a2a; /* Mantenemos el color de texto oscuro */
+    border: 1px solid #c0946b; /* Ajustamos el borde a un tono similar */
+    font-size: 15px;
+    padding: 8px 15px;
+    border-radius: 30px; 
+    font-weight: 500;
+}
+
+/* Botón de añadir (+) */
+.plus-button {
+    /* Color salmón suave */
+    background-color: #d49692; 
+    border-radius: 50%;
+    width: 40px; /* Aumentado */
+    height: 40px; /* Aumentado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.plus-button:hover {
+    background-color: #d49692; /* Tono ligeramente más oscuro para el hover */
+}
+
+/* Estilo para la imagen del icono de más */
+.plus-icon-image {
+    width: 20px; 
+    height: 20px;
+}
