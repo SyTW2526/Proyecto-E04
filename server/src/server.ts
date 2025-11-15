@@ -3,17 +3,19 @@ import './db/mongoose.js';
 import { userRouter } from './routes/user_route.js';
 import { recipeRouter } from './routes/recipes-route.js';
 import cors from "cors";
+import { reviewRouter } from './routes/reviews_route.js';
 
 export const app = express();
 
 app.use(cors({
   origin: "http://localhost:5173",
-  methods: "GET,POST,PUT,DELETE",
+  methods: "GET,POST,PATCH,DELETE",
   credentials: true
 }))
 app.use(express.json());
 app.use(userRouter);
 app.use(recipeRouter);
+app.use(reviewRouter);
 
 const port = process.env.PORT || 3000;
 

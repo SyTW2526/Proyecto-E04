@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose';
 import { Recipe } from '../items/recipe.js' 
+import { Review } from '../items/review.js';
 
 /**
  * Router de recipe.
@@ -203,11 +204,19 @@ recipeRouter.delete('/recipes', async (req, res) => {
   }
 
   try {
-    const recipe = await Recipe.findOneAndDelete(filter);
+    const recipe = await Recipe.findOne(filter);
     if (!recipe) {
       return res.status(404).send({ error: 'Receta no encontrada con el filtro proporcionado.' });
+    } else {
+      const result = await Review.deleteMany({ userId: recipe._id})
+      
+      if (!result.acknowledged) {
+        res.status(500).send();
+      } else {
+        await Recipe.findByIdAndDelete(recipe._id);
+        res.send(recipe);
+      }
     }
-    res.status(200).send(recipe);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -218,12 +227,19 @@ recipeRouter.delete('/recipes', async (req, res) => {
  */
 recipeRouter.delete('/recipes/:id', async (req, res) => {
   try {
-    const recipe = await Recipe.findByIdAndDelete(req.params.id);
+    const recipe = await Recipe.findById(req.params.id);
 
     if (!recipe) {
       res.status(404).send();
     } else {
-      res.send(recipe);
+      const result = await Review.deleteMany({ userId: recipe._id})
+      
+      if (!result.acknowledged) {
+        res.status(500).send();
+      } else {
+        await Recipe.findByIdAndDelete(recipe._id);
+        res.send(recipe);
+      }
     }
   } catch (err) {
     res.status(500).send();

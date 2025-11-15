@@ -1,6 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { User } from '../items/user.js';
+import { receiveMessageOnPort } from 'worker_threads';
+import { Recipe } from '../items/recipe.js';
+import { Review } from '../items/review.js';
 import { auth, AuthRequest } from '../middleware/auth.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -250,11 +253,20 @@ userRouter.delete('/users', async (req, res) => {
   if (email) filter.email = { $regex: new RegExp(email as string, 'i') };
 
   try {
-    const user = await User.findOneAndDelete(filter);
+    const user = await User.findOne(filter);
     if (!user) {
       return res.status(404).send({ error: 'Usuario no encontrado con el filtro proporcionado.' });
+    } else {
+      const resultRecipe = await Recipe.deleteMany({ userId: user._id})
+      const resultReview = await Review.deleteMany({ userId: user._id})
+
+      if (!resultRecipe.acknowledged || !resultReview.acknowledged) {
+          res.status(500).send();
+      } else {
+        await User.findByIdAndDelete(user._id);
+        res.send(user);
+      }
     }
-    res.status(200).send(user);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -265,12 +277,20 @@ userRouter.delete('/users', async (req, res) => {
  */
 userRouter.delete('/users/:id', async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       res.status(404).send({ error: 'Usuario no encontrado.' });
     } else {
-      res.send(user);
+      const resultRecipe = await Recipe.deleteMany({ userId: user._id})
+      const resultReview = await Review.deleteMany({ userId: user._id})
+
+      if (!resultRecipe.acknowledged || !resultReview.acknowledged) {
+          res.status(500).send();
+      } else {
+        await User.findByIdAndDelete(user._id);
+        res.send(user);
+      }
     }
   } catch (err) {
     res.status(500).send(err);
