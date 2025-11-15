@@ -53,6 +53,11 @@ function LogIn() {
 
     return (
         <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Log-In / RecipeVault</title>
+            </head>
             <div className="ContenedorGeneral">
                 <div className="ContenedorInicio">
                     <div className="Logo">
