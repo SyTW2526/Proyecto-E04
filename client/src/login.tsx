@@ -40,6 +40,7 @@ function LogIn() {
             console.log(responseSignIn);
 
             if (responseSignIn.status === 200) {
+                localStorage.setItem("token", responseSignIn.data.token)
                 navigate("/home");
             }
         } catch (error) {
