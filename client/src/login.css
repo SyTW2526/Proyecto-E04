@@ -23,6 +23,18 @@
     float:left;
 }
 
+.help.is-danger {
+    color:red;
+    font-size:small;
+}
+
+.error-message {
+    color: red;
+    margin-top: 8px;
+    font-size:small;
+    font-weight: bold;
+}
+
 .lineaVertical {
     width:2px;
     height:350px;

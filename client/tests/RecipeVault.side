@@ -1,0 +1,1273 @@
+{
+  "id": "70c8d326-5ce7-4c61-bd67-d273666c11ce",
+  "version": "2.0",
+  "name": "RecipeVault",
+  "url": "http://localhost:5173",
+  "tests": [{
+    "id": "66fc845a-4b5b-483e-9e2d-fb45f56f39b5",
+    "name": "Log-in correcto",
+    "commands": [{
+      "id": "566606a8-6455-46a4-bc7b-cc003f3e72a3",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1d40362b-e9bf-4926-8e4b-e1b32ce0ad1c",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "209a4a8b-ceab-45c8-84be-e96842f3b123",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ddf81079-b215-48f7-90d4-c2f8ed6dbf78",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.Logo > img",
+      "targets": [
+        ["css=.Logo > img", "css:finder"],
+        ["xpath=//img[@alt='Logo de RecipeVault']", "xpath:img"],
+        ["xpath=//div[@id='root']/div/div/div/img", "xpath:idRelative"],
+        ["xpath=//div/div/div/img", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2ffd0a60-338e-4a7a-848f-99f71a12ea24",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.InicioRegistro:nth-child(2) > h1",
+      "targets": [
+        ["css=.InicioRegistro:nth-child(2) > h1", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Iniciar sesión')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c3b5c483-8acf-4b3d-b0b1-77409d70155d",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.InicioRegistro:nth-child(4) > h1",
+      "targets": [
+        ["css=.InicioRegistro:nth-child(4) > h1", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/h1", "xpath:idRelative"],
+        ["xpath=//div[4]/h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'Registrarse')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "577f4b8a-1ae3-452e-a7c9-c3e44527bedd",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.InicioRegistro:nth-child(2) > form",
+      "targets": [
+        ["css=.InicioRegistro:nth-child(2) > form", "css:finder"],
+        ["xpath=//form[@action='#']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form", "xpath:idRelative"],
+        ["xpath=//form", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cd09582e-c277-49ca-a85a-64515b2f60dc",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.InicioRegistro:nth-child(4) > form",
+      "targets": [
+        ["css=.InicioRegistro:nth-child(4) > form", "css:finder"],
+        ["xpath=(//form[@action='#'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form", "xpath:idRelative"],
+        ["xpath=//div[4]/form", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "63f36855-a3ff-48ca-b9c4-b5971e10a61a",
+      "comment": "",
+      "command": "click",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7902b06b-c78a-47da-9b2b-87197c1e3222",
+      "comment": "",
+      "command": "type",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "aaaaaa@gmail.com"
+    }, {
+      "id": "a5c8830f-7b70-4da6-8f22-a08e7d2c7e3a",
+      "comment": "",
+      "command": "click",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6627a686-df75-4558-b68b-b55da478fff3",
+      "comment": "",
+      "command": "type",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "usuusu"
+    }, {
+      "id": "0210cb11-a87e-49cf-a038-0afb65680e1a",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(9)",
+      "targets": [
+        ["css=.submit:nth-child(9)", "css:finder"],
+        ["xpath=//input[@value='Iniciar sesión']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "40ceff1e-3c19-4004-8031-795accd05dda",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Inicio / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "37bcf830-dcd9-4217-938b-2d0c3f99d475",
+    "name": "Log-in con usuario incorrecto",
+    "commands": [{
+      "id": "cb52e7b4-801e-41d8-a0e7-7d5f42e4c0d5",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "57bf8c9a-29bb-4bbb-9b6e-bd6e4c4c5d13",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1f00ef56-adb5-4847-bba5-dba05aebd216",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5d42931e-5b79-47d0-8dac-00a5e3277117",
+      "comment": "",
+      "command": "click",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "174c6d49-cff5-49c2-b32c-366d4563ee2e",
+      "comment": "",
+      "command": "type",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "oooooooo@gmail.com"
+    }, {
+      "id": "247c4362-99cb-4150-bdc8-43ee4c927955",
+      "comment": "",
+      "command": "click",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b042998f-8c02-4b64-a226-4256f7e1c044",
+      "comment": "",
+      "command": "type",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "oooooooo"
+    }, {
+      "id": "132d85e8-e14f-4f36-a552-128b080542c8",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(9)",
+      "targets": [
+        ["css=.submit:nth-child(9)", "css:finder"],
+        ["xpath=//input[@value='Iniciar sesión']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2af0eac7-c5b2-498c-9084-9f44df15ad52",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.error-message",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El usuario o la contraseña son incorrectos')]", "xpath:innerText"]
+      ],
+      "value": "El usuario o la contraseña son incorrectos"
+    }, {
+      "id": "4a7885b5-f4b6-4b32-8e2a-fcc09d35c99a",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "d11680a2-c68c-4f60-92d5-fbd111d4c95b",
+    "name": "Log-in con contraseña incorrecta",
+    "commands": [{
+      "id": "e7bb0708-89e1-414b-9eea-1172324d4c5b",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fba87ec4-7365-4dda-9502-7c574ace8f15",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "db569ceb-23f3-42e6-8c78-a9326291d72d",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "aa79d37a-47a0-46c0-b109-59dfcd32e4de",
+      "comment": "",
+      "command": "click",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9d37bbad-4255-4753-9186-180ed1750cfd",
+      "comment": "",
+      "command": "type",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "aaaaaa@gmail.com"
+    }, {
+      "id": "26e0664a-871f-4fde-ad73-42e69587d780",
+      "comment": "",
+      "command": "click",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c4012edd-b4ab-413d-bec8-41c4e3b0f4c0",
+      "comment": "",
+      "command": "type",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "oooooooo"
+    }, {
+      "id": "ecacffe5-f5a1-4ab0-8484-b370b50dbe0b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(9)",
+      "targets": [
+        ["css=.submit:nth-child(9)", "css:finder"],
+        ["xpath=//input[@value='Iniciar sesión']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fcf1946a-641d-49a4-b156-f7f0a1e9c96d",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.error-message",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El usuario o la contraseña son incorrectos')]", "xpath:innerText"]
+      ],
+      "value": "El usuario o la contraseña son incorrectos"
+    }, {
+      "id": "7b500a3f-f869-4284-a164-a75020b65572",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "06dbeb8c-dde7-417e-bb0f-54925f4c0369",
+    "name": "Log-in con campos erróneos",
+    "commands": [{
+      "id": "0c8fa31a-cb52-4c99-a07f-a37ebf143db6",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9ba93283-43dd-4bf0-bcb1-761ed1b8f4ca",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "22540bd5-928b-4f25-b437-4db189d75ee8",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "692c19ab-f5d1-4530-8726-7f56039e12d3",
+      "comment": "",
+      "command": "click",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c0ec1432-b21a-4d97-b886-96e49c386bbb",
+      "comment": "",
+      "command": "click",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "68fc0c3f-d2b1-4889-b6b8-a91bdb0155e5",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help",
+      "targets": [
+        ["css=.help", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El email es obligatorio')]", "xpath:innerText"]
+      ],
+      "value": "El email es obligatorio"
+    }, {
+      "id": "75cf6843-b866-4174-8ca9-e4aa0738cc64",
+      "comment": "",
+      "command": "click",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "99adb969-e980-4fc1-96d7-f7eeeb3b1967",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(10)",
+      "targets": [
+        ["css=.help:nth-child(10)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'La contraseña es obligatoria')]", "xpath:innerText"]
+      ],
+      "value": "La contraseña es obligatoria"
+    }, {
+      "id": "96741304-d56f-4687-a368-7508aa022a18",
+      "comment": "",
+      "command": "type",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lemail", "id"],
+        ["name=email", "name"],
+        ["css=#lemail", "css:finder"],
+        ["xpath=//input[@id='lemail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "aaaaaa"
+    }, {
+      "id": "55ebcc94-e36d-4e55-abed-542162a71e53",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.InicioRegistro:nth-child(2) .help:nth-child(5)",
+      "targets": [
+        ["css=.InicioRegistro:nth-child(2) .help:nth-child(5)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'Debe de ser un email')]", "xpath:innerText"]
+      ],
+      "value": "Debe de ser un email"
+    }, {
+      "id": "97505671-b569-4cfc-ad46-ed6b73b0b30b",
+      "comment": "",
+      "command": "type",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "aaa"
+    }, {
+      "id": "92d63c10-2efa-478f-a511-f132e0302d87",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(10)",
+      "targets": [
+        ["css=.help:nth-child(10)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'La contraseña debe de tener al menos 6 caracteres')]", "xpath:innerText"]
+      ],
+      "value": "La contraseña debe de tener al menos 6 caracteres"
+    }, {
+      "id": "edb3e2a0-6554-41cc-b35c-85d0f4c6f9e1",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(11)",
+      "targets": [
+        ["css=.submit:nth-child(11)", "css:finder"],
+        ["xpath=//input[@value='Iniciar sesión']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c9b8499e-34c0-4e26-a220-a8749bedf6a2",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "11517973-b5ea-4d5b-8161-d9780b547933",
+      "comment": "",
+      "command": "type",
+      "target": "id=lpassword",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "aaaaaaa"
+    }, {
+      "id": "c7313a96-7906-4d2d-902a-c923cdfe8b07",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.help:nth-child(10)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c09d7cc7-2930-4aaa-992a-963f112c674b",
+      "comment": "",
+      "command": "type",
+      "target": "id=lemail",
+      "targets": [
+        ["id=lpassword", "id"],
+        ["name=password", "name"],
+        ["css=#lpassword", "css:finder"],
+        ["xpath=//input[@id='lpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "email@gmail.com"
+    }, {
+      "id": "2018090d-f410-4095-a272-6153ee45a7fe",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.InicioRegistro:nth-child(2) .help:nth-child(5)",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "babfc797-f1ec-4178-845b-e2cc8844ee4f",
+    "name": "Sign-up correcto",
+    "commands": [{
+      "id": "02a97cb4-ff24-476b-a423-6d9ef90c6726",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "60864a24-c6c2-4616-8c33-51cb7f27a297",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3bc602d0-ae99-4715-be2f-003bab798da5",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f9e9370c-7140-47be-843b-f37b41759c8f",
+      "comment": "",
+      "command": "click",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9523bdba-1c10-4f19-a49c-724d780c8082",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "usuario11"
+    }, {
+      "id": "b9d50820-f154-4128-83db-c89d6a9619dd",
+      "comment": "",
+      "command": "click",
+      "target": "id=remail",
+      "targets": [
+        ["id=remail", "id"],
+        ["css=#remail", "css:finder"],
+        ["xpath=//input[@id='remail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "11da1d7f-b2d7-48e9-a87f-954d42f02711",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["id=remail", "id"],
+        ["css=#remail", "css:finder"],
+        ["xpath=//input[@id='remail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[2]", "xpath:position"]
+      ],
+      "value": "usuario11@gmail.com"
+    }, {
+      "id": "e881bcd3-3299-4169-9701-4b848b685147",
+      "comment": "",
+      "command": "click",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "68d0a298-e49a-4472-a402-66c9cfe34d34",
+      "comment": "",
+      "command": "type",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": "usuario"
+    }, {
+      "id": "eb027740-9e7c-4997-9602-fa47d083f325",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(13)",
+      "targets": [
+        ["css=.submit:nth-child(13)", "css:finder"],
+        ["xpath=//input[@value='Registrarse']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1e6fd1e5-92e1-4482-9cf9-f4e0e4e280ed",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Inicio / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "4ea34781-f588-459c-94f2-b601edd0063e",
+    "name": "Sign-up con usuario repetido",
+    "commands": [{
+      "id": "e4ebe8af-3b27-4c0e-8a1f-d64c2a552c2f",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8c62032b-5efb-4de0-9e28-90c435962975",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "535087c2-8781-4115-90d3-d41ae6d7cd9c",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9df1d5ad-0871-414e-8757-61113174accb",
+      "comment": "",
+      "command": "click",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0c9bd458-3c06-4052-9bf2-b858e8105c32",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "usuario10"
+    }, {
+      "id": "d58d1d79-5d3d-42f8-9ffb-8612e19f44e2",
+      "comment": "",
+      "command": "click",
+      "target": "id=remail",
+      "targets": [
+        ["id=remail", "id"],
+        ["css=#remail", "css:finder"],
+        ["xpath=//input[@id='remail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1a12daba-a71d-4dab-b38e-87e58dc053cd",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "usuario99@gmail.com"
+    }, {
+      "id": "313d2cf5-3fd5-4434-9c18-2479977f7cd8",
+      "comment": "",
+      "command": "click",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "44c8edd0-292a-4a7c-b64f-907569ebe4ff",
+      "comment": "",
+      "command": "type",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": "usuario"
+    }, {
+      "id": "d6051910-bdf2-4e3d-a48a-0468560d438c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(13)",
+      "targets": [
+        ["css=.submit:nth-child(13)", "css:finder"],
+        ["xpath=//input[@value='Registrarse']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f35b4946-9cdc-4e12-969d-7142b07c017b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.error-message",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "El nombre de usuario o email ya se han utilizado anteriormente"
+    }, {
+      "id": "3a64e363-57ca-4998-ba3f-a1ad4d9e1896",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "5b1b61c8-e675-46a9-98e2-c45f99b81114",
+    "name": "Sign-up con correo repetido",
+    "commands": [{
+      "id": "32dac003-65d2-4566-a012-c53d1a843aac",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7bb6b902-0c04-4d69-b10c-9f006dea224e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f9890678-32db-4bee-b465-6a7b81e34992",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8006f918-c37b-4621-8ff7-d5ad69d6c4bb",
+      "comment": "",
+      "command": "click",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d1f46906-3b64-4ec4-a760-ef6a2da92945",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "usuario99"
+    }, {
+      "id": "af0909cc-0a0a-42b8-8ad7-93aafba74733",
+      "comment": "",
+      "command": "click",
+      "target": "id=remail",
+      "targets": [
+        ["id=remail", "id"],
+        ["css=#remail", "css:finder"],
+        ["xpath=//input[@id='remail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3ff202ac-46c2-49fc-a1a1-e8e08ca0bdc0",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "usuario10@gmail.com"
+    }, {
+      "id": "bfd42dab-ca36-44fd-a9dc-8aada3acd1f2",
+      "comment": "",
+      "command": "click",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "dbe6d9a1-c1ef-4770-b5ce-4286bb648c85",
+      "comment": "",
+      "command": "type",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": "usuario"
+    }, {
+      "id": "a0dded16-16d1-4b75-85d9-20cf082e4853",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(13)",
+      "targets": [
+        ["css=.submit:nth-child(13)", "css:finder"],
+        ["xpath=//input[@value='Registrarse']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3cfeec52-1ba0-4e69-ab26-0c3c4aa7394a",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.error-message",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "El nombre de usuario o email ya se han utilizado anteriormente"
+    }, {
+      "id": "3c63876d-0ec9-49f7-b192-f91cc2cb9579",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "5a5f7a8a-5ac7-4b98-bf3d-f5d01406e2ac",
+    "name": "Sign-up con campos erróneos",
+    "commands": [{
+      "id": "691ca219-8c4b-4bef-984d-17e8fcdbb59d",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6f105dd2-02bd-4cf9-aba9-158502486fe8",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1181x897",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2a3a6f0a-2e7e-48aa-8eb0-dff2c6abdb94",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3d53ab4d-dc0f-4097-a28a-71532c790c6e",
+      "comment": "",
+      "command": "click",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "299daf24-dc7b-4c2d-a602-8be89e5d9174",
+      "comment": "",
+      "command": "click",
+      "target": "id=remail",
+      "targets": [
+        ["id=remail", "id"],
+        ["css=#remail", "css:finder"],
+        ["xpath=//input[@id='remail']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a3ffe101-b2e4-4924-90d0-2471368b0b13",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help",
+      "targets": [
+        ["css=.help", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario es obligatorio')]", "xpath:innerText"]
+      ],
+      "value": "El nombre de usuario es obligatorio"
+    }, {
+      "id": "b0907f41-2a68-42f3-a096-0337182c2089",
+      "comment": "",
+      "command": "click",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1fb8db3e-1de7-4608-b7bd-d11321c086a4",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(10)",
+      "targets": [
+        ["css=.help:nth-child(10)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'El email es obligatorio')]", "xpath:innerText"]
+      ],
+      "value": "El email es obligatorio"
+    }, {
+      "id": "d515db6e-6375-4845-af0a-f117d0768d25",
+      "comment": "",
+      "command": "click",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bbd8765b-66f8-4c05-a358-1ef0cc973ced",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(15)",
+      "targets": [
+        ["css=.help:nth-child(15)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p[3]", "xpath:idRelative"],
+        ["xpath=//p[3]", "xpath:position"],
+        ["xpath=//p[contains(.,'La contraseña es obligatoria')]", "xpath:innerText"]
+      ],
+      "value": "La contraseña es obligatoria"
+    }, {
+      "id": "4f76f381-a3ce-4bbd-b25a-efba668c33af",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "aa"
+    }, {
+      "id": "51f75da1-28ac-4f5e-8b4b-99364e7bd5f2",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(5)",
+      "targets": [
+        ["css=.help:nth-child(5)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario debe de tener al menos 4 caracteres')]", "xpath:innerText"]
+      ],
+      "value": "El nombre de usuario debe de tener al menos 4 caracteres"
+    }, {
+      "id": "1e3d1e5e-f147-4f5b-8c2d-ad7e9e1ef786",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "aaa"
+    }, {
+      "id": "4bb5d1fc-4ce2-4d6b-8b1a-180f9278f2ae",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(10)",
+      "targets": [
+        ["css=.help:nth-child(10)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'Debe de ser un email')]", "xpath:innerText"]
+      ],
+      "value": "Debe de ser un email"
+    }, {
+      "id": "f6cd6e0f-ced6-4824-9299-1bbfac4cacf2",
+      "comment": "",
+      "command": "type",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": "usu"
+    }, {
+      "id": "9cf49eb9-6992-45e7-9ccf-b4a4001d7285",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(15)",
+      "targets": [
+        ["css=.help:nth-child(15)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p[3]", "xpath:idRelative"],
+        ["xpath=//p[3]", "xpath:position"],
+        ["xpath=//p[contains(.,'La contraseña debe de tener al menos 6 caracteres')]", "xpath:innerText"]
+      ],
+      "value": "La contraseña debe de tener al menos 6 caracteres"
+    }, {
+      "id": "491fe3df-db55-4bb4-8418-e7de8f002103",
+      "comment": "",
+      "command": "type",
+      "target": "id=rpassword",
+      "targets": [
+        ["id=rpassword", "id"],
+        ["css=#rpassword", "css:finder"],
+        ["xpath=//input[@id='rpassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input[3]", "xpath:position"]
+      ],
+      "value": "usuario"
+    }, {
+      "id": "7a9d63a1-31f0-4d22-9517-ff5668da331c",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.help:nth-child(15)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9ef0c2f3-59ed-4ede-a959-2d7e27001ffa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.submit:nth-child(15)",
+      "targets": [
+        ["css=.submit:nth-child(15)", "css:finder"],
+        ["xpath=//input[@value='Registrarse']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f0385e84-c55c-4d5c-bb9a-c66ff61f4775",
+      "comment": "",
+      "command": "assertTitle",
+      "target": "Log-In / RecipeVault",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "bda4c087-40e7-49ce-b60f-06f9a6fdd5d4",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "aaaaaa@gmail.com"
+    }, {
+      "id": "db8081d4-085a-4d53-8bf4-77dd524fc9c3",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.help:nth-child(10)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b527805c-f10b-4aac-923d-35202289b24e",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "userr"
+    }, {
+      "id": "f7639504-0c0e-4135-aa81-c75b498a7d07",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.help:nth-child(5)",
+      "targets": [
+        ["css=.help:nth-child(5)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario debe de tener al menos 4 caracteres')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "307903d4-64c1-43d5-8412-7b8e94784a5d",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["66fc845a-4b5b-483e-9e2d-fb45f56f39b5"]
+  }],
+  "urls": ["http://localhost:5173/"],
+  "plugins": []
+}
