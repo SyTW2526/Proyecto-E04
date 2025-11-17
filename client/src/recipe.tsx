@@ -63,6 +63,14 @@ function Recipe() {
                                     ))}
                                 </ul>
                             </div>
+                            <div className="UtensiliosReceta">
+                                <h3>Utensilios</h3>
+                                <ul>
+                                    {receta.tools.map((utensilio: string) => (
+                                    <li>{utensilio}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                         <div className="DerechaReceta">
                             <div className="TextoReceta">
