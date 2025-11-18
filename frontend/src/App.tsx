@@ -1,4 +1,4 @@
-import Profile from './result';
+import Profile from './profile';
 
 function App() {
   return <Profile />;
