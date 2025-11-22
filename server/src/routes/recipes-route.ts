@@ -2,6 +2,8 @@ import express from 'express'
 import mongoose from 'mongoose';
 import { Recipe } from '../items/recipe.js' 
 import { Review } from '../items/review.js';
+import { User } from '../items/user.js'; 
+import { auth, AuthRequest } from '../middleware/auth.js';
 
 /**
  * Router de recipe.
@@ -29,23 +31,40 @@ recipeRouter.post('/recipes', async (req, res) => {
 /**
  * Manejador GET de /recipe. Permite obtener la información de una serie de recetas por cualquiera de sus campos recibidos como query string.
  */
-recipeRouter.get('/recipes', async (req, res) => {
+recipeRouter.get('/recipes', auth, async (req, res) => {
   const { name, steps, category, userId, tools, ingredientName, creacionDate } = req.query;
 
+  const authenticatedRequest = req as AuthRequest;
+  const searchTerms: string[] = [];
+
   const filter: any = {};
-  if (name) filter.name = { $regex: new RegExp(name as string, 'i') };
-  if (steps) filter.steps = { $regex: new RegExp(steps as string, 'i') };
-  if (category) filter.category = category;
+  if (name) {
+    filter.name = { $regex: new RegExp(name as string, 'i') };
+    searchTerms.push(`Nombre: ${name}`);
+  }
+  if (steps) {
+    filter.steps = { $regex: new RegExp(steps as string, 'i') };
+    searchTerms.push(`Pasos: ${steps}`);
+  }
+  if (category) {
+    filter.category = category;
+    searchTerms.push(`Categoría: ${category}`);
+  }
   if (userId) {
     if (mongoose.Types.ObjectId.isValid(userId as string)) {
       filter.userId = userId;
+      searchTerms.push(`ID Usuario: ${userId}`);
     } else {
       return res.status(400).send({ error: 'ID de usuario no válido.' });
     }
   }
-  if (tools) filter.tools = tools;
+  if (tools) {
+    filter.tools = tools;
+    searchTerms.push(`Utensilio: ${tools}`);
+  }
   if (ingredientName) {
     filter.ingredients = { $in: [new RegExp(ingredientName as string, 'i')] };
+    searchTerms.push(`Ingrediente: ${ingredientName}`);
   }
 
 	if (creacionDate) {
@@ -63,6 +82,18 @@ recipeRouter.get('/recipes', async (req, res) => {
     const recipes = await Recipe.find(filter).populate({path: 'userId', select: ['username', 'profilePic']});
 
     if (recipes.length > 0) {
+
+      const searchString = searchTerms.join(' | ');
+      if (authenticatedRequest.user && searchString) {
+        const user = await User.findById(authenticatedRequest.user._id);
+        if (user) {
+          const newSearches = user.recentSearches.filter(s => s !== searchString); // quitar duplicados
+          newSearches.unshift(searchString);
+          user.recentSearches = newSearches.slice(0, 5); // máximo 5
+          user.save().catch(err => console.error('Error al guardar búsquedas recientes:', err));
+        }
+      }
+
       res.status(200).send(recipes);
     } else {
       res.status(404).send({ error: 'Receta no encontrada.' });
