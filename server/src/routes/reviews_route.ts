@@ -61,7 +61,7 @@ reviewRouter.get('/reviews', async (req, res) => {
   }
 
   try {
-    const recipes = await Review.find(filter);
+    const recipes = await Review.find(filter).populate({path: 'userId', select: ['username', 'profilePic']});
 
     if (recipes.length > 0) {
       res.status(200).send(recipes);
@@ -78,7 +78,7 @@ reviewRouter.get('/reviews', async (req, res) => {
  */
 reviewRouter.get('/reviews/:id', async (req, res) => {
   try {
-    const reviews = await Review.findById(req.params.id);
+    const reviews = await Review.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
       if (reviews) {
         res.send(reviews);
       } else {

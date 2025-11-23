@@ -60,6 +60,45 @@
     float:left;
 }
 
+.ResenasReceta {
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.ResenasReceta h3 {
+    width:100%;
+}
+
+.UsuarioResena {
+    margin:20px;
+    width:max-content;
+    height:50px;
+    display:flex;
+    align-items:center;
+}
+
+.UsuarioResena img {
+    height:100%;
+    margin-right:20px;
+    float:left;
+}
+
+.contenedorResena {
+    width:50%;
+    margin-bottom:10px;
+}
+
+.informacionResena {
+    width:90%;
+    margin-left:20px;
+}
+
+.textoResena {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap; 
+}
+
 .ImagenesReceta {
     width:95%;
     margin:10px;
@@ -96,6 +135,24 @@
 
 .ReseñasReceta {
     width:100%;
+}
+
+.contenedorBoton {
+    width:100%;
+}
+
+.botonResena {
+    width:150px;
+    background-color:#a7b9a9;
+}
+
+.formularioResena {
+    width:60%;
+}
+
+Form textarea {
+    width:90%;
+    height:150px;
 }
 
 .ContenedorPerfilSimp {
