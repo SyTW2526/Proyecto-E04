@@ -6,10 +6,24 @@ on:
   pull_request:
     branches: [ "dev", "main" ]
 
+env:
+  MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
+
 jobs:
 
   build-and-test:
     runs-on: ubuntu-latest
+
+    services:
+        mongodb:
+          image: mongo:6
+          ports:
+            - 27017:27017
+          options: >-
+            --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
 
     steps:
       - name: Checkout repo
@@ -19,6 +33,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
            node-version: "18"
+
+      
 
        #Backend  
 
