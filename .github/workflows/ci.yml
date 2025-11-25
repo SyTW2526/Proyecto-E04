@@ -38,31 +38,31 @@ jobs:
 
        #Backend  
 
-    #  - name: Install backend dependencies
-    #    working-directory: server
-    #    run: npm install
+   #   - name: Install backend dependencies
+   #     working-directory: server
+   #     run: npm install
 
-    #  - name: Run backend tests
-    #    working-directory: server
-    #    run: npm test
+   #   - name: Run backend tests
+   #     working-directory: server
+   #     run: npm test
 
         #Frontend
 
-   #   - name: Install frontend dependencies
-    #    working-directory: client   
-    #    run: npm install
+      - name: Install frontend dependencies
+        working-directory: client   
+        run: npm install
     
 
-   #   - name: Run frontend unit tests
-   #     working-directory: client
-   #     run: npm test
+      - name: Run frontend unit tests
+        working-directory: client
+        run: npm test
 
       # e2e tests (playwright)
-   #   - name: Install Playwright dependencies
-   #     working-directory: e2e-tests
-   #     run: |
-   #         npm install
-   #         npx playwright install --with-deps
+      - name: Install Playwright dependencies
+        working-directory: e2e-tests
+        run: |
+            npm install
+            npx playwright install --with-deps
 
       - name: Run E2E tests
         working-directory: e2e-tests
