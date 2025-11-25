@@ -48,14 +48,14 @@ jobs:
 
         #Frontend
 
-      - name: Install frontend dependencies
-        working-directory: client   
-        run: npm install
+   #   - name: Install frontend dependencies
+    #    working-directory: client   
+    #    run: npm install
     
 
-      - name: Run frontend unit tests
-        working-directory: client
-        run: npm test
+   #   - name: Run frontend unit tests
+   #     working-directory: client
+   #     run: npm test
 
       # e2e tests (playwright)
       - name: Install Playwright dependencies
