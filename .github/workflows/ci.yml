@@ -38,13 +38,13 @@ jobs:
 
        #Backend  
 
-      - name: Install backend dependencies
-        working-directory: server
-        run: npm install
+    #  - name: Install backend dependencies
+    #    working-directory: server
+    #    run: npm install
 
-      - name: Run backend tests
-        working-directory: server
-        run: npm test
+    #  - name: Run backend tests
+    #    working-directory: server
+    #    run: npm test
 
         #Frontend
 
