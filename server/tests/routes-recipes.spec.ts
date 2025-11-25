@@ -25,7 +25,7 @@ beforeEach(async () => {
     name: 'Test Recipe',
     steps: 'Step 1, Step 2',
     ingredients: ['harina', 'azucar'],
-    tools: ['cuchillo', 'tablaDeCortar'],
+    tools: ['cuchillo'],
     userId: userId,
     category: 'postre',
     images: ['http://example.com/image1.jpg'],
