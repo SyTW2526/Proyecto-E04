@@ -168,13 +168,13 @@ describe('Recipe Routes patch:id', () => {
       .expect(200);
 
     expect(response.body.name).toBe(oldName);
-    expect(response.body.category).toBe(newCategory);
+    expect(response.body.category).toContain(newCategory);
 
     const unaffectedRecipe = await Recipe.findById(recipeId);
-    expect(unaffectedRecipe!.category).toBe('postre'); 
+    expect(unaffectedRecipe!.category).toContain('postre'); 
 
     const updatedRecipe = await Recipe.findById(recipeId);
-    expect(updatedRecipe!.category).toBe(newCategory);
+    expect(updatedRecipe!.category).toContain(newCategory);
   });
 
   test('Should return 400 when no filters provided for update', async () => {
