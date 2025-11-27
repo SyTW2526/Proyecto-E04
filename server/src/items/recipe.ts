@@ -7,10 +7,10 @@ import validator from 'validator';
 export interface RecipeInterface {
   name: string;
   steps: string;
-  ingredients: string[];
-  tools: string[];
+  ingredients: string;
+  tools: string;
   userId: Schema.Types.ObjectId; 
-  category: string[]; // Pasta, postre, carne, etc. 
+  category: string; // Pasta, postre, carne, etc. 
   images: string[]; // URLs de imágenes o vídeos 
   videos?: string[]; // URLs de vídeos 
   creacionDate: Date;
@@ -32,14 +32,14 @@ const RecipeSchema = new Schema<RecipeInterface>({
     required: true,
   },
   ingredients: {
-    type: [String], // Lista de ingredientes
+    type: String, // Lista de ingredientes
     required: true,
     enum: [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'mantequilla', 'aceite', 'levadura', 'chocolate', 'vainilla', 'frutas', 'verduras', 'carne', 'pescado', 'especias' ],
   },
   tools: { // Lista de utensilios 
-    type: [String],
+    type: String,
     required: true,
-    enum: [ 'cuchillo', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
+    enum: [ 'cuchillo', 'tablaDeCortar', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
   },
   userId: { 
     type: Schema.Types.ObjectId,
@@ -47,7 +47,7 @@ const RecipeSchema = new Schema<RecipeInterface>({
     ref: 'User',
   },
   category: { // Categoría (tipo de plato o dieta)
-    type: [String],
+    type: String,
     required: true,
     enum: [
         'entrante',
