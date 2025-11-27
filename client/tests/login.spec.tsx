@@ -1,3 +1,10 @@
+vi.mock("axios", () => ({
+  default: {
+    post: vi.fn(),
+  },
+}));
+
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -8,11 +15,11 @@ import { vi } from "vitest";
 
 import LogIn from "../src/login";
 
-// Mock global de axios
-vi.mock("axios");
+
 const mockedAxios = axios as unknown as {
   post: ReturnType<typeof vi.fn>;
 };
+
 
 // Helper para renderizar con router
 function renderWithRouter(ui: React.ReactNode) {
