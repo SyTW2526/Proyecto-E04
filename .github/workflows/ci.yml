@@ -42,15 +42,19 @@ jobs:
         working-directory: server
         run: npm install
 
-   #   - name: Run backend tests
-   #     working-directory: server
-   #     run: npm test
+      - name: Run backend tests
+        working-directory: server
+        run: npm test
 
         #Frontend
 
       - name: Install frontend dependencies
         working-directory: client   
         run: npm install
+
+      - name: Install jsdom for Vitest
+        working-directory: client
+        run: npm install jsdom
     
 
       - name: Run frontend unit tests
