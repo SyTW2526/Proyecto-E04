@@ -32,12 +32,12 @@ const RecipeSchema = new Schema<RecipeInterface>({
     required: true,
   },
   ingredients: {
-    type: String, // Lista de ingredientes
+    type: [String], // Lista de ingredientes
     required: true,
     enum: [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'mantequilla', 'aceite', 'levadura', 'chocolate', 'vainilla', 'frutas', 'verduras', 'carne', 'pescado', 'especias' ],
   },
   tools: { // Lista de utensilios 
-    type: String,
+    type: [String],
     required: true,
     enum: [ 'cuchillo', 'tablaDeCortar', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
   },
@@ -47,7 +47,7 @@ const RecipeSchema = new Schema<RecipeInterface>({
     ref: 'User',
   },
   category: { // Categoría (tipo de plato o dieta)
-    type: String,
+    type: [String],
     required: true,
     enum: [
         'entrante',
