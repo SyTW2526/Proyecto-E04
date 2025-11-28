@@ -62,11 +62,6 @@ jobs:
    #     run: npm test
 
       # e2e tests (Cypress)
-      - name: Install Cypress and start-server-and-test
-        working-directory: client
-        run: |
-          npm install cypress --save-dev
-          npm install start-server-and-test --save-dev
 
       - name: Run Cypress E2E
         working-directory: client
