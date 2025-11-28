@@ -52,22 +52,28 @@ jobs:
         working-directory: client   
         run: npm install
 
-      - name: Install jsdom for Vitest
-        working-directory: client
-        run: npm install jsdom
+   #   - name: Install jsdom for Vitest
+   #     working-directory: client
+   #     run: npm install jsdom
     
 
-      - name: Run frontend unit tests
-        working-directory: client
-        run: npm test
+   #   - name: Run frontend unit tests
+   #     working-directory: client
+   #     run: npm test
 
       # e2e tests (playwright)
-   #   - name: Install Playwright dependencies
-   #     working-directory: e2e-tests
-   #     run: |
-   #         npm install
-   #         npx playwright install --with-deps
+      - name: Install Cypress
+        working-directory: client
+        run: npm install cypress --save-dev
 
-   #   - name: Run E2E tests
-   #     working-directory: e2e-tests
-   #     run: npm run test
+      - name: Start frontend server
+        working-directory: client
+        run: npm run dev &
+      
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:5173
+        working-directory: client
+
+      - name: Run Cypress tests
+        working-directory: client
+        run: npx cypress run
