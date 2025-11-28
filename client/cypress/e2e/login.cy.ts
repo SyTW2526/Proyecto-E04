@@ -1,16 +1,17 @@
 describe("Login Page E2E", () => {
 
   it("muestra el formulario", () => {
-    cy.visit("http://localhost:5173/login");
+    cy.visit("/login");
 
     cy.contains("Correo electrónico").should("exist");
     cy.contains("Contraseña").should("exist");
   });
 
   it("muestra error si el email no es válido", () => {
-    cy.visit("http://localhost:5173/login");
+    cy.visit("/login");
 
-    cy.get("input[name=email]").type("correoSinArroba.com");
+    // Seleccionamos solo el primer input con name=email
+    cy.get('input[name="email"]').first().type("correoSinArroba.com");
 
     cy.contains("Iniciar sesión").click();
 
@@ -18,9 +19,9 @@ describe("Login Page E2E", () => {
   });
 
   it("muestra error si la contraseña es corta", () => {
-    cy.visit("http://localhost:5173/login");
+    cy.visit("/login");
 
-    cy.get("input[name=password]").type("123");
+    cy.get('input[name="password"]').first().type("123");
 
     cy.contains("Iniciar sesión").click();
 
@@ -28,20 +29,20 @@ describe("Login Page E2E", () => {
   });
 
   it("login válido: envía credenciales correctamente", () => {
-    cy.visit("http://localhost:5173/login");
+    cy.visit("/login");
 
     // Interceptamos la llamada al backend
     cy.intercept(
       "POST",
-      "http://localhost:3000/users/login",
+      "/users/login",
       {
         statusCode: 200,
         body: { token: "mockToken123" }
       }
     ).as("loginRequest");
 
-    cy.get("input[name=email]").type("test@mail.com");
-    cy.get("input[name=password]").type("123456");
+    cy.get('input[name="email"]').first().type("test@mail.com");
+    cy.get('input[name="password"]').first().type("123456");
 
     cy.contains("Iniciar sesión").click();
 
