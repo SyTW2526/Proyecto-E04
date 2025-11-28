@@ -66,6 +66,10 @@ jobs:
         working-directory: client
         run: npm install cypress --save-dev
 
+      - name: Install wait-on
+        working-directory: client
+        run: npm install wait-on@7 --save-dev
+
       - name: Start frontend server
         working-directory: client
         run: npm run dev &
