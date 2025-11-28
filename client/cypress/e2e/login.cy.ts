@@ -31,7 +31,7 @@ describe("Login Page E2E", () => {
   it("login válido: envía credenciales correctamente", () => {
     cy.visit("/login");
 
-    // Interceptamos la llamada al backend
+    // Interceptamos la llamada al backend con ruta relativa
     cy.intercept(
       "POST",
       "/users/login",
@@ -54,7 +54,7 @@ describe("Login Page E2E", () => {
         password: "123456"
       });
 
-    // Opcional: validar redirección
+    // Opcional: validar redirección si tu app la hace
     // cy.url().should("include", "/home");
   });
 
