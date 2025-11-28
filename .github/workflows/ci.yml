@@ -61,23 +61,13 @@ jobs:
    #     working-directory: client
    #     run: npm test
 
-      # e2e tests (playwright)
-      - name: Install Cypress
+      # e2e tests (Cypress)
+      - name: Install Cypress and start-server-and-test
         working-directory: client
-        run: npm install cypress --save-dev
+        run: |
+          npm install cypress --save-dev
+          npm install start-server-and-test --save-dev
 
-      - name: Install wait-on
+      - name: Run Cypress E2E
         working-directory: client
-        run: npm install wait-on@7 --save-dev
-
-      - name: Start frontend server
-        working-directory: client
-        run: npm run dev &
-      
-      - name: Wait for frontend
-        run: npx wait-on http://localhost:5173
-        working-directory: client
-
-      - name: Run Cypress tests
-        working-directory: client
-        run: npx cypress run
+        run: npx start-server-and-test dev http://localhost:5173 cypress:run
