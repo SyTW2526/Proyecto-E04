@@ -5,7 +5,7 @@ import './index.css'
 import Home from './home.tsx';
 import LogIn from './login.tsx'
 import Recipe from './recipe.tsx'
-import CreateRecipe from './create_recipe';
+import CreateRecipe from './create_recipe.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

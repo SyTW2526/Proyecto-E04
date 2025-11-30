@@ -7,12 +7,16 @@ import { reviewRouter } from './routes/reviews_route.js';
 
 export const app = express();
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  methods: "GET,POST,PATCH,DELETE",
-  credentials: true
-}))
 app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
+  allowedHeaders: ['Content-Type','Authorization','Accept'],
+  optionsSuccessStatus: 204
+}));
+
 app.use(userRouter);
 app.use(recipeRouter);
 app.use(reviewRouter);
