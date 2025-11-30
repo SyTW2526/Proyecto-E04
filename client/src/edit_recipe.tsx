@@ -1,4 +1,3 @@
-import { Home, Search, User, LogOut} from "lucide-react";
 import React, { useState, useEffect } from 'react'; 
 // import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
@@ -6,6 +5,7 @@ import './create_recipe.css';
 import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
 import { useNavigate, useParams } from "react-router-dom";
+import Navigation from "./navigation";
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -82,7 +82,7 @@ function EditRecipe() {
 
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
-        axios.get('http://localhost:3000/recipes/' + id)
+        axios.get('http://10.6.129.124:3000/recipes/' + id)
         .then(response => {
             setReceta(response.data);
         })
@@ -112,7 +112,7 @@ function EditRecipe() {
                     onSubmit={async (values: RecipeFormState) => {
                         try {
                             console.log(values)
-                            const response = await axios.patch('http://localhost:3000/recipes/' + id, values);
+                            const response = await axios.patch('http://10.6.129.124:3000/recipes/' + id, values);
                             console.log(response)
                             
                             if (response.status === 200) {
@@ -300,24 +300,7 @@ function EditRecipe() {
                         </div>
                     </div>
                 </div>
-                <div className="ContenedorNavegacion">
-                    <button className="BotonNavegacion">
-                        <Home size={24}></Home>
-                        <span>Inicio</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <Search size={24}></Search>
-                        <span>Buscar</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <User size={24}></User>
-                        <span>Perfil</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <LogOut size={24}></LogOut>
-                        <span>Cerrar Sesión</span>
-                    </button>
-                </div>
+                <Navigation/>
             </div>
         </>
     )

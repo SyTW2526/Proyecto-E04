@@ -8,7 +8,7 @@ import { reviewRouter } from './routes/reviews_route.js';
 export const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://10.6.129.124:5173",
   methods: "GET,POST,PATCH,DELETE",
   credentials: true
 }))
