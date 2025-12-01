@@ -139,7 +139,15 @@ function Recipe() {
                                 </div>
                             )}
                             <div className="ImagenesReceta">
-                                <img src={receta!.images[0]} className="d-block w-100" alt="..."/>
+                                {receta.images.map((img) => (
+                                    <img src={`http://10.6.129.124:3000${img}`} alt="foto" />
+                                ))}
+
+                                {receta.videos?.map((video) => (
+                                    <video controls>
+                                        <source src={`http://10.6.129.124:3000${video}`} />
+                                    </video>
+                                ))}
                             </div>
                             <div>
                                 {!resenasEmpty && (

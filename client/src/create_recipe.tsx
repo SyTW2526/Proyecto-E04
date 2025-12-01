@@ -5,6 +5,7 @@ import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
 import { useNavigate } from "react-router-dom";
 import Navigation from "./navigation";
+import { useState } from 'react';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -67,6 +68,9 @@ function CreateRecipe() {
 
     const navigate = useNavigate();
 
+    const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+    const [videoFiles, setVideoFiles] = useState<FileList | null>(null);
+
     return (
         <>
             <div className="ContenedorGeneralReceta">
@@ -87,19 +91,47 @@ function CreateRecipe() {
                             const token = localStorage.getItem("token");
 
                             const user = await axios.get('http://10.6.129.124:3000/users/me', {
-                                headers: {
-                                    Authorization: `Bearer ${token}`
-                                }
+                                headers: { Authorization: `Bearer ${token}` }
                             });
-                            values.userId = user.data._id;
-                            console.log(user)
 
-                            const response = await axios.post('http://10.6.129.124:3000/recipes', values);
-                            console.log(response)
-                            
-                            if (response.status === 201) {
-                                navigate('/home');
+                            const formData = new FormData();
+
+                            // ---- Campos de texto ----
+                            formData.append("name", values.name);
+                            formData.append("steps", values.steps);
+                            formData.append("category", values.category);
+                            formData.append("userId", user.data._id);
+
+                            values.ingredients.forEach(i => formData.append("ingredients[]", i));
+                            values.tools.forEach(t => formData.append("tools[]", t));
+
+                            // ---- Archivos imagen ----
+                            if (imageFiles) {
+                                Array.from(imageFiles).forEach(file => {
+                                    formData.append("images", file);
+                                });
                             }
+
+                            // ---- Archivos video ----
+                            if (videoFiles) {
+                                Array.from(videoFiles).forEach(file => {
+                                    formData.append("videos", file);
+                                });
+                            }
+
+                            const response = await axios.post(
+                                "http://10.6.129.124:3000/recipes",
+                                formData,
+                                {
+                                    headers: {
+                                        "Content-Type": "multipart/form-data",
+                                        Authorization: `Bearer ${token}`
+                                    }
+                                }
+                            );
+
+                            if (response.status === 201) navigate('/home');
+
                         } catch (error) {
                             console.error(error);
                         }
@@ -119,7 +151,26 @@ function CreateRecipe() {
                                     <div className="IzquierdaReceta">
                                         <div className="ImagenesReceta">
                                             <label htmlFor="images">Imágenes:</label>
-                                            <input type="text" className="inputNombre" name="images" id="images" onChange={handleChange} value={values.images} onBlur={handleBlur}></input>
+                                            <input 
+                                                type="file" 
+                                                name="images" 
+                                                accept="image/*" 
+                                                multiple
+                                                onChange={(e) => {
+                                                    setImageFiles(e.target.files);
+                                                }}
+                                            />
+
+                                            <label htmlFor="images">Vídeos:</label>
+                                            <input 
+                                                type="file" 
+                                                name="videos" 
+                                                accept="video/*"
+                                                multiple
+                                                onChange={(e) => {
+                                                    setVideoFiles(e.target.files);
+                                                }}
+                                            />
                                         </div>
                                         <div className="CategoriaPublicacion">
                                             <h3>Categorías</h3>

@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import { Recipe } from '../items/recipe.js' 
 import { Review } from '../items/review.js';
+import { upload } from '../middleware/multer.js';
 
 /**
  * Router de recipe.
@@ -15,8 +16,33 @@ recipeRouter.use(express.json());
 /**
  * Manejador POST de /recipe. Permite almacenar el documento de una receta.
  */
-recipeRouter.post('/recipes', async (req, res) => {
-  const recipe = new Recipe(req.body);
+recipeRouter.post('/recipes', 
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "videos", maxCount: 5 }
+  ]), async (req, res) => {
+
+
+  if (!req.files || Array.isArray(req.files)) {
+    return res.status(400).send({ error: "Error al subir archivos" });
+  }
+
+  const imageFiles = req.files["images"] || [];
+  const videoFiles = req.files["videos"] || [];
+
+  const imagePaths = imageFiles.map(f => "~/uploads/images/" + f.filename);
+  const videoPaths = videoFiles.map(f => "~/uploads/videos/" + f.filename);
+
+  const recipe = new Recipe({
+    name: req.body.name,
+    steps: req.body.steps,
+    ingredients: req.body["ingredients[]"],
+    tools: req.body["tools[]"],
+    category: req.body.category,
+    userId: req.body.userId,
+    images: imagePaths,
+    videos: videoPaths
+  });
 
   try {
     await recipe.save();
