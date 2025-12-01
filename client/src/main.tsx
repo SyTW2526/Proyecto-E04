@@ -6,6 +6,7 @@ import Home from './home.tsx';
 import LogIn from './login.tsx'
 import Recipe from './recipe.tsx'
 import CreateRecipe from './create_recipe';
+import UserPage from './user.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/home" element={<Home />} />
           <Route path="/recipe/:id" element={<Recipe/>} />
           <Route path="/publish/post" element={<CreateRecipe/>}></Route>
+          <Route path="/user/:id" element={<UserPage/>}></Route>
         </Routes>
     </BrowserRouter>
   </StrictMode>,

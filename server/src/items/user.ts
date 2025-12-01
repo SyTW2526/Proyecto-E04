@@ -1,7 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Types, model, Schema } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-//import { RecipeInterface, Recipe } from './recipe.js';
 
 /**
  * Interfaz UserInterface.
@@ -13,7 +12,8 @@ export interface UserInterface {
   password: string;
   profilePic?: string;   // URL de la foto de perfil
   bio?: string;          // Descripción opcional
- 
+  followers: Types.ObjectId[];
+  following: Types.ObjectId[];   
   createdAt: Date;
 }
 
@@ -53,12 +53,25 @@ const UserSchema = new Schema<UserInterface>({
     type: String,
     maxlength: [200, 'La biografía no puede superar los 200 caracteres.']
   },
+  followers: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
+  following: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
   createdAt: {
     type: Date,
     default: Date.now
   }
 });
 
+// Virtual para contar seguidores
+UserSchema.virtual('followersCount').get(function ()
+{return this.followers.length; });
 /**
  * Middleware para hashear la contraseña antes de guardar el usuario.
  */

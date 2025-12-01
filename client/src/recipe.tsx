@@ -10,6 +10,7 @@ import * as yup from 'yup';
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
 
 interface Recipe {
+    _id: string;
     name: string;
     steps: string;
     ingredients: string[];

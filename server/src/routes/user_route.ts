@@ -208,7 +208,7 @@ userRouter.patch('/users/:id', async (req, res) => {
     });
   }
 
-  const allowedUpdates = ['username', 'email', 'password'];
+  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers'];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
