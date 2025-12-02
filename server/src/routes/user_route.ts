@@ -56,6 +56,42 @@ userRouter.post('/users', async (req, res) => {
   }
 });
 
+// Guardar receta
+userRouter.post("/:userId/save/:recipeId", async (req, res) => {
+  try {
+    const { userId, recipeId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    // Evitar duplicados
+    if (!user.savedRecipe.includes(recipeId)) {
+      user.savedRecipe.push(recipeId);
+      await user.save();
+    }
+
+    res.json({ message: "Receta guardada correctamente", savedRecipes: user.savedRecipe });
+  } catch (error) {
+    res.status(500).json({ error: "Error al guardar la receta" });
+  }
+});
+
+
+// Obtener recetas guardadas
+userRouter.get("/:userId/saved", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    res.json({ savedRecipes: user.savedRecipes });
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener recetas guardadas" });
+  }
+});
+ 
+
 /**
  * Manejador GET de /users. Permite obtener usuarios filtrando por username o email.
  */

@@ -1,0 +1,30 @@
+name: CI Proyecto-E04
+
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [main]
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+          name: Clonar repositorio
+        - uses: actions/checkout@v4
+
+        - name: Cvaronfigurar Node.js
+          uses: actions/setup-node@v4
+          with:
+              node-version: '18'
+
+        - name: Install dependencies
+          run: npm install
+
+        - name: Ejecutar test unitarios
+          run: npm run test
+
+        - name: Ejecutar test end-to-end
+          run: npm run test:e2e
+            

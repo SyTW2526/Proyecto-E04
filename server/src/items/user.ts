@@ -13,7 +13,8 @@ export interface UserInterface {
   profilePic?: string;   // URL de la foto de perfil
   bio?: string;          // Descripción opcional
   followers: Types.ObjectId[];
-  following: Types.ObjectId[];   
+  following: Types.ObjectId[];  
+  savedRecipe?: Types.ObjectId[]; // Referencias a recetas guardadas 
   createdAt: Date;
 }
 
@@ -63,6 +64,11 @@ const UserSchema = new Schema<UserInterface>({
     ref: 'User',
     default: []
   }],
+  savedRecipe: {
+    type: { type: [Schema.Types.ObjectId], default: [], ref: 'Recipe'}
+
+  }
+  ,
   createdAt: {
     type: Date,
     default: Date.now
