@@ -36,7 +36,7 @@ function LogIn() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async function signIn(signInData: any) {
         try {
-            const responseSignIn = await axios.post('http://10.6.129.124:3000/users/login', signInData);
+            const responseSignIn = await axios.post('http://localhost:3000/users/login', signInData);
             console.log(responseSignIn);
 
             if (responseSignIn.status === 200) {
@@ -110,7 +110,7 @@ function LogIn() {
                                 validationSchema={SignUpSchema}
                                 onSubmit={async (values: SignUpFormState) => {
                                     try {
-                                        const response = await axios.post('http://10.6.129.124:3000/users', values);
+                                        const response = await axios.post('http://localhost:3000/users', values);
                                         console.log(response);
 
                                         if (response.status === 201) {

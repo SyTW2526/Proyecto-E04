@@ -82,7 +82,7 @@ function EditRecipe() {
 
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
-        axios.get('http://10.6.129.124:3000/recipes/' + id)
+        axios.get('http://localhost:3000/recipes/' + id)
         .then(response => {
             setReceta(response.data);
         })
@@ -112,7 +112,7 @@ function EditRecipe() {
                     onSubmit={async (values: RecipeFormState) => {
                         try {
                             console.log(values)
-                            const response = await axios.patch('http://10.6.129.124:3000/recipes/' + id, values);
+                            const response = await axios.patch('http://localhost:3000/recipes/' + id, values);
                             console.log(response)
                             
                             if (response.status === 200) {

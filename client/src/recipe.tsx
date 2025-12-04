@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as yup from 'yup';
 import Navigation from "./navigation";
+import MediaCarousel from './MediaCarousel';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -17,7 +18,7 @@ interface Recipe {
     userId: {_id: string, username: string, profilePic:string}; 
     category: string; // Pasta, postre, carne, etc. 
     images: string[]; // URLs de imágenes o vídeos 
-    videos?: string[]; // URLs de vídeos 
+    videos: string[]; // URLs de vídeos 
     creacionDate: Date;
 }
 
@@ -51,7 +52,7 @@ function Recipe() {
 
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
-        axios.get('http://10.6.129.124:3000/recipes/' + id)
+        axios.get('http://localhost:3000/recipes/' + id)
         .then(response => {
             setReceta(response.data);
         })
@@ -62,7 +63,7 @@ function Recipe() {
 
     const [resenas, setResenas] = useState<Review[] | null>(null);
     useEffect(() => {
-        axios.get(`http://10.6.129.124:3000/reviews?recipeId=${id}`)
+        axios.get(`http://localhost:3000/reviews?recipeId=${id}`)
         .then(response => {
             setResenas(response.data);
         })
@@ -83,7 +84,7 @@ function Recipe() {
     useEffect(() => {
         const token = localStorage.getItem("token");
 
-        axios.get('http://10.6.129.124:3000/users/me', {
+        axios.get('http://localhost:3000/users/me', {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
@@ -125,7 +126,7 @@ function Recipe() {
                                     <button onClick={() => navigate('/recipe/' + id + '/edit')}>Editar</button>
                                     <button onClick={async () => {
                                             try {
-                                                const response = axios.delete('http://10.6.129.124:3000/recipes/' + id);
+                                                const response = axios.delete('http://localhost:3000/recipes/' + id);
                                                 console.log(response);
                                             } catch (error) {
                                                 console.error(error);
@@ -139,15 +140,7 @@ function Recipe() {
                                 </div>
                             )}
                             <div className="ImagenesReceta">
-                                {receta.images.map((img) => (
-                                    <img src={`http://10.6.129.124:3000${img}`} alt="foto" />
-                                ))}
-
-                                {receta.videos?.map((video) => (
-                                    <video controls>
-                                        <source src={`http://10.6.129.124:3000${video}`} />
-                                    </video>
-                                ))}
+                                <MediaCarousel media={[...receta.images, ...receta.videos]} />
                             </div>
                             <div>
                                 {!resenasEmpty && (
@@ -209,10 +202,10 @@ function Recipe() {
                                         values.recipeId = id as unknown as string;
                                         console.log(values);
 
-                                        const response = axios.post('http://10.6.129.124:3000/reviews', values);
+                                        const response = axios.post('http://localhost:3000/reviews', values);
                                         console.log(response);
 
-                                        const resp = await axios.get(`http://10.6.129.124:3000/reviews?recipeId=${id}`);
+                                        const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
                                         setResenas(resp.data);
                                     } catch (error) {
                                         setReviewError('Error inesperado');
@@ -269,9 +262,9 @@ function Recipe() {
                                         validationSchema={ReviewSchema}
                                         onSubmit={async (values) => {
                                             try {
-                                                await axios.patch(`http://10.6.129.124:3000/reviews/${resena._id}`, values);
+                                                await axios.patch(`http://localhost:3000/reviews/${resena._id}`, values);
 
-                                                const resp = await axios.get(`http://10.6.129.124:3000/reviews?recipeId=${id}`);
+                                                const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
                                                 setResenas(resp.data);
 
                                                 setResenaEditando(null);
@@ -340,10 +333,10 @@ function Recipe() {
                                                     onClick={async () => {
                                                         try {
                                                             await axios.delete(
-                                                                'http://10.6.129.124:3000/reviews/' + resena._id
+                                                                'http://localhost:3000/reviews/' + resena._id
                                                             );
                                                             const resp = await axios.get(
-                                                                `http://10.6.129.124:3000/reviews?recipeId=${id}`
+                                                                `http://localhost:3000/reviews?recipeId=${id}`
                                                             );
                                                             setResenas(resp.data);
                                                         } catch (error) {

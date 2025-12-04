@@ -90,7 +90,7 @@ function CreateRecipe() {
                         try {
                             const token = localStorage.getItem("token");
 
-                            const user = await axios.get('http://10.6.129.124:3000/users/me', {
+                            const user = await axios.get('http://localhost:3000/users/me', {
                                 headers: { Authorization: `Bearer ${token}` }
                             });
 
@@ -102,8 +102,8 @@ function CreateRecipe() {
                             formData.append("category", values.category);
                             formData.append("userId", user.data._id);
 
-                            values.ingredients.forEach(i => formData.append("ingredients[]", i));
-                            values.tools.forEach(t => formData.append("tools[]", t));
+                            values.ingredients.forEach(i => formData.append("ingredients", i));
+                            values.tools.forEach(t => formData.append("tools", t));
 
                             // ---- Archivos imagen ----
                             if (imageFiles) {
@@ -119,8 +119,10 @@ function CreateRecipe() {
                                 });
                             }
 
+                            console.log(imageFiles);
+
                             const response = await axios.post(
-                                "http://10.6.129.124:3000/recipes",
+                                "http://localhost:3000/recipes/files",
                                 formData,
                                 {
                                     headers: {
@@ -129,6 +131,8 @@ function CreateRecipe() {
                                     }
                                 }
                             );
+
+                            console.log(response);
 
                             if (response.status === 201) navigate('/home');
 

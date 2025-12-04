@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -9,6 +10,11 @@ const storage = multer.diskStorage({
       folder += "images/";
     } else if (file.mimetype.startsWith("video/")) {
       folder += "videos/";
+    }
+
+    // Crear carpeta si no existe
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
     }
 
     cb(null, folder);
