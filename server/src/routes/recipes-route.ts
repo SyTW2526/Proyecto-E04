@@ -4,6 +4,8 @@ import { Recipe } from '../items/recipe.js'
 import { Review } from '../items/review.js';
 import { upload } from '../middleware/multer.js';
 import { deleteFileIfExists } from '../utils/deleteUpload.js';
+import { User } from '../items/user.js'; 
+import { auth, AuthRequest } from '../middleware/auth.js';
 
 /**
  * Router de recipe.
@@ -72,46 +74,84 @@ recipeRouter.post('/recipes/files',
 /**
  * Manejador GET de /recipe. Permite obtener la información de una serie de recetas por cualquiera de sus campos recibidos como query string.
  */
-recipeRouter.get('/recipes', async (req, res) => {
+recipeRouter.get('/recipes', auth, async (req, res) => {
   const { name, steps, category, userId, tools, ingredientName, creacionDate } = req.query;
 
+  const authenticatedRequest = req as AuthRequest;
+  const searchTerms: string[] = [];
+
   const filter: any = {};
-  if (name) filter.name = { $regex: new RegExp(name as string, 'i') };
+  if (name) {
+    filter.name = { $regex: new RegExp(name as string, 'i') };
+    searchTerms.push(`Nombre: ${name}`);
+  }
+
   if (steps) filter.steps = { $regex: new RegExp(steps as string, 'i') };
-  if (category) filter.category = category;
+
+  if (typeof category === 'string' && category.trim() !== '') {
+    const categoriesArray = category.split(',').map(c => c.trim()).filter(c => c !== '');
+    if (categoriesArray.length > 0) {
+      filter.category = { $all: categoriesArray };
+      searchTerms.push(`Categoría: ${categoriesArray.join(' y ')}`);
+    }
+  }
+    
   if (userId) {
     if (mongoose.Types.ObjectId.isValid(userId as string)) {
       filter.userId = userId;
+      searchTerms.push(`ID Usuario: ${userId}`);
     } else {
       return res.status(400).send({ error: 'ID de usuario no válido.' });
     }
   }
-  if (tools) filter.tools = tools;
-  if (ingredientName) {
-    filter.ingredients = { $in: [new RegExp(ingredientName as string, 'i')] };
+    
+  if (typeof tools === 'string' && tools.trim() !== '') {
+    const toolsArray = tools.split(',').map(t => t.trim()).filter(t => t !== '');
+    if (toolsArray.length > 0) {
+      filter.tools = { $all: toolsArray }; 
+      searchTerms.push(`Utensilios: ${toolsArray.join(' y ')}`);
+    }
   }
 
-	if (creacionDate) {
-		const date = new Date(creacionDate as string);
-		if (!isNaN(date.getTime())) {
-			const nextDate = new Date(date);
-			nextDate.setDate(nextDate.getDate() + 1);
-			filter.creacionDate = { $gte: date, $lt: nextDate };
-		} else {
-			return res.status(400).send({ error: 'Fecha de creación no válida.' });
-		}
+  if (typeof ingredientName === 'string' && ingredientName.trim() !== '') {
+    const ingredientArray = ingredientName.split(',').map(i => i.trim()).filter(i => i !== '');
+    if (ingredientArray.length > 0) {
+      filter.ingredients = { $all: ingredientArray.map(i => new RegExp(i, 'i')) };
+      searchTerms.push(`Ingredientes: ${ingredientArray.join(' y ')}`);
+    }
   }
 
+  if (creacionDate) {
+    const date = new Date(creacionDate as string);
+    if (!isNaN(date.getTime())) {
+      const nextDate = new Date(date);
+      nextDate.setDate(nextDate.getDate() + 1);
+      filter.creacionDate = { $gte: date, $lt: nextDate };
+    } else {
+      return res.status(400).send({ error: 'Fecha de creación no válida.' });
+    }
+  }
   try {
     const recipes = await Recipe.find(filter).populate({path: 'userId', select: ['username', 'profilePic']});
 
     if (recipes.length > 0) {
       res.status(200).send(recipes);
+      const searchString = searchTerms.join(' | ');
+      if (authenticatedRequest.user && searchString) {
+        const user = await User.findById(authenticatedRequest.user._id);
+        if (user) {
+          const newSearches = user.recentSearches.filter(s => s !== searchString); 
+          newSearches.unshift(searchString);
+          user.recentSearches = newSearches.slice(0, 5);
+          user.save().catch(err => console.error('Error al guardar búsquedas recientes:', err));
+        }
+      }
     } else {
       res.status(404).send({ error: 'Receta no encontrada.' });
     }
   } catch (err) {
-    res.status(500).send(err);
+    console.error('Error en la búsqueda de recetas:', err); 
+    res.status(500).send({ error: 'Error interno del servidor al procesar la búsqueda.'});
   }
 });
 

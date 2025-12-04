@@ -9,6 +9,8 @@ import CreateRecipe from './create_recipe';
 import EditRecipe from './edit_recipe.tsx';
 import Search from './search.tsx';
 import User from './user.tsx';
+import CreateRecipe from './create_recipe.tsx';
+import Filtered from './filtered main page.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -22,6 +24,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/publish/post" element={<CreateRecipe/>}/>
           <Route path="/search" element={<Search/>}/>
           <Route path="/user/me" element={<User/>}/>
+          <Route path="/filtered" element={<Filtered />} />
+          <Route path="/publish/post" element={<CreateRecipe/>}></Route>
         </Routes>
     </BrowserRouter>
   </StrictMode>,

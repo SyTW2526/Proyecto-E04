@@ -1,0 +1,93 @@
+@hostname = localhost
+@port = 3000
+@host = http://{{hostname}}:{{port}}
+
+###
+# POST Receta 1: Pastel de Chocolate Clásico
+# Nota: Reemplaza 'ID_DE_USUARIO_EXISTENTE_1' con un ObjectId válido de un usuario en tu base de datos.
+POST {{host}}/recipes
+Content-Type: application/json
+
+{
+  "name": "Pastel de Chocolate Clásico",
+  "steps": "Mezclar ingredientes secos, añadir húmedos, hornear a 180°C durante 30 minutos.",
+  "ingredients": [
+    "harina",
+    "azucar",
+    "huevo",
+    "leche",
+    "mantequilla",
+    "chocolate",
+    "levadura"
+  ],
+  "tools": [
+    "batidora",
+    "horno"
+  ],
+  "userId": "69065e6b91672c0180e101ce", 
+  "category": [
+    "postre",
+    "panadería"
+  ],
+  "images": [
+    "https://example.com/imagen_pastel_chocolate.jpg"
+  ]
+}
+
+###
+# POST Receta 2: Pollo al Curry Rápido
+# Nota: Reemplaza 'ID_DE_USUARIO_EXISTENTE_2' con otro ObjectId válido de un usuario.
+POST {{host}}/recipes
+Content-Type: application/json
+
+{
+  "name": "Pollo al Curry Rápido",
+  "steps": "Cortar el pollo, freír con especias, añadir verduras y leche de coco, cocinar a fuego lento.",
+  "ingredients": [
+    "carne",
+    "verduras",
+    "aceite",
+    "especias"
+  ],
+  "tools": [
+    "cuchillo",
+    "tabla de cortar",
+    "sartén"
+  ],
+  "userId": "69065e6b91672c0180e101ce",
+  "category": [
+    "plato principal",
+    "pollo"
+  ],
+  "images": []
+}
+
+###
+# POST Receta 3: Ensalada Vegana con Garbanzos
+# Nota: Reemplaza 'ID_DE_USUARIO_EXISTENTE_3' con un tercer ObjectId válido.
+POST {{host}}/recipes
+Content-Type: application/json
+
+{
+  "name": "Ensalada Vegana con Garbanzos",
+  "steps": "Mezclar verduras frescas, garbanzos cocidos y un aderezo de aceite y vinagre.",
+  "ingredients": [
+    "verduras",
+    "aceite",
+    "sal"
+  ],
+  "tools": [
+    "tabla de cortar",
+    "cuchillo",
+    "colador"
+  ],
+  "userId": "69065e6b91672c0180e101ce",
+  "category": [
+    "entrante",
+    "vegetariano",
+    "vegano"
+  ],
+  "images": [
+    "https://example.com/imagen_ensalada_vegana.jpg"
+  ]
+}

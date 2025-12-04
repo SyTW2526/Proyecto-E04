@@ -13,7 +13,7 @@ export interface UserInterface {
   password: string;
   profilePic?: string;   // URL de la foto de perfil
   bio?: string;          // Descripción opcional
- 
+  recentSearches: string[];
   createdAt: Date;
 }
 
@@ -52,6 +52,10 @@ const UserSchema = new Schema<UserInterface>({
   bio: {
     type: String,
     maxlength: [200, 'La biografía no puede superar los 200 caracteres.']
+  },
+  recentSearches: {
+    type: [String], 
+    default: [], 
   },
   createdAt: {
     type: Date,
