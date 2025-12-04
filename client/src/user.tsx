@@ -6,7 +6,6 @@ import axios from "axios";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import Recipe from "./recipe";
-import PostCard from "./postcard";
 
 export interface UserInterface {
   _id: string;
@@ -142,19 +141,7 @@ function UserPage() {
         <h2>Recetas</h2>
         {/* Aquí puedes mapear los posts del usuario si los tienes */}
         <div className="posts-grid">
-          {posts.map(post => (
-            <PostCard 
-              key={post._id}
-              title={post.name}
-              imageSrc={post.images}
-              rating={3}
-              comments={1}
-              userProfilePic={post.userId.profilePic}
-              userName={post.userId.username}
-              type={"image"}
-              category={post.category} 
-            />
-          ))}
+          
         </div>
       </main>
 
