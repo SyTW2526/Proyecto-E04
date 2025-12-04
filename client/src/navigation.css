@@ -1,0 +1,45 @@
+.sidebar-navigation {
+    width: 100%;
+    padding-top: 10px;
+}
+
+.boton-panel {
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start;
+    gap: 10px;
+    background: none;
+    border: none;
+    color: #3b2b2b;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    padding: 12px 15px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.boton-panel:hover {
+    background-color: #f0f0f0;
+}
+
+.boton-panel.active {
+    background-color: #f5e4c8; 
+    color: #5d4037;
+    font-weight: bold;
+}
+
+.linea {
+    width: 80%;
+    border-bottom: 1px solid #e0cfa8;
+    margin: 15px auto;
+}
+
+.logout {
+    margin-top: auto;
+    color: #a33;
+}
+.logout:hover {
+    color: #e00;
+}

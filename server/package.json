@@ -29,6 +29,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/lodash": "^4.17.16",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.13.11",
     "@types/request": "^2.48.12",
     "@types/supertest": "^6.0.3",

@@ -2,6 +2,8 @@ import express from 'express'
 import mongoose from 'mongoose';
 import { Recipe } from '../items/recipe.js' 
 import { Review } from '../items/review.js';
+import { upload } from '../middleware/multer.js';
+import { deleteFileIfExists } from '../utils/deleteUpload.js';
 import { User } from '../items/user.js'; 
 import { auth, AuthRequest } from '../middleware/auth.js';
 
@@ -15,10 +17,51 @@ const port = process.env.PORT || 3000
 recipeRouter.use(express.json());
 
 /**
- * Manejador POST de /recipe. Permite almacenar el documento de una receta.
+ * Manejador POST de /recipes. Permite almacenar el documento de una receta.
  */
 recipeRouter.post('/recipes', async (req, res) => {
   const recipe = new Recipe(req.body);
+
+  try {
+    await recipe.save();
+    res.status(201).send(recipe);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+}); 
+
+/**
+ * Manejador POST de /recipes. Permite almacenar el documento de una receta.
+ */
+recipeRouter.post('/recipes/files', 
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "videos", maxCount: 5 }
+  ]), async (req, res) => {
+
+
+  if (!req.files) {
+    return res.status(400).send({ error: "Error al subir archivos" });
+  }
+
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+  const imageFiles = files["images"] || [];
+  const videoFiles = files["videos"] || [];
+
+  const imagePaths = imageFiles.map(f => "uploads/images/" + f.filename);
+  const videoPaths = videoFiles.map(f => "uploads/videos/" + f.filename);
+
+  const recipe = new Recipe({
+    name: req.body.name,
+    steps: req.body.steps,
+    ingredients: req.body["ingredients"],
+    tools: req.body["tools"],
+    category: req.body.category,
+    userId: req.body.userId,
+    images: imagePaths,
+    videos: videoPaths
+  });
 
   try {
     await recipe.save();
@@ -249,6 +292,9 @@ recipeRouter.delete('/recipes', async (req, res) => {
       return res.status(404).send({ error: 'Receta no encontrada con el filtro proporcionado.' });
     } else {
       const result = await Review.deleteMany({ userId: recipe._id})
+
+      recipe.images.forEach((p: string) => deleteFileIfExists(p));
+      recipe.videos?.forEach((p: string) => deleteFileIfExists(p));
       
       if (!result.acknowledged) {
         res.status(500).send();
@@ -273,6 +319,9 @@ recipeRouter.delete('/recipes/:id', async (req, res) => {
       res.status(404).send();
     } else {
       const result = await Review.deleteMany({ userId: recipe._id})
+
+      recipe.images.forEach((p: string) => deleteFileIfExists(p));
+      recipe.videos?.forEach((p: string) => deleteFileIfExists(p));
       
       if (!result.acknowledged) {
         res.status(500).send();
