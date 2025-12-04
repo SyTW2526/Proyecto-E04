@@ -2,10 +2,35 @@ import { Home, Search, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import './navigation.css';
 import axios from "axios";
+import { useEffect, useState } from "react";
+
+export interface UserInterface {
+  _id: string;
+  username: string;
+  email: string;
+  password: string;
+  profilePic: string;   // URL de la foto de perfil
+  bio: string;          // Descripción opcional
+  followers: string[];
+  following: string[];   
+  createdAt: Date;
+}
 
 
 function Navigation() {
     const navigate = useNavigate();
+
+    const [me, setMe] = useState<UserInterface | null>(null);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        axios.get('http://localhost:3000/users/me', {
+        headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => setMe(response.data))
+        .catch(console.error);
+    }, []);
+
+    if (!me) return <></>;
 
     return (
         <>
@@ -21,7 +46,7 @@ function Navigation() {
                     <span>Search</span>
                 </button>
 
-                <button className="boton-panel" onClick={() => navigate('/user/me')}>
+                <button className="boton-panel" onClick={() => navigate('/user/' + me._id)}>
                     <User size={24} />
                     <span>Account</span>
                 </button>

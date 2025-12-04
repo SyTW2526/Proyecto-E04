@@ -1,4 +1,3 @@
-import { Home, Search, User, LogOut } from "lucide-react";
 import "./user.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import axios from "axios";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import Recipe from "./recipe";
+import Navigation from "./navigation";
 
 export interface UserInterface {
   _id: string;
@@ -146,11 +146,7 @@ function UserPage() {
       </main>
 
       <aside className="panel-derecho">
-        <button className="boton-panel"><Home size={24} /><span>Home</span></button>
-        <button className="boton-panel"><Search size={24} /><span>Search</span></button>
-        <button className="boton-panel"><User size={24} /><span>Account</span></button>
-        <div className="linea" />
-        <button className="boton-panel logout"><LogOut size={24} /><span>Logout</span></button>
+        <Navigation />
       </aside>
     </div>
   );
