@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { ChangeEvent } from "react";
-import { Home, Search, User, LogOut, Plus, Clock, ChevronDown, ChevronUp, X } from "lucide-react"; 
+import { Search, User, Plus, Clock, ChevronDown, ChevronUp, X } from "lucide-react"; 
 import './filtered_main_page.css'
+import Navigation from "./navigation";
 
 const FilterKey = {
   INGREDIENTS: 'ingredients',
@@ -540,28 +541,8 @@ const toggleAdvancedSearch = (): void => {
       </div>
 
       <div className="sidebar-navigation">
-        <button className="boton-panel">
-          <Home size={24} />
-          <span>Home</span>
-        </button>
-
-        <button className="boton-panel active">
-          <Search size={24} />
-          <span>Search</span>
-        </button>
-
-        <button className="boton-panel">
-          <User size={24} />
-          <span>Account</span>
-        </button>
-
-        <div className="linea" />
-          <button className="boton-panel logout">
-            <LogOut size={24} />
-            <span>Logout</span>
-          </button>
-          <div className="layout-link">Layout</div>
-        </div>
+        <Navigation />
+      </div>
       </aside>
     </div>
   </>

@@ -1,6 +1,6 @@
-import { Home, Search, User, LogOut, MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
+import { Search, MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
 import "./main_page.css"; 
-import { Link } from "react-router-dom";
+import Navigation from "./navigation";
 
 /**
  * Definición de la interfaz ContentCardProps
@@ -19,9 +19,13 @@ interface ContentCardProps {
 }
 
 // Componente PostCard 
+// eslint-disable-next-line react-refresh/only-export-components
 const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfilePic, userName, categories }: ContentCardProps) => {
   const displayImage = Array.isArray(imageSrc) ? imageSrc[0] : imageSrc;
   const isVideo = (imageSrc as string).includes('youtube') || (imageSrc as string).includes('video'); 
+  const getToken = (): string | null => localStorage.getItem('token');
+  const token = getToken();
+  if (!token) return;
 
   return (
     <div className="tarjeta post-card">
@@ -228,28 +232,7 @@ function Main_page() {
         </div>
 
         <div className="sidebar-navigation">
-          {/* Elementos de Navegación de la barra lateral */}
-          <button className="boton-panel active">
-            <Home size={24} />
-          <span>Home</span>
-          </button>
-
-          <Link to="/filtered" className="boton-panel" aria-label="Navegar a la página de búsqueda filtrada">
-            <Search size={24} />
-            <span>Search</span>
-          </Link>
-
-          <button className="boton-panel">
-            <User size={24} />
-          <span>Account</span>
-          </button>
-
-          <div className="linea" />
-
-          <button className="boton-panel logout">
-            <LogOut size={24} />
-            <span>Logout</span>
-          </button>
+          <Navigation />
           <div className="layout-link">Layout</div>
         </div>
       </aside>
