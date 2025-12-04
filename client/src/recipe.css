@@ -104,6 +104,11 @@
     margin:10px;
 }
 
+.ImagenesReceta div {
+    width:90%;
+    margin:10px;
+}
+
 .CategoriasReceta {
     width:95%;
 }
@@ -131,6 +136,9 @@
 .TextoReceta {
     width:95%;
     margin-top:50px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap; 
 }
 
 .ReseñasReceta {

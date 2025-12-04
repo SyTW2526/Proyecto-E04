@@ -1,13 +1,6 @@
-function Home() {
-    return (
-        <>
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Inicio / RecipeVault</title>
-            </head>
-        </>
-    )
-}
+import React from "react";
+import Main_page from "./main_page.tsx";
+
+const Home: React.FC = () => <Main_page />;
 
 export default Home;

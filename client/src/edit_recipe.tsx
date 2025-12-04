@@ -1,21 +1,32 @@
+import React, { useState, useEffect } from 'react'; 
 // import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './create_recipe.css';
 import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "./navigation";
-import { useState } from 'react';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
+
+interface Recipe {
+    name: string;
+    steps: string;
+    ingredients: string[];
+    tools: string[];
+    userId: {_id: string, username: string, profilePic:string}; 
+    category: string; // Pasta, postre, carne, etc. 
+    images: string[]; // URLs de imágenes o vídeos 
+    videos?: string[]; // URLs de vídeos 
+    creacionDate: Date;
+}
 
 interface RecipeFormState {
     name: string;
     steps: string;
     ingredients: string[];
     tools: string[];
-    userId: string; 
     category: string; // Pasta, postre, carne, etc. 
     images?: string[]; // URLs de imágenes o vídeos 
     videos?: string[]; // URLs de vídeos 
@@ -59,83 +70,54 @@ const RecipeSchema = yup.object().shape({
     ingredients: yup.array().of(yup.string().required()).min(1, 'La receta tiene que tener al menos un ingrediente'),
     tools: yup.array().of(yup.string().required()).min(1, 'La receta tiene que utilizar al menos un utensilio'),
     category: yup.string().required('La receta debe pertenecer a una categoría'),
-    userId: yup.string(),
     images: yup.array().of(yup.string()),
     videos: yup.array().of(yup.string())
 });
 
-function CreateRecipe() {
+function EditRecipe() {
 
     const navigate = useNavigate();
 
-    const [imageFiles, setImageFiles] = useState<FileList | null>(null);
-    const [videoFiles, setVideoFiles] = useState<FileList | null>(null);
+    const { id } = useParams();
+
+    const [receta, setReceta] = useState<Recipe | null>(null);
+    useEffect(() => {
+        axios.get('http://localhost:3000/recipes/' + id)
+        .then(response => {
+            setReceta(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [id]);
+
+    if (!receta) return <div></div>;
+
+    const recetaLimpia = {
+        name: receta.name,
+        steps: receta.steps,
+        ingredients: [...receta.ingredients],
+        tools: [...receta.tools],
+        category: receta.category,
+        images: receta.images ? [...receta.images] : [],
+        videos: receta.videos ? [...receta.videos] : []
+    };
 
     return (
         <>
             <div className="ContenedorGeneralReceta">
                 <Formik
-                    initialValues = {{
-                        name: '',
-                        steps: '',
-                        ingredients: [''],
-                        tools: [''],
-                        category: '',
-                        userId: '',
-                        images: [''],
-                        videos: ['']
-                    }}
+                    initialValues = {recetaLimpia}
                     validationSchema={RecipeSchema}
                     onSubmit={async (values: RecipeFormState) => {
                         try {
-                            const token = localStorage.getItem("token");
-
-                            const user = await axios.get('http://localhost:3000/users/me', {
-                                headers: { Authorization: `Bearer ${token}` }
-                            });
-
-                            const formData = new FormData();
-
-                            // ---- Campos de texto ----
-                            formData.append("name", values.name);
-                            formData.append("steps", values.steps);
-                            formData.append("category", values.category);
-                            formData.append("userId", user.data._id);
-
-                            values.ingredients.forEach(i => formData.append("ingredients", i));
-                            values.tools.forEach(t => formData.append("tools", t));
-
-                            // ---- Archivos imagen ----
-                            if (imageFiles) {
-                                Array.from(imageFiles).forEach(file => {
-                                    formData.append("images", file);
-                                });
+                            console.log(values)
+                            const response = await axios.patch('http://localhost:3000/recipes/' + id, values);
+                            console.log(response)
+                            
+                            if (response.status === 200) {
+                                navigate('/recipe/' + id);
                             }
-
-                            // ---- Archivos video ----
-                            if (videoFiles) {
-                                Array.from(videoFiles).forEach(file => {
-                                    formData.append("videos", file);
-                                });
-                            }
-
-                            console.log(imageFiles);
-
-                            const response = await axios.post(
-                                "http://localhost:3000/recipes/files",
-                                formData,
-                                {
-                                    headers: {
-                                        "Content-Type": "multipart/form-data",
-                                        Authorization: `Bearer ${token}`
-                                    }
-                                }
-                            );
-
-                            console.log(response);
-
-                            if (response.status === 201) navigate('/home');
-
                         } catch (error) {
                             console.error(error);
                         }
@@ -155,26 +137,7 @@ function CreateRecipe() {
                                     <div className="IzquierdaReceta">
                                         <div className="ImagenesReceta">
                                             <label htmlFor="images">Imágenes:</label>
-                                            <input 
-                                                type="file" 
-                                                name="images" 
-                                                accept="image/*" 
-                                                multiple
-                                                onChange={(e) => {
-                                                    setImageFiles(e.target.files);
-                                                }}
-                                            />
-
-                                            <label htmlFor="images">Vídeos:</label>
-                                            <input 
-                                                type="file" 
-                                                name="videos" 
-                                                accept="video/*"
-                                                multiple
-                                                onChange={(e) => {
-                                                    setVideoFiles(e.target.files);
-                                                }}
-                                            />
+                                            <input type="text" className="inputNombre" name="images" id="images" onChange={handleChange} value={values.images} onBlur={handleBlur}></input>
                                         </div>
                                         <div className="CategoriaPublicacion">
                                             <h3>Categorías</h3>
@@ -343,4 +306,4 @@ function CreateRecipe() {
     )
 }
 
-export default CreateRecipe;
+export default EditRecipe;

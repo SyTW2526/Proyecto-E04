@@ -15,8 +15,6 @@ export const userRouter = express.Router();
 
 const port = process.env.PORT || 3000;
 
-userRouter.use(express.json());
-
 const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
 
 /**

@@ -39,7 +39,7 @@ const RecipeSchema = new Schema<RecipeInterface>({
   tools: { // Lista de utensilios 
     type: [String],
     required: true,
-    enum: [ 'cuchillo', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
+    enum: [ 'cuchillo', 'tablaDeCortar', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador' ],
   },
   userId: { 
     type: Schema.Types.ObjectId,

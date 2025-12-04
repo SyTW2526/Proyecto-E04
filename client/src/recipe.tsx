@@ -1,10 +1,11 @@
-import { Home, Search, User, LogOut } from "lucide-react";
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './recipe.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as yup from 'yup';
+import Navigation from "./navigation";
+import MediaCarousel from './MediaCarousel';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -18,11 +19,12 @@ interface Recipe {
     userId: {_id: string, username: string, profilePic:string}; 
     category: string; // Pasta, postre, carne, etc. 
     images: string[]; // URLs de imágenes o vídeos 
-    videos?: string[]; // URLs de vídeos 
+    videos: string[]; // URLs de vídeos 
     creacionDate: Date;
 }
 
 interface Review {
+    _id: string;
     userId: {_id: string, username: string, profilePic:string};
     recipeId: string;
     rating: number;
@@ -47,6 +49,8 @@ const ReviewSchema = yup.object().shape({
 function Recipe() {
     const { id } = useParams();
 
+    const navigate = useNavigate();
+
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
         axios.get('http://localhost:3000/recipes/' + id)
@@ -65,12 +69,17 @@ function Recipe() {
             setResenas(response.data);
         })
         .catch(error => {
-            console.error(error);
+            if (error.status === 404) {
+                setResenas([]);
+            } else {
+                console.error(error);
+            }
         })
     });
 
     const [mostrarFormularioResena, setMostrarFormularioResena] = useState(false);
     const [reviewError, setReviewError] = useState('');
+    const [resenaEditando, setResenaEditando] = useState<string | null>(null);
 
     const [user, setUser] = useState<{ _id: string } | null>(null);
     useEffect(() => {
@@ -94,6 +103,11 @@ function Recipe() {
     );
 
     const userIsOwner = (user._id === receta.userId._id) ? true : false;
+    const resenasEmpty = (resenas.length === 0) ? true : false;
+
+    const isResenaOwner = (resena: Review): boolean => {
+        return user._id === resena.userId._id
+    }
 
     return (
         <>
@@ -108,11 +122,31 @@ function Recipe() {
                                 <img src={receta!.userId.profilePic}></img>
                                 <p>{receta!.userId.username}</p>
                             </div>
+                            {userIsOwner && (
+                                <div>
+                                    <button onClick={() => navigate('/recipe/' + id + '/edit')}>Editar</button>
+                                    <button onClick={async () => {
+                                            try {
+                                                const response = axios.delete('http://localhost:3000/recipes/' + id);
+                                                console.log(response);
+                                            } catch (error) {
+                                                console.error(error);
+                                            }
+
+                                            navigate('/home')}
+                                        }
+                                    >
+                                        Borrar
+                                    </button>
+                                </div>
+                            )}
                             <div className="ImagenesReceta">
-                                <img src={receta!.images[0]} className="d-block w-100" alt="..."/>
+                                <MediaCarousel media={[...receta.images, ...receta.videos]} />
                             </div>
                             <div>
-                                <p>V: {resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p>
+                                {!resenasEmpty && (
+                                    <p>V: {resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p>
+                                )}
                             </div>
                             <div className="CategoriasReceta">
                                 <h3>Categorías</h3>
@@ -218,15 +252,105 @@ function Recipe() {
                         )}
                         </div>
                         {resenas.map((resena) => (
-                            <div className="contenedorResena">
-                                <div className="UsuarioResena">
-                                    <img src={resena.userId.profilePic}></img>
-                                    <p>{resena.userId.username}</p>
-                                </div>
-                                <div className="informacionResena">
-                                    <p>V: {resena.rating}</p>
-                                    <p className="textoResena">{resena.text}</p>
-                                </div>
+                            <div className="contenedorResena" key={resena._id}>
+                                {resenaEditando === resena._id ? (
+                                    
+                                    <Formik
+                                        initialValues={{
+                                            rating: resena.rating,
+                                            text: resena.text || ''
+                                        }}
+                                        validationSchema={ReviewSchema}
+                                        onSubmit={async (values) => {
+                                            try {
+                                                await axios.patch(`http://localhost:3000/reviews/${resena._id}`, values);
+
+                                                const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                                setResenas(resp.data);
+
+                                                setResenaEditando(null);
+                                            } catch (error) {
+                                                console.error(error);
+                                            }
+                                        }}
+                                    >
+                                        {({ values, handleChange, handleBlur, errors, touched }) => (
+                                            <Form className="formularioEditResena">
+
+                                                <label htmlFor="rating">Valoración:</label>
+                                                <select
+                                                    id="rating"
+                                                    name="rating"
+                                                    value={values.rating}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                >
+                                                    <option value={1}>1</option>
+                                                    <option value={2}>2</option>
+                                                    <option value={3}>3</option>
+                                                    <option value={4}>4</option>
+                                                    <option value={5}>5</option>
+                                                </select>
+
+                                                {touched.rating && errors.rating && <p>{errors.rating}</p>}
+
+                                                <label htmlFor="text">Comentario:</label>
+                                                <textarea
+                                                    id="text"
+                                                    name="text"
+                                                    value={values.text}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                />
+
+                                                {touched.text && errors.text && <p>{errors.text}</p>}
+
+                                                <button type="submit">Guardar cambios</button>
+                                                <button type="button" onClick={() => setResenaEditando(null)}>
+                                                    Cancelar
+                                                </button>
+
+                                            </Form>
+                                        )}
+                                    </Formik>
+
+                                ) : (
+                                    <>
+                                        <div className="UsuarioResena">
+                                            <img src={resena.userId.profilePic} />
+                                            <p>{resena.userId.username}</p>
+                                        </div>
+                                        <div className="informacionResena">
+                                            <p>V: {resena.rating}</p>
+                                            <p className="textoResena">{resena.text}</p>
+                                        </div>
+
+                                        {isResenaOwner(resena) && (
+                                            <div>
+                                                <button onClick={() => setResenaEditando(resena._id)}>
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        try {
+                                                            await axios.delete(
+                                                                'http://localhost:3000/reviews/' + resena._id
+                                                            );
+                                                            const resp = await axios.get(
+                                                                `http://localhost:3000/reviews?recipeId=${id}`
+                                                            );
+                                                            setResenas(resp.data);
+                                                        } catch (error) {
+                                                            console.error(error);
+                                                        }
+                                                    }}
+                                                >
+                                                    Borrar
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -252,24 +376,7 @@ function Recipe() {
                         </div>
                     </div>
                 </div>
-                <div className="ContenedorNavegacion">
-                    <button className="BotonNavegacion">
-                        <Home size={24}></Home>
-                        <span>Inicio</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <Search size={24}></Search>
-                        <span>Buscar</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <User size={24}></User>
-                        <span>Perfil</span>
-                    </button>
-                    <button className="BotonNavegacion">
-                        <LogOut size={24}></LogOut>
-                        <span>Cerrar Sesión</span>
-                    </button>
-                </div>
+                <Navigation/>
             </div>
         </>
     )

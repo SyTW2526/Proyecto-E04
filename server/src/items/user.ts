@@ -14,6 +14,7 @@ export interface UserInterface {
   bio?: string;          // Descripción opcional
   followers: Types.ObjectId[];
   following: Types.ObjectId[];   
+  recentSearches: string[];
   createdAt: Date;
 }
 
@@ -63,6 +64,10 @@ const UserSchema = new Schema<UserInterface>({
     ref: 'User',
     default: []
   }],
+  recentSearches: {
+    type: [String], 
+    default: [], 
+  },
   createdAt: {
     type: Date,
     default: Date.now
