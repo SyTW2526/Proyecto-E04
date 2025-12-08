@@ -50,7 +50,7 @@ function UserPage() {
   }, []);
 
   if (!user || !me) return <></>;
-  if (!posts) return <></>;
+  //if (!posts) return <></>;
 
   const isMe = user._id === me._id;
 
