@@ -55,7 +55,7 @@ recipeRouter.post('/recipes/files',
   const recipe = new Recipe({
     name: req.body.name,
     steps: req.body.steps,
-    ingredients: req.body["ingredients"],
+    ingredients: JSON.parse(req.body["ingredients"]),
     tools: req.body["tools"],
     category: req.body.category,
     userId: req.body.userId,

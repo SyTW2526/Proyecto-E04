@@ -98,6 +98,7 @@ select {
 .IngredientesReceta,
 .UtensiliosReceta {
     width:95%;
+    margin-bottom:30px;
 }
 
 .filaIngrediente,
@@ -109,6 +110,10 @@ select {
     border-radius: 20px;
     margin-bottom:8px;
     margin-left:10px;
+}
+
+.filaIngrediente input {
+    width:20%;
 }
 
 .filaIngrediente,

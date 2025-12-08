@@ -25,7 +25,6 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/user/:id" element={<UserPage/>}/>
           <Route path="/filtered" element={<Filtered />} />
           <Route path="/publish/post" element={<CreateRecipe/>}></Route>
-          <Route path="/user/:id" element={<UserPage/>}></Route>
         </Routes>
     </BrowserRouter>
   </StrictMode>,

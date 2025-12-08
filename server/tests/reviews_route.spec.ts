@@ -27,7 +27,7 @@ beforeEach(async () => {
     _id: recipeId,
     name: 'Test Recipe',
     steps: 'Step 1, Step 2',
-    ingredients: ['harina', 'azucar'],
+    ingredients: [{ ingredient: 'harina', quantity: '2g' }, { ingredient: 'azucar', quantity: '3g' }],
     tools: ['cuchillo', 'tablaDeCortar'],
     userId: userId,
     category: 'postre',

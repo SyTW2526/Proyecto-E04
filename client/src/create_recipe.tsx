@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { useNavigate } from "react-router-dom";
 import Navigation from "./navigation";
 import { useState } from 'react';
+import React from 'react';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -13,7 +14,7 @@ import { useState } from 'react';
 interface RecipeFormState {
     name: string;
     steps: string;
-    ingredients: string[];
+    ingredients: { ingredient: string, quantity: string }[];
     tools: string[];
     userId: string; 
     category: string; // Pasta, postre, carne, etc. 
@@ -54,15 +55,50 @@ const tools = [
 ]
 
 const RecipeSchema = yup.object().shape({
-    name: yup.string().required('Se necesita poner un nombre a la receta').min(6),
-    steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50),
-    ingredients: yup.array().of(yup.string().required()).min(1, 'La receta tiene que tener al menos un ingrediente'),
-    tools: yup.array().of(yup.string().required()).min(1, 'La receta tiene que utilizar al menos un utensilio'),
+    name: yup.string().required('Se necesita poner un nombre a la receta').min(6, 'El nombre de la receta debe de tener al menos 6 caracteres'),
+    steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50, 'Los pasos de la receta deben de tener al menos 50 caracteres'),
+    ingredients: yup.array().of(yup.object().shape({
+        ingredient: yup.string().required("Seleccione un ingrediente"),
+        quantity: yup.string().required("Introduzca una cantidad")
+    })).min(1, 'La receta debe de tener al menos un ingrediente')
+    .test(
+        "unique-ingredients",
+        "No puede haber ingredientes duplicados",
+        (ingredients) => {
+            if (!ingredients) return true;
+
+            // Map seguro: solo tomamos strings válidos
+            const ingredientNames = ingredients
+                .map(i => i.ingredient || "")   // si es undefined, usamos ""
+                .map(name => name.trim().toLowerCase());
+
+            return new Set(ingredientNames).size === ingredientNames.length;
+        }
+    ),
+    tools: yup.array().of(yup.string().required('Hay utensilios sin asignar')).min(1, 'La receta tiene que utilizar al menos un utensilio')
+    .test(
+        "unique-tools",
+        "No puede haber utensilios duplicados",
+        (tools) => {
+            if (!tools) return true;
+
+            // ignorar elementos vacíos: solo revisamos duplicados si el string no está vacío
+            const filteredTools = tools.filter(t => t && t.trim() !== "").map(t => t.trim().toLowerCase());
+
+            return new Set(filteredTools).size === filteredTools.length;
+        }
+    ),
     category: yup.string().required('La receta debe pertenecer a una categoría'),
     userId: yup.string(),
-    images: yup.array().of(yup.string()),
-    videos: yup.array().of(yup.string())
+    images: yup.array().of(yup.string()), //.min(1, 'Se debe adjuntar al menos una imagen').max(5, 'No se pueden adjuntar más de 5 imágenes'),
+    videos: yup.array().of(yup.string()).max(3, 'No se pueden adjuntar más de tres vídeos')
 });
+
+function isIngredientError(
+  error: unknown
+): error is { ingredient?: string; quantity?: string } {
+  return typeof error === "object" && error !== null;
+}
 
 function CreateRecipe() {
 
@@ -70,20 +106,26 @@ function CreateRecipe() {
 
     const [imageFiles, setImageFiles] = useState<FileList | null>(null);
     const [videoFiles, setVideoFiles] = useState<FileList | null>(null);
+    const [creationError, setCreationError] = useState('');
 
     return (
         <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Crear receta / RecipeVault</title>
+            </head>
             <div className="ContenedorGeneralReceta">
                 <Formik
                     initialValues = {{
                         name: '',
                         steps: '',
-                        ingredients: [''],
+                        ingredients: [{ ingredient: '', quantity: '' }],
                         tools: [''],
                         category: '',
                         userId: '',
-                        images: [''],
-                        videos: ['']
+                        images: [],
+                        videos: []
                     }}
                     validationSchema={RecipeSchema}
                     onSubmit={async (values: RecipeFormState) => {
@@ -102,7 +144,7 @@ function CreateRecipe() {
                             formData.append("category", values.category);
                             formData.append("userId", user.data._id);
 
-                            values.ingredients.forEach(i => formData.append("ingredients", i));
+                            formData.append("ingredients", JSON.stringify(values.ingredients));
                             values.tools.forEach(t => formData.append("tools", t));
 
                             // ---- Archivos imagen ----
@@ -134,14 +176,18 @@ function CreateRecipe() {
 
                             console.log(response);
 
-                            if (response.status === 201) navigate('/home');
+                            if (response.status === 201) navigate('/recipe/' + response.data._id);
 
                         } catch (error) {
-                            console.error(error);
+                            if (axios.isAxiosError(error) && error.response) {
+                                setCreationError(error.response.data.message);
+                            } else {
+                                setCreationError('Error inesperado al crear la receta');
+                            }
                         }
                     }}
                 >
-                    {({values, handleChange, handleBlur, errors, touched}) => (
+                    {({values, setFieldValue, handleChange, handleBlur, errors, touched}) => (
                         <Form>
                             <div className="NombreReceta">
                                 <label htmlFor="name">Nombre de la receta:</label>
@@ -154,27 +200,38 @@ function CreateRecipe() {
                                 <div className="InformacionPublicacion">
                                     <div className="IzquierdaReceta">
                                         <div className="ImagenesReceta">
-                                            <label htmlFor="images">Imágenes:</label>
+                                            <h3>Imágenes</h3>
                                             <input 
                                                 type="file" 
                                                 name="images" 
                                                 accept="image/*" 
                                                 multiple
                                                 onChange={(e) => {
+                                                    if (!e.target.files) return;
+
                                                     setImageFiles(e.target.files);
+                                                    setFieldValue("images", Array.from(e.target.files));
                                                 }}
                                             />
-
-                                            <label htmlFor="images">Vídeos:</label>
+                                            {touched.images && errors.images && (
+                                                <p className="help is-danger">{errors.images}</p>
+                                            )}
+                                            <h3>Vídeos</h3>
                                             <input 
                                                 type="file" 
                                                 name="videos" 
                                                 accept="video/*"
                                                 multiple
                                                 onChange={(e) => {
+                                                    if (!e.target.files) return;
+
                                                     setVideoFiles(e.target.files);
+                                                    setFieldValue("videos", Array.from(e.target.files))
                                                 }}
                                             />
+                                            {touched.videos && errors.videos && (
+                                                <p className="help is-danger">{errors.videos}</p>
+                                            )}
                                         </div>
                                         <div className="CategoriaPublicacion">
                                             <h3>Categorías</h3>
@@ -197,48 +254,81 @@ function CreateRecipe() {
                                                     <>
                                                         <div className="listaIngredientes">
                                                             {values.ingredients.map((_, index) => (
-                                                                <div key={index} className="filaIngrediente">
+                                                                <React.Fragment key={index}>
+                                                                    <div className="filaIngrediente">
 
-                                                                    <select
-                                                                        name={`ingredients[${index}]`}
-                                                                        value={values.ingredients[index]}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                    >
-                                                                        <option value="">Seleccione ingrediente</option>
-                                                                        {ingredients.map((ingrediente) => (
-                                                                            <option key={ingrediente} value={ingrediente}>
-                                                                                {ingrediente}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-
-                                                                    {/* Botón eliminar */}
-                                                                    {values.ingredients.length > 1 && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="botonEliminar"
-                                                                            onClick={() => remove(index)}
+                                                                        <select
+                                                                            name={`ingredients[${index}].ingredient`}
+                                                                            value={values.ingredients[index].ingredient}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
                                                                         >
-                                                                            -
-                                                                        </button>
-                                                                    )}
-                                                                </div>
+                                                                            <option value="">Seleccione ingrediente</option>
+                                                                            {ingredients.map((ingrediente) => (
+                                                                                <option key={ingrediente} value={ingrediente}>
+                                                                                    {ingrediente}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+
+                                                                        <input
+                                                                            type="text"
+                                                                            name={`ingredients[${index}].quantity`}
+                                                                            value={values.ingredients[index].quantity}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                        />
+
+                                                                        {values.ingredients.length > 1 && (
+                                                                            <button
+                                                                                type="button"
+                                                                                className="botonEliminar"
+                                                                                onClick={() => remove(index)}
+                                                                            >
+                                                                                -
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+
+                                                                    {/* error ingredient DEBAJO DEL BLOQUE */}
+                                                                    {touched.ingredients?.[index]?.ingredient &&
+                                                                        isIngredientError(errors.ingredients?.[index]) &&
+                                                                        errors.ingredients[index].ingredient && 
+                                                                        errors.ingredients[index].ingredient !== "No puede haber ingredientes duplicados" && (
+                                                                            <p className="help is-danger">
+                                                                                {errors.ingredients[index].ingredient}
+                                                                            </p>
+                                                                        )}
+                                                                    
+                                                                    {/* error quantity */}
+                                                                        {touched.ingredients?.[index]?.quantity &&
+                                                                            isIngredientError(errors.ingredients?.[index]) &&
+                                                                            errors.ingredients[index].quantity && (
+                                                                                <p className="help is-danger">
+                                                                                    {errors.ingredients[index].quantity}
+                                                                                </p>
+                                                                            )}
+                                                                </React.Fragment>
                                                             ))}
+
+                                                            {/* ERROR GLOBAL DE LA LISTA */}
+                                                            {typeof errors.ingredients === "string" && (
+                                                                <p className="help is-danger">{errors.ingredients}</p>
+                                                            )}
                                                         </div>
 
                                                         {/* ÚNICO BOTÓN + */}
                                                         <button
                                                             type="button"
                                                             className="botonMasGeneral"
-                                                            onClick={() => push('')}
+                                                            onClick={() => push({ ingredient: '', quantity: '' })}
                                                         >
                                                             + Añadir ingrediente
                                                         </button>
 
                                                         {/* Errores */}
-                                                        {touched.ingredients && errors.ingredients && (
-                                                            <p className="help is-danger">{errors.ingredients as string}</p>
+                                                        {typeof errors.ingredients === "string" && (
+                                                            <p className="help is-danger">{errors.ingredients}</p>
                                                         )}
                                                     </>
                                                 )}
@@ -291,8 +381,8 @@ function CreateRecipe() {
                                                         </button>
 
                                                         {/* Errores */}
-                                                        {touched.tools && errors.tools && (
-                                                            <p className="help is-danger">{errors.tools as string}</p>
+                                                        {typeof errors.tools === "string" && (
+                                                            <p className="help is-danger">{errors.tools}</p>
                                                         )}
                                                     </>
                                                 )}
@@ -307,6 +397,7 @@ function CreateRecipe() {
                                                 <p className="help is-danger">{errors.steps}</p>
                                             )}
                                             <input type="submit" className="botonPublicar" value="Publicar"/>
+                                            {creationError && <p className="error-message">{creationError}</p>}
                                         </div>
                                         
                                     </div>

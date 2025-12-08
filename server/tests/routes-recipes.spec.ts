@@ -24,7 +24,7 @@ beforeEach(async () => {
     _id: recipeId,
     name: 'Test Recipe',
     steps: 'Step 1, Step 2',
-    ingredients: ['harina', 'azucar'],
+    ingredients: [{ ingredient: 'harina', quantity: '2g' }, { ingredient: 'azucar', quantity: '3g' }],
     tools: ['cuchillo'],
     userId: userId,
     category: 'postre',
@@ -41,7 +41,7 @@ describe('Recipe Routes post', () => {
       .send({
         name: 'New Recipe',
         steps: 'Step A, Step B',
-        ingredients: ['sal', 'huevo'],
+        ingredients: [{ ingredient: 'sal', quantity: '2g' }, { ingredient: 'huevo', quantity: '3g' }],
         tools: ['sartén', 'olla'],
         userId: userId.toString(),
         category: 'plato principal',
@@ -57,7 +57,7 @@ describe('Recipe Routes post', () => {
       .send({
         name: 'Invalid Recipe',
         steps: 'Step X, Step Y',
-        ingredients: ['sal', 'huevo'],
+        ingredients: [{ ingredient: 'sal', quantity: '2g' }, { ingredient: 'huevo', quantity: '3g' }],
         tools: ['sartén', 'olla'],
         userId: 'invalidUserId',
         category: 'plato principal',

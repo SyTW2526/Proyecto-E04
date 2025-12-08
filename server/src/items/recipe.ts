@@ -16,6 +16,8 @@ export interface RecipeInterface {
   creacionDate: Date;
 }
 
+const ingredients: string[] = [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'mantequilla', 'aceite', 'levadura', 'chocolate', 'vainilla', 'frutas', 'verduras', 'carne', 'pescado', 'especias' ];
+
 /**
  * Esquema RecetaSchema.
  * Representa toda la información que se ha de almacenar sobre una receta.
@@ -24,7 +26,6 @@ const RecipeSchema = new Schema<RecipeInterface>({
   name: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   steps: {
@@ -32,9 +33,13 @@ const RecipeSchema = new Schema<RecipeInterface>({
     required: true,
   },
   ingredients: {
-    type: [String], // Lista de ingredientes
+    type: [{ingredient: String, quantity: String}], // Lista de ingredientes
     required: true,
-    enum: [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'mantequilla', 'aceite', 'levadura', 'chocolate', 'vainilla', 'frutas', 'verduras', 'carne', 'pescado', 'especias' ],
+    validate: (value: {ingredient: string, quantity: string}) => {
+      if (ingredients.some((ing) => ing === value.ingredient)) {
+        throw new Error('Se ha introducido un ingrediente no válido.');
+      }
+    }
   },
   tools: { // Lista de utensilios 
     type: [String],
