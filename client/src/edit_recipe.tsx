@@ -67,8 +67,8 @@ const tools = [
 const RecipeSchema = yup.object().shape({
     name: yup.string().required('Se necesita poner un nombre a la receta').min(6),
     steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50),
-    ingredients: yup.array().of(yup.string().required()).min(1, 'La receta tiene que tener al menos un ingrediente'),
-    tools: yup.array().of(yup.string().required()).min(1, 'La receta tiene que utilizar al menos un utensilio'),
+    ingredients: yup.array().of(yup.mixed().required('Hay ingredientes sin asignar')).min(1, 'La receta tiene que tener al menos un ingrediente'),
+    tools: yup.array().of(yup.string().required('Hay utensilios sin asignar')).min(1, 'La receta tiene que utilizar al menos un utensilio'),
     category: yup.string().required('La receta debe pertenecer a una categoría'),
     images: yup.array().of(yup.string()),
     videos: yup.array().of(yup.string())
@@ -103,8 +103,32 @@ function EditRecipe() {
         videos: receta.videos ? [...receta.videos] : []
     };
 
+    const [user, setUser] = useState<{ _id: string } | null>(null);
+        useEffect(() => {
+            const token = localStorage.getItem("token");
+    
+            axios.get('http://localhost:3000/users/me', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                setUser(response.data);
+            })
+            .catch(console.error);
+        }, []);
+
+    if (!user) return <></>;
+
+    const userIsOwner = (user._id === receta.userId._id) ? true : false;
+
+    if (!userIsOwner) navigate('/home');
+
     return (
         <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>Editar receta / RecipeVault</title>
+            </head>
             <div className="ContenedorGeneralReceta">
                 <Formik
                     initialValues = {recetaLimpia}

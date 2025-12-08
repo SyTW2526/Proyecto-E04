@@ -74,11 +74,9 @@ function Recipe() {
                 const response = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`, { signal: controller.signal });
                 setResenas(response.data);
             } catch (error: any) {
-                // Si es un 404, simplemente ignorar
                 if (axios.isAxiosError(error) && error.response?.status === 404) {
                     setResenas([]);
                 } else if (!axios.isCancel(error)) {
-                    // Otros errores sí imprimirlos
                     console.error(error);
                 }
             }
@@ -123,8 +121,15 @@ function Recipe() {
         return user._id === resena.userId._id
     }
 
+    const imagesEmpty = (receta.images.length === 0);
+
     return (
         <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>{receta.name} / RecipeVault</title>
+            </head>
             <div className="ContenedorGeneralReceta">
                 <div className="NombreReceta">
                     <h2>{receta!.name}</h2>
@@ -151,19 +156,21 @@ function Recipe() {
                                             try {
                                                 const response = axios.delete('http://localhost:3000/recipes/' + id);
                                                 console.log(response);
+
+                                                navigate('/home');
                                             } catch (error) {
                                                 console.error(error);
                                             }
-
-                                            navigate('/home')}
-                                        }
+                                        }}
                                     >
                                         Borrar
                                     </button>
                                 </div>
                             )}
                             <div className="ImagenesReceta">
-                                <MediaCarousel media={[...receta.images, ...receta.videos]} />
+                                {!imagesEmpty && (
+                                    <MediaCarousel media={[...receta.images, ...receta.videos]} />
+                                )}
                             </div>
                             
                             <div className="CategoriasReceta">

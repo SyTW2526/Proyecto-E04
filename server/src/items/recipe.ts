@@ -26,7 +26,6 @@ const RecipeSchema = new Schema<RecipeInterface>({
   name: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   steps: {
