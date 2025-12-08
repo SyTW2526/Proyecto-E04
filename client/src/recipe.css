@@ -63,10 +63,21 @@
 .ResenasReceta {
     display:flex;
     flex-wrap:wrap;
+    margin-bottom:30px;
 }
 
 .ResenasReceta h3 {
     width:100%;
+}
+
+.ResenasReceta p {
+    margin-left:20px;
+}
+
+button {
+    background-color:#a7b9a9;
+    border-radius:15px;
+    margin-bottom:20px;
 }
 
 .UsuarioResena {
@@ -113,9 +124,17 @@
     width:95%;
 }
 
+.valoracionReceta {
+    display:flex;
+    margin-left:20px;
+    align-items: center;
+}
+
 .CategoriasReceta div {
     text-align: center;
+    align-content: center;
     width:30%;
+    height:30px;
     border-radius:20px;
     background-color:#f6e2b3;
     margin-left:10px;
@@ -130,6 +149,10 @@
 }
 
 .IngredientesReceta ul {
+    margin-left:20px;
+}
+
+.UtensiliosReceta ul {
     margin-left:20px;
 }
 

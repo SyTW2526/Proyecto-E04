@@ -13,7 +13,7 @@ import { useState } from 'react';
 interface RecipeFormState {
     name: string;
     steps: string;
-    ingredients: string[];
+    ingredients: { ingredient: string, quantity: string }[];
     tools: string[];
     userId: string; 
     category: string; // Pasta, postre, carne, etc. 
@@ -56,11 +56,11 @@ const tools = [
 const RecipeSchema = yup.object().shape({
     name: yup.string().required('Se necesita poner un nombre a la receta').min(6),
     steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50),
-    ingredients: yup.array().of(yup.string().required()).min(1, 'La receta tiene que tener al menos un ingrediente'),
+    ingredients: yup.array().min(1, 'La receta tiene que tener al menos un ingrediente'),
     tools: yup.array().of(yup.string().required()).min(1, 'La receta tiene que utilizar al menos un utensilio'),
     category: yup.string().required('La receta debe pertenecer a una categoría'),
     userId: yup.string(),
-    images: yup.array().of(yup.string()),
+    images: yup.array().of(yup.string()).min(1, 'Se debe adjuntar al menos una imagen'),
     videos: yup.array().of(yup.string())
 });
 
@@ -78,7 +78,7 @@ function CreateRecipe() {
                     initialValues = {{
                         name: '',
                         steps: '',
-                        ingredients: [''],
+                        ingredients: [{ ingredient: '', quantity: '' }],
                         tools: [''],
                         category: '',
                         userId: '',
@@ -102,7 +102,7 @@ function CreateRecipe() {
                             formData.append("category", values.category);
                             formData.append("userId", user.data._id);
 
-                            values.ingredients.forEach(i => formData.append("ingredients", i));
+                            formData.append("ingredients", JSON.stringify(values.ingredients));
                             values.tools.forEach(t => formData.append("tools", t));
 
                             // ---- Archivos imagen ----
@@ -154,7 +154,7 @@ function CreateRecipe() {
                                 <div className="InformacionPublicacion">
                                     <div className="IzquierdaReceta">
                                         <div className="ImagenesReceta">
-                                            <label htmlFor="images">Imágenes:</label>
+                                            <h3>Imágenes</h3>
                                             <input 
                                                 type="file" 
                                                 name="images" 
@@ -164,8 +164,8 @@ function CreateRecipe() {
                                                     setImageFiles(e.target.files);
                                                 }}
                                             />
-
-                                            <label htmlFor="images">Vídeos:</label>
+                                            <br />
+                                            <h3>Vídeos</h3>
                                             <input 
                                                 type="file" 
                                                 name="videos" 
@@ -200,8 +200,8 @@ function CreateRecipe() {
                                                                 <div key={index} className="filaIngrediente">
 
                                                                     <select
-                                                                        name={`ingredients[${index}]`}
-                                                                        value={values.ingredients[index]}
+                                                                        name={`ingredients[${index}].ingredient`}
+                                                                        value={values.ingredients[index].ingredient}
                                                                         onChange={handleChange}
                                                                         onBlur={handleBlur}
                                                                     >
@@ -212,6 +212,12 @@ function CreateRecipe() {
                                                                             </option>
                                                                         ))}
                                                                     </select>
+                                                                    <input type="text" 
+                                                                        name={`ingredients[${index}].quantity`} 
+                                                                        value={values.ingredients[index].quantity} 
+                                                                        onChange={handleChange}
+                                                                        onBlur={handleBlur}>
+                                                                    </input>
 
                                                                     {/* Botón eliminar */}
                                                                     {values.ingredients.length > 1 && (
@@ -231,7 +237,7 @@ function CreateRecipe() {
                                                         <button
                                                             type="button"
                                                             className="botonMasGeneral"
-                                                            onClick={() => push('')}
+                                                            onClick={() => push({ ingredient: '', quantity: '' })}
                                                         >
                                                             + Añadir ingrediente
                                                         </button>

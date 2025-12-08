@@ -111,6 +111,10 @@ select {
     margin-left:10px;
 }
 
+.filaIngrediente input {
+    width:20%;
+}
+
 .filaIngrediente,
 .filaUtensilio select {
     width: auto; 

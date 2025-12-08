@@ -13,7 +13,7 @@ import Navigation from "./navigation";
 interface Recipe {
     name: string;
     steps: string;
-    ingredients: string[];
+    ingredients: { ingredient: string, quantity: string }[];
     tools: string[];
     userId: {_id: string, username: string, profilePic:string}; 
     category: string; // Pasta, postre, carne, etc. 
@@ -25,7 +25,7 @@ interface Recipe {
 interface RecipeFormState {
     name: string;
     steps: string;
-    ingredients: string[];
+    ingredients: { ingredient: string, quantity: string }[];
     tools: string[];
     category: string; // Pasta, postre, carne, etc. 
     images?: string[]; // URLs de imágenes o vídeos 
@@ -135,10 +135,6 @@ function EditRecipe() {
                             <div className="ContenedorPublicacion">
                                 <div className="InformacionPublicacion">
                                     <div className="IzquierdaReceta">
-                                        <div className="ImagenesReceta">
-                                            <label htmlFor="images">Imágenes:</label>
-                                            <input type="text" className="inputNombre" name="images" id="images" onChange={handleChange} value={values.images} onBlur={handleBlur}></input>
-                                        </div>
                                         <div className="CategoriaPublicacion">
                                             <h3>Categorías</h3>
                                             <div>
@@ -163,8 +159,8 @@ function EditRecipe() {
                                                                 <div key={index} className="filaIngrediente">
 
                                                                     <select
-                                                                        name={`ingredients[${index}]`}
-                                                                        value={values.ingredients[index]}
+                                                                        name={`ingredients[${index}].ingredient`}
+                                                                        value={values.ingredients[index].ingredient}
                                                                         onChange={handleChange}
                                                                         onBlur={handleBlur}
                                                                     >
@@ -175,6 +171,12 @@ function EditRecipe() {
                                                                             </option>
                                                                         ))}
                                                                     </select>
+                                                                    <input type="text" 
+                                                                        name={`ingredients[${index}].quantity`} 
+                                                                        value={values.ingredients[index].quantity} 
+                                                                        onChange={handleChange}
+                                                                        onBlur={handleBlur}>
+                                                                    </input>
 
                                                                     {/* Botón eliminar */}
                                                                     {values.ingredients.length > 1 && (

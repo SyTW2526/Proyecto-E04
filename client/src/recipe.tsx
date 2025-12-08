@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
+import { Star } from 'lucide-react';
 import axios from 'axios';
 import './recipe.css';
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,7 +15,7 @@ interface Recipe {
     _id: string;
     name: string;
     steps: string;
-    ingredients: string[];
+    ingredients: {ingredient: string, quantity: string}[];
     tools: string[];
     userId: {_id: string, username: string, profilePic:string}; 
     category: string; // Pasta, postre, carne, etc. 
@@ -64,17 +65,30 @@ function Recipe() {
 
     const [resenas, setResenas] = useState<Review[] | null>(null);
     useEffect(() => {
-        axios.get(`http://localhost:3000/reviews?recipeId=${id}`)
-        .then(response => {
-            setResenas(response.data);
-        })
-        .catch(error => {
-            if (error.status === 404) {
-                setResenas([]);
-            } else {
-                console.error(error);
+        if (!id) return;
+
+        const controller = new AbortController();
+
+        const fetchReviews = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`, { signal: controller.signal });
+                setResenas(response.data);
+            } catch (error: any) {
+                // Si es un 404, simplemente ignorar
+                if (axios.isAxiosError(error) && error.response?.status === 404) {
+                    setResenas([]);
+                } else if (!axios.isCancel(error)) {
+                    // Otros errores sí imprimirlos
+                    console.error(error);
+                }
             }
-        })
+    };
+
+    fetchReviews();
+
+    return () => {
+        controller.abort();
+    };
     });
 
     const [mostrarFormularioResena, setMostrarFormularioResena] = useState(false);
@@ -122,6 +136,14 @@ function Recipe() {
                                 <img src={receta!.userId.profilePic}></img>
                                 <p>{receta!.userId.username}</p>
                             </div>
+                            <div className="valoracionReceta">
+                                {!resenasEmpty && (
+                                    <><Star /> <p>{resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p></>
+                                )}
+                                {resenasEmpty && (
+                                    <><Star /> <p>-</p></>
+                                )}
+                            </div>
                             {userIsOwner && (
                                 <div>
                                     <button onClick={() => navigate('/recipe/' + id + '/edit')}>Editar</button>
@@ -143,11 +165,7 @@ function Recipe() {
                             <div className="ImagenesReceta">
                                 <MediaCarousel media={[...receta.images, ...receta.videos]} />
                             </div>
-                            <div>
-                                {!resenasEmpty && (
-                                    <p>V: {resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p>
-                                )}
-                            </div>
+                            
                             <div className="CategoriasReceta">
                                 <h3>Categorías</h3>
                                 <div>{receta!.category}</div>
@@ -155,8 +173,8 @@ function Recipe() {
                             <div className="IngredientesReceta">
                                 <h3>Ingredientes</h3>
                                 <ul>
-                                    {receta.ingredients.map((ingrediente: string) => (
-                                    <li>{ingrediente}</li>
+                                    {receta.ingredients.map((ingrediente: {ingredient: string, quantity: string}) => (
+                                    <li>{`${ingrediente.ingredient}: ${ingrediente.quantity}`}</li>
                                     ))}
                                 </ul>
                             </div>
@@ -186,6 +204,9 @@ function Recipe() {
                                     Hacer reseña
                                 </button>
                             </div>
+                        )}
+                        {resenasEmpty && (
+                            <p>Todavía no hay reseñas para esta receta.</p>
                         )}
                         <div className="formularioResena">
                             {mostrarFormularioResena && (

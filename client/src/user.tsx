@@ -49,16 +49,6 @@ function UserPage() {
       .catch(console.error);
   }, []);
 
-    useEffect(() => {
-        axios.get(`http://localhost:3000/reviews?userId=${id}`)  
-        .then(response => {
-            setPosts(response.data);
-        })
-        .catch(error => {
-            console.error(error);
-        })
-    });
-
   if (!user || !me) return <></>;
   if (!posts) return <></>;
 
