@@ -138,7 +138,7 @@ function Recipe() {
                     <div className="InformacionReceta">
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
-                                <img src={receta!.userId.profilePic}></img>
+                                <img src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
                                 <p>{receta!.userId.username}</p>
                             </div>
                             <div className="valoracionReceta">
@@ -345,7 +345,7 @@ function Recipe() {
                                 ) : (
                                     <>
                                         <div className="UsuarioResena">
-                                            <img src={resena.userId.profilePic} />
+                                            <img src={`http://localhost:3000${resena.userId.profilePic}`} />
                                             <p>{resena.userId.username}</p>
                                         </div>
                                         <div className="informacionResena">

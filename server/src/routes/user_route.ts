@@ -7,6 +7,8 @@ import { Review } from '../items/review.js';
 import { auth, AuthRequest } from '../middleware/auth.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { upload } from '../middleware/multer.js';
+import { deleteFileIfExists } from '../utils/deleteUpload.js';
 
 /**
  * Router de usuarios.
@@ -168,7 +170,7 @@ userRouter.patch('/users', async (req, res) => {
     });
   }
 
-  const allowedUpdates = ['username', 'email', 'password'];
+  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers'];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
@@ -234,6 +236,33 @@ userRouter.patch('/users/:id', async (req, res) => {
   }
 });
 
+userRouter.patch('/users/:id/files', upload.fields([
+    { name: "profilePic", maxCount: 1 }
+  ]), async (req, res) => {
+
+  if (!req.files) {
+    return res.status(400).send({ error: "Error al subir archivos" });
+  }
+
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+  const imageFiles = files["profilePic"] || [];
+
+  const imagePaths = imageFiles.map(f => "uploads/images/" + f.filename);
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { profilePic: imagePaths[0] });
+
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send('No se encontró el usuario.');
+    }
+  } catch (error) {
+    res.status(400).send('Error en la modificación de la foto de perfil.');
+  }
+});
+
 /**
  * Manejador DELETE de /users. Permite eliminar un usuario según username o email.
  */
@@ -262,6 +291,9 @@ userRouter.delete('/users', async (req, res) => {
           res.status(500).send();
       } else {
         await User.findByIdAndDelete(user._id);
+
+        if (user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
+
         res.send(user);
       }
     }
@@ -287,6 +319,9 @@ userRouter.delete('/users/:id', async (req, res) => {
           res.status(500).send();
       } else {
         await User.findByIdAndDelete(user._id);
+
+        if (user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
+
         res.send(user);
       }
     }
