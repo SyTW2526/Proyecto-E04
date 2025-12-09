@@ -69,7 +69,7 @@ const RecipeSchema = yup.object().shape({
 
             // Map seguro: solo tomamos strings válidos
             const ingredientNames = ingredients
-                .map(i => i.ingredient || "")   // si es undefined, usamos ""
+                .map(i => i.ingredient || "") 
                 .map(name => name.trim().toLowerCase());
 
             return new Set(ingredientNames).size === ingredientNames.length;

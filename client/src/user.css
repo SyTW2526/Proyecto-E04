@@ -101,6 +101,18 @@
 }
 */
 
+.cambiar-foto button {
+  background-color: #a7b9a9;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.editButton {
+  border-radius:10px;
+}
 
 .usuario input[placeholder="loquesea"] {
   width: 10ch;
@@ -148,9 +160,19 @@
 
 .fila-datos {
   display: flex;
-  flex-direction: column;   /* Antes estaba en fila */
+  width:90%;
+  flex-direction:row;
   align-items: center;       /* Centra horizontalmente */
-  gap: 15px;
+  gap: 10px;
+}
+
+.fotoUsuario {
+  height:100%;
+  width:max-content;
+}
+
+.datosUsuario {
+  width:70%;
 }
 
 .fila-datos .columna {
