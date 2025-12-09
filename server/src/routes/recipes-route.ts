@@ -1,5 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 import { Recipe } from '../items/recipe.js' 
 import { Review } from '../items/review.js';
 import { upload } from '../middleware/multer.js';
@@ -158,18 +159,18 @@ recipeRouter.get('/recipes', auth, async (req, res) => {
 /**
  * Manejador GET de /recipes. Permite obtener la información de una receta a partir de su ID único pasado como parámetro dinámico.
  */
-recipeRouter.get('/recipes/:id', async (req, res) => {
-  try {
-    const recipe = await Recipe.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
-      if (recipe) {
-        res.send(recipe);
-      } else {
-        res.status(404).send({ error: 'Receta no encontrada.' });
-      }
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+// recipeRouter.get('/recipes/:id', async (req, res) => {
+//   try {
+//     const recipe = await Recipe.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
+//       if (recipe) {
+//         res.send(recipe);
+//       } else {
+//         res.status(404).send({ error: 'Receta no encontrada.' });
+//       }
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
 /**
  * Manejador PATCH de /recipes. Permite actualizar la información de una receta a partir de la query string de cualquiera de sus campos.
@@ -332,5 +333,98 @@ recipeRouter.delete('/recipes/:id', async (req, res) => {
     }
   } catch (err) {
     res.status(500).send();
+  }
+});
+
+const shuffleArray = (array: Types.ObjectId[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+recipeRouter.get('/recipes/feed', auth, async (req, res) => {
+  const authenticatedRequest = req as AuthRequest;
+  if (!authenticatedRequest.user) {
+    return res.status(401).send({ error: 'Usuario no autenticado.' });
+  }
+
+  try {
+    if (!Types.ObjectId.isValid(authenticatedRequest.user._id)) {
+      return res.status(400).send({ error: 'ID de usuario no válido proporcionado.' });
+    }
+
+    const user = await User.findById(authenticatedRequest.user._id);
+    if (!user) {
+      return res.status(404).send({ error: 'Usuario no encontrado.' });
+    }
+
+    const MAX_POSTS = 15;
+    let allRecipeIds: Types.ObjectId[] = []; 
+      
+    if (user.following && user.following.length > 0) {
+      const validFollowedIds = user.following.filter(id => Types.ObjectId.isValid(id)).map(id => new Types.ObjectId(id));
+        
+      if (validFollowedIds.length > 0) {
+        const followedRecipes = await Recipe.find({
+          userId: { $in: validFollowedIds }
+        }, { _id: 1 }); 
+  
+        allRecipeIds.push(...followedRecipes.map(r => r._id as Types.ObjectId));
+      }
+    }
+
+    if (user.recentSearches && user.recentSearches.length > 0) {
+        
+      const searchFilters = user.recentSearches.map(term => {
+        const parts = term.split(': ');
+        const mainValue = parts.length > 1 ? parts.slice(1).join(': ') : term; 
+        const primaryTerm = mainValue.split(/ \| | y | /)[0].trim();
+        
+        if (primaryTerm.length === 0) return null; 
+        const regexTerm = new RegExp(primaryTerm, 'i');
+        
+        return { 
+          $or: [
+            { name: { $regex: regexTerm } },
+            { category: { $in: [regexTerm] } }
+          ]
+        };
+      }).filter(f => f !== null);
+
+      if (searchFilters.length > 0) {
+        const recentSearchRecipes = await Recipe.find({
+          $or: searchFilters,
+          _id: { $nin: allRecipeIds } 
+        }, { _id: 1 }); 
+        allRecipeIds.push(...recentSearchRecipes.map(r => r._id as Types.ObjectId));
+      }
+    }
+
+    const generalRecipes = await Recipe.find({
+        _id: { $nin: allRecipeIds } 
+    }, { _id: 1 })
+    .sort({ creacionDate: -1 })
+    .limit(200); 
+
+    allRecipeIds.push(...generalRecipes.map(r => r._id as Types.ObjectId));
+    
+    const uniqueStringIds = Array.from(new Set(allRecipeIds.map(id => id.toString())));
+    const finalUniqueIds = uniqueStringIds.map(id => new Types.ObjectId(id)); 
+    shuffleArray(finalUniqueIds); 
+    const finalIds = finalUniqueIds.slice(0, MAX_POSTS);
+
+    const recipes = await Recipe.find({
+      _id: { $in: finalIds }
+    })
+    .populate({ path: 'userId', select: ['username', 'profilePic'] });
+      
+    const finalRecipes = finalIds.map(id => 
+      recipes.find(r => r._id.equals(id))
+    ).filter(r => r !== undefined);
+    res.status(200).send(finalRecipes);
+
+  } catch (err) {
+    res.status(500).send({ error: 'Error interno del servidor al generar el feed.' });
   }
 });

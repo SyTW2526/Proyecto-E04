@@ -1,12 +1,45 @@
 import { Search, MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
 import "./main_page.css"; 
 import Navigation from "./navigation";
+import { useEffect, useState } from "react"; 
+import axios from "axios"; 
 
-/**
- * Definición de la interfaz ContentCardProps
- */
+export interface UserInterface {
+  _id: string;
+  username: string;
+  email: string;
+  password?: string;
+  profilePic: string; 
+  bio: string; 
+  followers: string[]; 
+  following: string[]; 
+  recentSearches: string[];
+  createdAt: Date;
+}
+
+export interface RecipePost {
+  _id: string;
+  name: string;
+  steps: string[];
+  ingredients: any[];
+  tools: string[];
+  category: string[];
+  images: string[];
+  videos: string[];
+  location?: string; 
+  rating?: number; 
+  comments?: number; 
+  creacionDate: Date;
+
+  userId: {
+    _id: string;
+    username: string;
+    profilePic: string;
+  } | null;
+}
+
 interface ContentCardProps {
-  id: number;
+  id: string; 
   title: string;
   imageSrc: string | string[]; 
   location: string;
@@ -18,14 +51,14 @@ interface ContentCardProps {
   categories: string[];
 }
 
-// Componente PostCard 
-// eslint-disable-next-line react-refresh/only-export-components
+
 const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfilePic, userName, categories }: ContentCardProps) => {
   const displayImage = Array.isArray(imageSrc) ? imageSrc[0] : imageSrc;
-  const isVideo = (imageSrc as string).includes('youtube') || (imageSrc as string).includes('video'); 
+  const isVideo = (imageSrc as string[]).some(src => src.includes('video') || src.includes('youtube'));
   const getToken = (): string | null => localStorage.getItem('token');
   const token = getToken();
-  if (!token) return;
+  
+  if (!token) return null; 
 
   return (
     <div className="tarjeta post-card">
@@ -51,7 +84,7 @@ const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfile
               <div className="play-button">▶️ Video</div>
             </div>
             )}
-              {Array.isArray(imageSrc) && imageSrc.length > 1 && (
+            {Array.isArray(imageSrc) && imageSrc.length > 1 && (
               <div className="gallery-indicator">+{imageSrc.length - 1}</div>
             )}
       </div>
@@ -85,122 +118,80 @@ const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfile
           ))}
         </div>
         )}
-
-        {/* Descripción del*/}
         <h3 className="post-title">{title}</h3>
       </div>
-    </a>
-  </div>
+      </a>
+    </div>
   );
 };
 
-/**
- * Función principal del componente Main_page
- * @returns Elemento JSX que representa la vista del perfil de usuario
- */
+
 function Main_page() {
-  const posts: ContentCardProps[] = [
-    { 
-      id: 1,  
-      title: "Pastel de Calabaza", 
-      imageSrc: "https://www.rebanando.com/uploads/media/calabza.jpg?1396901933", 
-      location: "España | Madrid", 
-      rating: 5.0, 
-      comments: 204,
-      type: 'image',
-      userProfilePic: "https://nataliasuarez.com/wp-content/uploads/2022/08/foto-con-buena-resolucion-y-detalles.jpg", // Simulado
-      userName: "Ana" ,
-      categories: ['postre', 'sin gluten']
-      },
-    { 
-      id: 2, 
-      title: "Pollo con arroz", 
-      imageSrc: "https://imag.bonviveur.com/arroz-con-pollo.jpg", 
-      location: "España | Barcelona", 
-      rating: 4.8, 
-      comments: 180,
-      type: 'image',
-      userProfilePic: "https://images.pexels.com/photos/2328141/pexels-photo-2328141.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      userName: "Valeria",
-      categories: ['plato principal', 'arroz', 'pollo']
-    },
-    { 
-      id: 3, 
-      title: "Tarta de chocolate", 
-      imageSrc: "https://media.mykaramelli.com/galeria/recetas/tarta-de-chocolate-sin-horno_508_1_890x445.jpg", 
-      location: "España | Barcelona", 
-      rating: 4.5, 
-      comments: 298,
-      type: 'image',
-      userProfilePic: "https://images.pexels.com/photos/2328141/pexels-photo-2328141.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-      userName: "Valeria",
-      categories: ['postre']
-    },
-    { 
-      id: 4, 
-      title: "Desayuno completo", 
-      imageSrc: "https://recetasdecocina.elmundo.es/wp-content/uploads/2022/08/desayuno-americano.jpg", 
-      location: "EEUU | California", 
-      rating: 3.9, 
-      comments: 200,
-      type: 'image',
-      userProfilePic: "https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyZmlsfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000",
-      userName: "Jack",
-      categories: ['desayuno']
-    },
-    { 
-      id: 5, 
-      title: "Ensalada verde", 
-      imageSrc: "https://i.ytimg.com/vi/35RAPqCrSew/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBGhWpOmRkqU5VvKZmmPcz1HMjAPw", 
-      location: "España | Tenerife", 
-      rating: 4.1, 
-      comments: 199,
-      type: 'image',
-      userProfilePic: "https://www.dzoom.org.es/wp-content/uploads/2020/02/portada-foto-perfil-redes-sociales-consejos.jpg",
-      userName: "Lucía",
-      categories: ['vegetariano']
-    },
-    { 
-      id: 6, 
-      title: "Tacos de carnitas", 
-      imageSrc: "https://www.pequerecetas.com/wp-content/uploads/2020/10/tacos-mexicanos.jpg", 
-      location: "Inglaterra | Londres", 
-      rating: 4.7, 
-      comments: 147,
-      type: 'image',
-      userProfilePic: "https://www.dzoom.org.es/wp-content/uploads/2010/09/retrato-fondo-profundidad-campo-734x489.jpg",
-      userName: "Elizabeth",
-      categories: ['otro']
-    },
-  ];
+  const [me, setMe] = useState<UserInterface | null>(null);
+  const [posts, setPosts] = useState<RecipePost[]>([]); 
+  const [postCount, setPostCount] = useState(0); 
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios.get<UserInterface>('http://localhost:3000/users/me', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(response => setMe(response.data))
+      .catch(console.error);
+      
+    setPostCount(480); 
+      
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    axios.get<RecipePost[]>('http://localhost:3000/recipes/feed', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(response => {
+        setPosts(response.data.slice(0, 15));
+      })
+      .catch(console.error);
+  }, []);
+
+  if (!me) return <div className="loading">Cargando perfil...</div>;
+
+  const followersCount = me.followers.length;
+  const followingCount = me.following.length;
+  const usernameDisplay = me.username; 
+  const handleDisplay = `@${me.username.toLowerCase()}`; 
 
   return (
     <div className="contenedor">
       {/* Lista de Posts y Búsqueda */}
       <main className="principal posts-area">
-        <div className="search-bar">
-          <Search size={20} />
-          <input type="text" placeholder="Search..." />
-        </div>
+        
         <h2 className="section-title">Posts</h2>
 
         {/* Contenedor de la cuadrícula de posts */}
         <div className="posts-grid">
-          {posts.map(post => (
-            <PostCard 
-              key={post.id}
-              id={post.id}
-              title={post.title}
-              imageSrc={post.imageSrc}
-              location={post.location}
-              rating={post.rating}
-              comments={post.comments}
-              userProfilePic={post.userProfilePic}
-              userName={post.userName}
-              type={post.type}
-              categories={post.categories} 
-            />
-          ))}
+          {posts.length === 0 ? (
+            <p>No hay recetas disponibles en tu feed. ¡Sigue a alguien!</p>
+          ) : (
+            posts.map(post => (
+              <PostCard 
+                key={post._id}
+                id={post._id}
+                title={post.name}
+                imageSrc={post.images} 
+                location={post.location || "Ubicación Desconocida"} 
+                rating={post.rating || 0}
+                comments={post.comments || 0}
+                userProfilePic={post.userId?.profilePic || "default_pic_url"}
+                userName={post.userId?.username || "Usuario Desconocido"}
+                type={post.images.length > 0 && post.images.some(img => img.includes('video') || img.includes('youtube')) ? 'video' : 'image'} 
+                categories={post.category} 
+              />
+            ))
+          )}
         </div>
       </main>
 
@@ -208,26 +199,29 @@ function Main_page() {
       <aside className="panel-derecho profile-sidebar">
         <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
         <div className="user-profile-info">
-          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Foto de perfil de Alicia Alison" className="foto-perfil-grande"/>
-          <h3 className="user-name">Alicia Alison</h3>
-          <p className="user-handle">@aliciaalison</p>
+          
+          <img src={me.profilePic || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
+          
+          <h3 className="user-name">{usernameDisplay}</h3>
+          <p className="user-handle">{handleDisplay}</p>
+          
           <div className="stats-row">
             <div>
-              <span className="stat-number">480</span>
+              <span className="stat-number">{postCount}</span> 
               <span className="stat-label">Posts</span>
             </div>
             <div>
-              <span className="stat-number">57k</span>
+              <span className="stat-number">{followersCount > 999 ? `${(followersCount / 1000).toFixed(1)}k` : followersCount}</span>
               <span className="stat-label">Followers</span>
             </div>
             <div>
-              <span className="stat-number">50</span>
+              <span className="stat-number">{followingCount}</span>
               <span className="stat-label">Following</span>
             </div>
           </div>
 
           <p className="user-description">
-            Me encanta cocinar y compartir recetas
+            {me.bio || "Comparte tu pasión por la cocina en tu biografía."}
           </p>
         </div>
 
