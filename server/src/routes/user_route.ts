@@ -320,7 +320,9 @@ userRouter.delete('/users/:id', async (req, res) => {
       } else {
         await User.findByIdAndDelete(user._id);
 
-        if (user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
+        const regex: RegExp = new RegExp("default/*");
+
+        if (!regex.test(user.profilePic!) && user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
 
         res.send(user);
       }

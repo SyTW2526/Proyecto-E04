@@ -159,18 +159,18 @@ recipeRouter.get('/recipes', auth, async (req, res) => {
 /**
  * Manejador GET de /recipes. Permite obtener la información de una receta a partir de su ID único pasado como parámetro dinámico.
  */
-// recipeRouter.get('/recipes/:id', async (req, res) => {
-//   try {
-//     const recipe = await Recipe.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
-//       if (recipe) {
-//         res.send(recipe);
-//       } else {
-//         res.status(404).send({ error: 'Receta no encontrada.' });
-//       }
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
+recipeRouter.get('/recipes/:id', async (req, res) => {
+   try {
+     const recipe = await Recipe.findById(req.params.id).populate({path: 'userId', select: ['username', 'profilePic']});
+       if (recipe) {
+         res.send(recipe);
+     } else {
+         res.status(404).send({ error: 'Receta no encontrada.' });
+       }
+   } catch (err) {
+     res.status(500).send(err);
+   }
+ });
 
 /**
  * Manejador PATCH de /recipes. Permite actualizar la información de una receta a partir de la query string de cualquiera de sus campos.
@@ -294,8 +294,18 @@ recipeRouter.delete('/recipes', async (req, res) => {
     } else {
       const result = await Review.deleteMany({ userId: recipe._id})
 
-      recipe.images.forEach((p: string) => deleteFileIfExists(p));
-      recipe.videos?.forEach((p: string) => deleteFileIfExists(p));
+      const regex: RegExp = new RegExp("default/*");
+
+      recipe.images.forEach((p: string) => {
+        if (!regex.test(p)) {
+          deleteFileIfExists(p)
+        }
+      });
+      recipe.videos?.forEach((p: string) => {
+        if (!regex.test(p)) {
+          deleteFileIfExists(p)
+        }
+      });
       
       if (!result.acknowledged) {
         res.status(500).send();
@@ -321,8 +331,18 @@ recipeRouter.delete('/recipes/:id', async (req, res) => {
     } else {
       const result = await Review.deleteMany({ userId: recipe._id})
 
-      recipe.images.forEach((p: string) => deleteFileIfExists(p));
-      recipe.videos?.forEach((p: string) => deleteFileIfExists(p));
+      const regex: RegExp = new RegExp("default/*");
+
+      recipe.images.forEach((p: string) => {
+        if (!regex.test(p)) {
+          deleteFileIfExists(p)
+        }
+      });
+      recipe.videos?.forEach((p: string) => {
+        if (!regex.test(p)) {
+          deleteFileIfExists(p)
+        }
+      });
       
       if (!result.acknowledged) {
         res.status(500).send();
