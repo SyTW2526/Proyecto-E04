@@ -64,7 +64,7 @@ const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfile
     <div className="tarjeta post-card">
       <div className="post-header-info">
         <a href={`/profile/${userName}`} className="profile-link-button" aria-label={`Ver perfil de ${userName}`}>
-          <img src={userProfilePic} alt={userName} className="post-user-profile-pic" />
+          <img src={`http://localhost:3000/${userProfilePic}`} alt={userName} className="post-user-profile-pic" />
         </a>
           <div className="user-text-container">
           <a href={`/profile/${userName}`} className="profile-link" aria-label={`Ver perfil de ${userName}`}>
@@ -76,9 +76,9 @@ const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfile
           <MoreVertical size={20} />
         </button>
       </div>
-      <a href={`/post/${id}`} className="post-detail-link" aria-label={`Ver receta: ${title}`}>              
+      <a href={`/recipe/${id}`} className="post-detail-link" aria-label={`Ver receta: ${title}`}>              
       <div className="image-wrapper">
-        <img src={displayImage} alt={title} className="imagen-post" />
+        <img src={`http://localhost:3000/${displayImage}`} alt={title} className="imagen-post" />
           {isVideo && (
             <div className="video-overlay">
               <div className="play-button">▶️ Video</div>
@@ -200,7 +200,7 @@ function Main_page() {
         <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
         <div className="user-profile-info">
           
-          <img src={me.profilePic || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
+          <img src={`http://localhost:3000/${me.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
           
           <h3 className="user-name">{usernameDisplay}</h3>
           <p className="user-handle">{handleDisplay}</p>

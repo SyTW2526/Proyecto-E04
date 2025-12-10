@@ -24,6 +24,19 @@ interface Recipe {
     creacionDate: Date;
 }
 
+export interface UserInterface {
+  _id: string;
+  username: string;
+  email: string;
+  password?: string;
+  profilePic: string; 
+  bio: string; 
+  followers: string[]; 
+  following: string[]; 
+  recentSearches: string[];
+  createdAt: Date;
+}
+
 interface Review {
     _id: string;
     userId: {_id: string, username: string, profilePic:string};
@@ -106,6 +119,30 @@ function Recipe() {
         .catch(console.error);
     }, []);
 
+    const [me, setMe] = useState<UserInterface | null>(null);
+    const [postCount, setPostCount] = useState(0); 
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        axios.get<UserInterface>('http://localhost:3000/users/me', {
+        headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => setMe(response.data))
+        .catch(console.error);
+        
+        setPostCount(480); 
+        
+    }, []);
+    
+      if (!me) return <div className="loading">Cargando perfil...</div>;
+    
+      const followersCount = me.followers.length;
+      const followingCount = me.following.length;
+      const usernameDisplay = me.username; 
+      const handleDisplay = `@${me.username.toLowerCase()}`; 
+
     if (!receta) return <div></div>;
     if (!resenas) return <div></div>;
     if (!user) return <div></div>;
@@ -138,7 +175,7 @@ function Recipe() {
                     <div className="InformacionReceta">
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
-                                <img src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
+                                <img className="foto-perfil-grande" src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
                                 <p>{receta!.userId.username}</p>
                             </div>
                             <div className="valoracionReceta">
@@ -384,28 +421,40 @@ function Recipe() {
                     </div>
                 </div>
             </div>
-            <div className="ContenedorDerecha">
-                <div className="ContenedorPerfilSimp">
-                    <img className="LogoImagen" src="/logo.png" alt="Logo de RecipeVault"></img>
-                    <img className="PerfilImagen" src="https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png"></img>
-                    <p>Usuario</p>
-                    <div className="InformacionUsuario">
-                        <div>
-                            <p>300</p>
-                            <p>Seguidos</p>
-                        </div>
-                        <div>
-                            <p>300</p>
-                            <p>Seguidores</p>
-                        </div>
-                        <div>
-                            <p>300</p>
-                            <p>Posts</p>
-                        </div>
+            <aside className="panel-derecho profile-sidebar">
+                <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
+                <div className="user-profile-info">
+                
+                <img src={`http://localhost:3000/${me.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
+                
+                <h3 className="user-name">{usernameDisplay}</h3>
+                <p className="user-handle">{handleDisplay}</p>
+                
+                <div className="stats-row">
+                    <div>
+                    <span className="stat-number">{postCount}</span> 
+                    <span className="stat-label">Posts</span>
+                    </div>
+                    <div>
+                    <span className="stat-number">{followersCount > 999 ? `${(followersCount / 1000).toFixed(1)}k` : followersCount}</span>
+                    <span className="stat-label">Followers</span>
+                    </div>
+                    <div>
+                    <span className="stat-number">{followingCount}</span>
+                    <span className="stat-label">Following</span>
                     </div>
                 </div>
-                <Navigation/>
-            </div>
+
+                <p className="user-description">
+                    {me.bio || "Comparte tu pasión por la cocina en tu biografía."}
+                </p>
+                </div>
+
+                <div className="sidebar-navigation">
+                <Navigation />
+                <div className="layout-link">Layout</div>
+                </div>
+            </aside>
         </>
     )
 }

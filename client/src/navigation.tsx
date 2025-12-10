@@ -1,4 +1,4 @@
-import { Home, Search, User, LogOut } from "lucide-react";
+import { Home, Search, User, LogOut, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import './navigation.css';
 import axios from "axios";
@@ -49,6 +49,10 @@ function Navigation() {
                 <button className="boton-panel" onClick={() => navigate('/user/' + me._id)}>
                     <User size={24} />
                     <span>Account</span>
+                </button>
+                <button className="boton-panel" onClick={() => navigate('/publish/post')}>
+                    <Plus size={24} />
+                    <span>Publish</span>
                 </button>
 
                 <div className="linea" />
