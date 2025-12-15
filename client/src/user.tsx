@@ -1,11 +1,12 @@
 import "./user.css";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import Recipe from "./recipe";
 import Navigation from "./navigation";
+import FollowButton from "./botonFollow";
 
 export interface UserInterface {
   _id: string;
@@ -128,42 +129,12 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     <h3>{user.username}</h3>
                     {!isMe && (
                       <>
-                        {!isFollowing && (<button className="botonFollow" onClick={async () => {
-                          try {
-                            const newFollowing = [...me.following, user._id];
-                            const newFollowers = [...user.followers, me._id];
-
-                            await axios.patch(`http://localhost:3000/users/${user._id}`, { followers: newFollowers });
-                            await axios.patch(`http://localhost:3000/users/${me._id}`, { following: newFollowing });
-
-                            setMe({ ...me, following: newFollowing });
-                            setUser({ ...user, followers: newFollowers });
-
-                            setIsFollowing(true);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}>
-                          Seguir
-                        </button>)}
-                        {isFollowing && (<button className="botonFollow" onClick={async () => {
-                          try {
-                            const newFollowing = me.following.filter(f => f !== user._id);
-                            const newFollowers = user.followers.filter(f => f !== me._id);
-
-                            await axios.patch(`http://localhost:3000/users/${user._id}`, { followers: newFollowers });
-                            await axios.patch(`http://localhost:3000/users/${me._id}`, { following: newFollowing });
-
-                            setMe({ ...me, following: newFollowing });
-                            setUser({ ...user, followers: newFollowers });
-
-                            setIsFollowing(false);
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}>
-                          Dejar de seguir
-                        </button>)}
+                        <FollowButton
+                          user={user}
+                          setUser={setUser}
+                          me={me}
+                          setMe={setMe}
+                        />
                       </>
                     )}
                     {isMe && (
@@ -177,8 +148,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
                   {/* Columna info de seguidores */}
                   <div className="fila-seguidores">
-                    <p><strong>Followers:</strong> {user.followers.length}</p>
-                    <p><strong>Follows:</strong> {user.following.length}</p>
+                    <Link to='followers'><p><strong>Followers:</strong> {user.followers.length}</p></Link>
+                    <Link to='following'><p><strong>Follows:</strong> {user.following.length}</p></Link>
                   </div>
                 </div>
               </>

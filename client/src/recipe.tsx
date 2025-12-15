@@ -451,8 +451,7 @@ function Recipe() {
                 </div>
 
                 <div className="sidebar-navigation">
-                <Navigation />
-                <div className="layout-link">Layout</div>
+                    <Navigation />
                 </div>
             </aside>
         </>

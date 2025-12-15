@@ -148,6 +148,40 @@ userRouter.get('/users/:id', async (req, res) => {
   }
 });
 
+userRouter.get('/users/:id/follows', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      const follows = [];
+      for (let usr of user.following) {
+        follows.push(await User.findById(usr));
+      }
+      res.send(follows);
+    } else {
+      res.status(404).send({ error: 'Usuario no encontrado.' });
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+userRouter.get('/users/:id/followers', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      const followers = [];
+      for (let usr of user.followers) {
+        followers.push(await User.findById(usr));
+      }
+      res.send(followers);
+    } else {
+      res.status(404).send({ error: 'Usuario no encontrado.' });
+    }
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 /**
  * Manejador PATCH de /users. Permite actualizar usuarios según username o email.
  */

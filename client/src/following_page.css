@@ -1,0 +1,66 @@
+.contenedorGeneral {
+    min-width:70%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color: #f9f0e1;
+}
+
+.contenedorUsuarios {
+    min-width:80%;
+    height:90%;
+    background-color:#d2a679;
+    border-radius:20px;
+    padding:20px;
+}
+
+.botonesFollow {
+    width:100%;
+    display:flex;
+}
+
+.boton {
+    width:100%;
+    background-color:transparent;
+}
+
+.boton.active {
+    background-color:#f9f0e1;
+}
+
+.boton:hover {
+    background-color:#fcf7ef;
+}
+
+.usuarioSimplificado {
+    display:flex;
+}
+
+.datosUsuario {
+    width:80%;
+}
+
+.usuarioSimplificado img {
+    max-height:70px;
+    max-width:70px;
+}
+
+.usuario-boton {
+    display:flex;
+    margin-bottom:10px;
+}
+
+.linkUsuario {
+    width:90%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.linkUsuario:hover {
+    color: inherit;
+}
+
+.linea {
+    width:100%;
+}
