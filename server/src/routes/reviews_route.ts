@@ -66,7 +66,7 @@ reviewRouter.get('/reviews', async (req, res) => {
     if (recipes.length > 0) {
       res.status(200).send(recipes);
     } else {
-      res.status(404).send({ error: 'Reseña no encontrada.' });
+      res.status(200).send([]);
     }
   } catch (err) {
     res.status(500).send(err);

@@ -7,6 +7,8 @@ import { Formik, Form } from "formik";
 import * as yup from 'yup';
 import Navigation from "./navigation";
 import MediaCarousel from './MediaCarousel';
+import SimplifiedProfile from './simplifiedProfile';
+import type { UserInterface } from './interfaces/UserInterface';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -22,19 +24,6 @@ interface Recipe {
     images: string[]; // URLs de imágenes o vídeos 
     videos: string[]; // URLs de vídeos 
     creacionDate: Date;
-}
-
-export interface UserInterface {
-  _id: string;
-  username: string;
-  email: string;
-  password?: string;
-  profilePic: string; 
-  bio: string; 
-  followers: string[]; 
-  following: string[]; 
-  recentSearches: string[];
-  createdAt: Date;
 }
 
 interface Review {
@@ -131,10 +120,19 @@ function Recipe() {
         })
         .then(response => setMe(response.data))
         .catch(console.error);
-        
-        setPostCount(480); 
-        
     }, []);
+
+    useEffect(() => {
+        if (me) {
+            const token = localStorage.getItem("token");
+
+            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => setPostCount(response.data.length))
+            .catch(error => console.error(error));
+        }
+    }, [me])
     
       if (!me) return <div className="loading">Cargando perfil...</div>;
     
@@ -178,16 +176,8 @@ function Recipe() {
                                 <img className="foto-perfil-grande" src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
                                 <p>{receta!.userId.username}</p>
                             </div>
-                            <div className="valoracionReceta">
-                                {!resenasEmpty && (
-                                    <><Star /> <p>{resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p></>
-                                )}
-                                {resenasEmpty && (
-                                    <><Star /> <p>-</p></>
-                                )}
-                            </div>
                             {userIsOwner && (
-                                <div>
+                                <div className="boton-control-receta">
                                     <button onClick={() => navigate('/recipe/' + id + '/edit')}>Editar</button>
                                     <button onClick={async () => {
                                             try {
@@ -204,12 +194,14 @@ function Recipe() {
                                     </button>
                                 </div>
                             )}
-                            <div className="ImagenesReceta">
-                                {!imagesEmpty && (
-                                    <MediaCarousel media={[...receta.images, ...receta.videos]} />
+                            <div className="valoracionReceta">
+                                {!resenasEmpty && (
+                                    <><Star /> <p>{resenas.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / resenas.length}</p></>
+                                )}
+                                {resenasEmpty && (
+                                    <><Star /> <p>-</p></>
                                 )}
                             </div>
-                            
                             <div className="CategoriasReceta">
                                 <h3>Categorías</h3>
                                 <div>{receta!.category}</div>
@@ -217,241 +209,223 @@ function Recipe() {
                             <div className="IngredientesReceta">
                                 <h3>Ingredientes</h3>
                                 <ul>
-                                    {receta.ingredients.map((ingrediente: {ingredient: string, quantity: string}) => (
-                                    <li>{`${ingrediente.ingredient}: ${ingrediente.quantity}`}</li>
+                                    {receta.ingredients.map((ingrediente: {ingredient: string, quantity: string}, index) => (
+                                    <li key={`ingrediente${index}`}>{`${ingrediente.ingredient}: ${ingrediente.quantity}`}</li>
                                     ))}
                                 </ul>
                             </div>
                             <div className="UtensiliosReceta">
                                 <h3>Utensilios</h3>
                                 <ul>
-                                    {receta.tools.map((utensilio: string) => (
-                                    <li>{utensilio}</li>
+                                    {receta.tools.map((utensilio: string, index) => (
+                                    <li key={`utensilio${index}`}>{utensilio}</li>
                                     ))}
                                 </ul>
                             </div>
                         </div>
                         <div className="DerechaReceta">
-                            <div className="TextoReceta">
-                                <h3>Receta</h3>
-                                <p>{receta.steps}</p>
+                            <div className="ImagenesReceta">
+                                {!imagesEmpty && (
+                                    <MediaCarousel media={[...receta.images, ...receta.videos]} />
+                                )}
                             </div>
                         </div>
                     </div>
-                    <div className="ResenasReceta">
-                        <h3>Reseñas</h3>
-                        {!usuarioYaReseno && !userIsOwner && !mostrarFormularioResena && (
-                            <div className="contenedorBoton">
-                                <button type="button"
-                                    className="botonResena"
-                                    onClick={() => setMostrarFormularioResena(true)}>
-                                    Hacer reseña
-                                </button>
-                            </div>
-                        )}
-                        {resenasEmpty && (
-                            <p>Todavía no hay reseñas para esta receta.</p>
-                        )}
-                        <div className="formularioResena">
-                            {mostrarFormularioResena && (
-                            <Formik
-                                initialValues={{
-                                    userId: '',
-                                    recipeId: '',
-                                    rating: 1,
-                                    text: ''
-                                }}
-                                validationSchema={ReviewSchema}
-                                onSubmit={async (values: ReviewFormState) => {
-                                    try {
-                                        values.userId = user._id;
-                                        values.recipeId = id as unknown as string;
-                                        console.log(values);
-
-                                        const response = axios.post('http://localhost:3000/reviews', values);
-                                        console.log(response);
-
-                                        const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
-                                        setResenas(resp.data);
-                                    } catch (error) {
-                                        setReviewError('Error inesperado');
-                                        console.error(error);
-                                    }
-
-                                    setMostrarFormularioResena(false);
-                                }}
-                            >
-                                {({values, handleChange, handleBlur, errors, touched}) => (
-                                    <Form>
-                                        <label htmlFor="rating">Valoración:</label><br/>
-                                        <select id="rating" value={values.rating} onChange={handleChange} onBlur={handleBlur}>
-                                            <option value={1}>1</option>
-                                            <option value={2}>2</option>
-                                            <option value={3}>3</option>
-                                            <option value={4}>4</option>
-                                            <option value={5}>5</option>
-                                        </select>
-                                        <br/>
-                                        {touched.rating && errors.rating && (
-                                            <p className="help is-danger">{errors.rating}</p>
-                                        )}
-
-                                        <label htmlFor="text">Comentario:</label><br/>
-                                        <textarea
-                                            id="text"
-                                            value={values.text}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                        />
-                                        <br/>
-                                        {touched.text && errors.text && (
-                                            <p className="help is-danger">{errors.text}</p>
-                                        )}
-
-                                        <button type="submit">Publicar reseña</button>
-                                        {reviewError && <p className="error-message">{reviewError}</p>}
-                                        <button type="button" onClick={() => setMostrarFormularioResena(false)}>Cancelar</button>
-                                    </Form>
-                                )}
-                            </Formik>
-                        )}
+                    <div className="AbajoReceta">
+                        <div className="TextoReceta">
+                            <h3>Receta</h3>
+                            <p>{receta.steps}</p>
                         </div>
-                        {resenas.map((resena) => (
-                            <div className="contenedorResena" key={resena._id}>
-                                {resenaEditando === resena._id ? (
-                                    
-                                    <Formik
-                                        initialValues={{
-                                            rating: resena.rating,
-                                            text: resena.text || ''
-                                        }}
-                                        validationSchema={ReviewSchema}
-                                        onSubmit={async (values) => {
-                                            try {
-                                                await axios.patch(`http://localhost:3000/reviews/${resena._id}`, values);
+                        <div className="ResenasReceta">
+                            <h3>Reseñas</h3>
+                            {!usuarioYaReseno && !userIsOwner && !mostrarFormularioResena && (
+                                <div className="contenedorBoton">
+                                    <button type="button"
+                                        className="botonResena"
+                                        onClick={() => setMostrarFormularioResena(true)}>
+                                        Hacer reseña
+                                    </button>
+                                </div>
+                            )}
+                            {resenasEmpty && (
+                                <p>Todavía no hay reseñas para esta receta.</p>
+                            )}
+                            <div className="formularioResena">
+                                {mostrarFormularioResena && (
+                                <Formik
+                                    initialValues={{
+                                        userId: '',
+                                        recipeId: '',
+                                        rating: 1,
+                                        text: ''
+                                    }}
+                                    validationSchema={ReviewSchema}
+                                    onSubmit={async (values: ReviewFormState) => {
+                                        try {
+                                            values.userId = user._id;
+                                            values.recipeId = id as unknown as string;
+                                            console.log(values);
 
-                                                const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
-                                                setResenas(resp.data);
+                                            const response = axios.post('http://localhost:3000/reviews', values);
+                                            console.log(response);
 
-                                                setResenaEditando(null);
-                                            } catch (error) {
-                                                console.error(error);
-                                            }
-                                        }}
-                                    >
-                                        {({ values, handleChange, handleBlur, errors, touched }) => (
-                                            <Form className="formularioEditResena">
+                                            const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                            setResenas(resp.data);
+                                        } catch (error) {
+                                            setReviewError('Error inesperado');
+                                            console.error(error);
+                                        }
 
-                                                <label htmlFor="rating">Valoración:</label>
-                                                <select
-                                                    id="rating"
-                                                    name="rating"
-                                                    value={values.rating}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                >
-                                                    <option value={1}>1</option>
-                                                    <option value={2}>2</option>
-                                                    <option value={3}>3</option>
-                                                    <option value={4}>4</option>
-                                                    <option value={5}>5</option>
-                                                </select>
+                                        setMostrarFormularioResena(false);
+                                    }}
+                                >
+                                    {({values, handleChange, handleBlur, errors, touched}) => (
+                                        <Form>
+                                            <label htmlFor="rating">Valoración:</label><br/>
+                                            <select id="rating" value={values.rating} onChange={handleChange} onBlur={handleBlur}>
+                                                <option value={1}>1</option>
+                                                <option value={2}>2</option>
+                                                <option value={3}>3</option>
+                                                <option value={4}>4</option>
+                                                <option value={5}>5</option>
+                                            </select>
+                                            <br/>
+                                            {touched.rating && errors.rating && (
+                                                <p className="help is-danger">{errors.rating}</p>
+                                            )}
 
-                                                {touched.rating && errors.rating && <p>{errors.rating}</p>}
+                                            <label htmlFor="text">Comentario:</label><br/>
+                                            <textarea
+                                                id="text"
+                                                value={values.text}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            <br/>
+                                            {touched.text && errors.text && (
+                                                <p className="help is-danger">{errors.text}</p>
+                                            )}
 
-                                                <label htmlFor="text">Comentario:</label>
-                                                <textarea
-                                                    id="text"
-                                                    name="text"
-                                                    value={values.text}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                />
+                                            <button type="submit">Publicar reseña</button>
+                                            {reviewError && <p className="error-message">{reviewError}</p>}
+                                            <button type="button" onClick={() => setMostrarFormularioResena(false)}>Cancelar</button>
+                                        </Form>
+                                    )}
+                                </Formik>
+                            )}
+                            </div>
+                            {resenas.map((resena) => (
+                                <div className="contenedorResena" key={resena._id}>
+                                    {resenaEditando === resena._id ? (
+                                        
+                                        <Formik
+                                            initialValues={{
+                                                rating: resena.rating,
+                                                text: resena.text || ''
+                                            }}
+                                            validationSchema={ReviewSchema}
+                                            onSubmit={async (values) => {
+                                                try {
+                                                    await axios.patch(`http://localhost:3000/reviews/${resena._id}`, values);
 
-                                                {touched.text && errors.text && <p>{errors.text}</p>}
+                                                    const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                                    setResenas(resp.data);
 
-                                                <button type="submit">Guardar cambios</button>
-                                                <button type="button" onClick={() => setResenaEditando(null)}>
-                                                    Cancelar
-                                                </button>
+                                                    setResenaEditando(null);
+                                                } catch (error) {
+                                                    console.error(error);
+                                                }
+                                            }}
+                                        >
+                                            {({ values, handleChange, handleBlur, errors, touched }) => (
+                                                <Form className="formularioEditResena">
 
-                                            </Form>
-                                        )}
-                                    </Formik>
+                                                    <label htmlFor="rating">Valoración:</label>
+                                                    <select
+                                                        id="rating"
+                                                        name="rating"
+                                                        value={values.rating}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    >
+                                                        <option value={1}>1</option>
+                                                        <option value={2}>2</option>
+                                                        <option value={3}>3</option>
+                                                        <option value={4}>4</option>
+                                                        <option value={5}>5</option>
+                                                    </select>
 
-                                ) : (
-                                    <>
-                                        <div className="UsuarioResena">
-                                            <img src={`http://localhost:3000${resena.userId.profilePic}`} />
-                                            <p>{resena.userId.username}</p>
-                                        </div>
-                                        <div className="informacionResena">
-                                            <p>V: {resena.rating}</p>
-                                            <p className="textoResena">{resena.text}</p>
-                                        </div>
+                                                    {touched.rating && errors.rating && <p>{errors.rating}</p>}
 
-                                        {isResenaOwner(resena) && (
-                                            <div>
-                                                <button onClick={() => setResenaEditando(resena._id)}>
-                                                    Editar
-                                                </button>
-                                                <button
-                                                    onClick={async () => {
-                                                        try {
-                                                            await axios.delete(
-                                                                'http://localhost:3000/reviews/' + resena._id
-                                                            );
-                                                            const resp = await axios.get(
-                                                                `http://localhost:3000/reviews?recipeId=${id}`
-                                                            );
-                                                            setResenas(resp.data);
-                                                        } catch (error) {
-                                                            console.error(error);
-                                                        }
-                                                    }}
-                                                >
-                                                    Borrar
-                                                </button>
+                                                    <label htmlFor="text">Comentario:</label>
+                                                    <textarea
+                                                        id="text"
+                                                        name="text"
+                                                        value={values.text}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+
+                                                    {touched.text && errors.text && <p>{errors.text}</p>}
+
+                                                    <button type="submit">Guardar cambios</button>
+                                                    <button type="button" onClick={() => setResenaEditando(null)}>
+                                                        Cancelar
+                                                    </button>
+
+                                                </Form>
+                                            )}
+                                        </Formik>
+
+                                    ) : (
+                                        <>
+                                            <div className="UsuarioResena">
+                                                <img src={`http://localhost:3000${resena.userId.profilePic}`} />
+                                                <p>{resena.userId.username}</p>
                                             </div>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        ))}
+                                            <div className="informacionResena">
+                                                <p>V: {resena.rating}</p>
+                                                <p className="textoResena">{resena.text}</p>
+                                            </div>
+
+                                            {isResenaOwner(resena) && (
+                                                <div>
+                                                    <button onClick={() => setResenaEditando(resena._id)}>
+                                                        Editar
+                                                    </button>
+                                                    <button
+                                                        onClick={async () => {
+                                                            try {
+                                                                await axios.delete(
+                                                                    'http://localhost:3000/reviews/' + resena._id
+                                                                );
+                                                                const resp = await axios.get(
+                                                                    `http://localhost:3000/reviews?recipeId=${id}`
+                                                                );
+                                                                setResenas(resp.data);
+                                                            } catch (error) {
+                                                                console.error(error);
+                                                            }
+                                                        }}
+                                                    >
+                                                        Borrar
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
+                    
                 </div>
             </div>
             <aside className="panel-derecho profile-sidebar">
                 <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
-                <div className="user-profile-info">
-                
-                <img src={`http://localhost:3000/${me.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
-                
-                <h3 className="user-name">{usernameDisplay}</h3>
-                <p className="user-handle">{handleDisplay}</p>
-                
-                <div className="stats-row">
-                    <div>
-                    <span className="stat-number">{postCount}</span> 
-                    <span className="stat-label">Posts</span>
-                    </div>
-                    <div>
-                    <span className="stat-number">{followersCount > 999 ? `${(followersCount / 1000).toFixed(1)}k` : followersCount}</span>
-                    <span className="stat-label">Followers</span>
-                    </div>
-                    <div>
-                    <span className="stat-number">{followingCount}</span>
-                    <span className="stat-label">Following</span>
-                    </div>
-                </div>
-
-                <p className="user-description">
-                    {me.bio || "Comparte tu pasión por la cocina en tu biografía."}
-                </p>
-                </div>
-
+                <SimplifiedProfile user={me} postCount={postCount}/>
                 <div className="sidebar-navigation">
-                    <Navigation />
+                    <Navigation user={me} />
                 </div>
             </aside>
         </>
