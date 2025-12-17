@@ -193,14 +193,12 @@ function Main_page() {
 
       {/* Perfil de Usuario */}
       <aside className="panel-derecho profile-sidebar">
-        <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
-        <SimplifiedProfile user={me} postCount={postCount}/>
-
-        <div className="sidebar-navigation">
-          <Navigation />
-          <div className="layout-link">Layout</div>
-        </div>
-      </aside>
+          <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
+          <SimplifiedProfile user={me} postCount={postCount}/>
+          <div className="sidebar-navigation">
+              <Navigation user={me} />
+          </div>
+        </aside>
     </div>
   );
 }
