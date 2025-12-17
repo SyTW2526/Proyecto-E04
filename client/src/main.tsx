@@ -10,6 +10,7 @@ import EditRecipe from './edit_recipe.tsx';
 import CreateRecipe from './create_recipe.tsx';
 import Filtered from './filtered main page.tsx'
 import SearchFilterView from './filtered main page.tsx';
+import FollowingPage from './following_page.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -24,7 +25,9 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/search" element={<SearchFilterView/>}/>
           <Route path="/user/:id" element={<UserPage/>}/>
           <Route path="/filtered" element={<Filtered />} />
-          <Route path="/publish/post" element={<CreateRecipe/>}></Route>
+          <Route path="/publish/post" element={<CreateRecipe/>}/>
+          <Route path="/user/:id/following" element={<FollowingPage type={true}/>}/>
+          <Route path="/user/:id/followers" element={<FollowingPage type={false}/>}/>
         </Routes>
     </BrowserRouter>
   </StrictMode>,
