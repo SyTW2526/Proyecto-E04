@@ -7,18 +7,7 @@ import * as yup from "yup";
 import Recipe from "./recipe";
 import Navigation from "./navigation";
 import FollowButton from "./botonFollow";
-
-export interface UserInterface {
-  _id: string;
-  username: string;
-  email: string;
-  password: string;
-  profilePic: string;   // URL de la foto de perfil
-  bio: string;          // Descripción opcional
-  followers: string[];
-  following: string[];   
-  createdAt: Date;
-}
+import type { UserInterface } from "./interfaces/UserInterface";
 
 const UserSchema = yup.object().shape({
   username: yup.string().required("El nombre de usuario es obligatorio").min(3),
@@ -208,7 +197,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       </main>
 
       <aside className="panel-derecho">
-        <Navigation />
+        <Navigation user={me} />
       </aside>
     </div>
   );

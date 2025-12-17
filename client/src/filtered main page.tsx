@@ -541,7 +541,6 @@ const toggleAdvancedSearch = (): void => {
       </div>
 
       <div className="sidebar-navigation">
-        <Navigation />
       </div>
       </aside>
     </div>

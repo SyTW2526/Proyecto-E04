@@ -3,19 +3,8 @@ import "./main_page.css";
 import Navigation from "./navigation";
 import { useEffect, useState } from "react"; 
 import axios from "axios"; 
-
-export interface UserInterface {
-  _id: string;
-  username: string;
-  email: string;
-  password?: string;
-  profilePic: string; 
-  bio: string; 
-  followers: string[]; 
-  following: string[]; 
-  recentSearches: string[];
-  createdAt: Date;
-}
+import type { UserInterface } from "./interfaces/UserInterface";
+import SimplifiedProfile from "./simplifiedProfile";
 
 export interface RecipePost {
   _id: string;
@@ -57,7 +46,7 @@ const PostCard = ({ id, title, imageSrc, location, rating, comments, userProfile
   const isVideo = (imageSrc as string[]).some(src => src.includes('video') || src.includes('youtube'));
   const getToken = (): string | null => localStorage.getItem('token');
   const token = getToken();
-  
+
   if (!token) return null; 
 
   return (
@@ -157,12 +146,19 @@ function Main_page() {
       .catch(console.error);
   }, []);
 
-  if (!me) return <div className="loading">Cargando perfil...</div>;
+  useEffect(() => {
+        if (me) {
+            const token = localStorage.getItem("token");
 
-  const followersCount = me.followers.length;
-  const followingCount = me.following.length;
-  const usernameDisplay = me.username; 
-  const handleDisplay = `@${me.username.toLowerCase()}`; 
+            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => setPostCount(response.data.length))
+            .catch(error => console.error(error));
+        }
+    }, [me])
+
+  if (!me) return <div className="loading">Cargando perfil...</div>;
 
   return (
     <div className="contenedor">
@@ -198,32 +194,7 @@ function Main_page() {
       {/* Perfil de Usuario */}
       <aside className="panel-derecho profile-sidebar">
         <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
-        <div className="user-profile-info">
-          
-          <img src={`http://localhost:3000/${me.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
-          
-          <h3 className="user-name">{usernameDisplay}</h3>
-          <p className="user-handle">{handleDisplay}</p>
-          
-          <div className="stats-row">
-            <div>
-              <span className="stat-number">{postCount}</span> 
-              <span className="stat-label">Posts</span>
-            </div>
-            <div>
-              <span className="stat-number">{followersCount > 999 ? `${(followersCount / 1000).toFixed(1)}k` : followersCount}</span>
-              <span className="stat-label">Followers</span>
-            </div>
-            <div>
-              <span className="stat-number">{followingCount}</span>
-              <span className="stat-label">Following</span>
-            </div>
-          </div>
-
-          <p className="user-description">
-            {me.bio || "Comparte tu pasión por la cocina en tu biografía."}
-          </p>
-        </div>
+        <SimplifiedProfile user={me} postCount={postCount}/>
 
         <div className="sidebar-navigation">
           <Navigation />

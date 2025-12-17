@@ -3,34 +3,14 @@ import { useNavigate } from "react-router-dom";
 import './navigation.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
+import type { UserInterface } from "./interfaces/UserInterface";
 
-export interface UserInterface {
-  _id: string;
-  username: string;
-  email: string;
-  password: string;
-  profilePic: string;   // URL de la foto de perfil
-  bio: string;          // Descripción opcional
-  followers: string[];
-  following: string[];   
-  createdAt: Date;
+interface NavigationProps {
+    user: UserInterface
 }
 
-
-function Navigation() {
+function Navigation({ user }: NavigationProps) {
     const navigate = useNavigate();
-
-    const [me, setMe] = useState<UserInterface | null>(null);
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        axios.get('http://localhost:3000/users/me', {
-        headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(response => setMe(response.data))
-        .catch(console.error);
-    }, []);
-
-    if (!me) return <></>;
 
     return (
         <>
@@ -46,7 +26,7 @@ function Navigation() {
                     <span>Search</span>
                 </button>
 
-                <button className="boton-panel" onClick={() => navigate('/user/' + me._id)}>
+                <button className="boton-panel" onClick={() => navigate('/user/' + user._id)}>
                     <User size={24} />
                     <span>Account</span>
                 </button>
@@ -70,7 +50,6 @@ function Navigation() {
                     <LogOut size={24} />
                     <span>Logout</span>
                 </button>
-                <div className="layout-link">Layout</div>
             </div>
         </>
     )

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { UserInterface } from "./user";
+import type { UserInterface } from "./interfaces/UserInterface";
 import axios from "axios";
 
 interface FollowButtonProps {

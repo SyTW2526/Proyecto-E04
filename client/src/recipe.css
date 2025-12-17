@@ -22,6 +22,14 @@
     margin-left:5%;
 }
 
+.boton-control-receta {
+    margin-left:20px;
+}
+
+.TextoReceta p {
+    margin-left:20px;
+}
+
 .IzquierdaReceta {
     width:40%;
     height:max-content;
@@ -29,7 +37,9 @@
 
 .DerechaReceta {
     width:60%;
+    align-items:center;
     height:max-content;
+    margin-top:10%
 }
 
 .ContenedorReceta {
