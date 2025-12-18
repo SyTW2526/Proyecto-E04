@@ -52,7 +52,6 @@
 }
 
 .InformacionReceta {
-    overflow:auto;
     display:flex;
 }
 
@@ -81,10 +80,6 @@
     width:100%;
 }
 
-.ResenasReceta p {
-    margin-left:20px;
-}
-
 button {
     background-color:#a7b9a9;
     border-radius:15px;
@@ -101,12 +96,15 @@ button {
 
 .UsuarioResena img {
     height:100%;
+    width:50px;
     margin-right:20px;
     float:left;
 }
 
 .contenedorResena {
     width:50%;
+    border-color:#e0cfa8;
+    border-width:2px;
     margin-bottom:10px;
 }
 
@@ -122,8 +120,8 @@ button {
 }
 
 .ImagenesReceta {
-    width:95%;
-    margin:10px;
+    max-width:85%;
+    margin-bottom:5%;
 }
 
 .ImagenesReceta div {
@@ -135,20 +133,37 @@ button {
     width:95%;
 }
 
+.categorias-interior {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.post-save-button-inner {
+    margin-bottom:8px;
+    height:max-content;
+}
+
 .valoracionReceta {
     display:flex;
     margin-left:20px;
     align-items: center;
 }
 
-.CategoriasReceta div {
+.valoracionResena {
+    display:flex;
+    align-items: center;
+}
+
+.categorias-interior div {
     text-align: center;
     align-content: center;
-    width:30%;
-    height:30px;
+    width:40%;
+    height:max-content;
     border-radius:20px;
     background-color:#f6e2b3;
     margin-left:10px;
+    padding:5px;
 }
 
 .IngredientesReceta {

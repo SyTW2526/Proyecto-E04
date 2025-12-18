@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "./navigation";
 import SimplifiedProfile from "./simplifiedProfile";
 import type { UserInterface } from "./interfaces/UserInterface";
+import type { RecipePost } from "./postcard";
+import PostCard from "./postcard";
+import axios from "axios";
 
 const FilterKey = {
   INGREDIENTS: 'ingredients',
@@ -140,7 +143,7 @@ function SearchFilterView() {
 
   // Estados de Búsqueda
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<Recipe[] | null>(null); 
+  const [searchResults, setSearchResults] = useState<RecipePost[] | null>(null); 
   const [userResults, setUserResults] = useState<UserInterface[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -272,11 +275,18 @@ function SearchFilterView() {
   }
 };
 
-  const followersCount = me?.followers?.length || 0;
-  const followingCount = me?.following?.length || 0;
-  const usernameDisplay = me?.username || "Cargando..."; 
-  const handleDisplay = me ? `@${me.username.toLowerCase()}` : ""; 
-  const postCount = 0; 
+  const [postCount, setPostCount] = useState(0);
+  useEffect(() => {
+    if (me) {
+      const token = localStorage.getItem("token");
+  
+      axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(response => setPostCount(response.data.length))
+        .catch(error => console.error(error));
+    }
+  }, [me]) 
 
   if (!me) return <div className="loading">Cargando perfil...</div>;
 
@@ -468,9 +478,21 @@ function SearchFilterView() {
                 {searchResults.length > 0 ? (
                   <div className="posts-grid">
                     {searchResults.map(post => (
-                      <div key={post._id} className="recipe-result-item">
-                        <span className="recipe-name">{post.name}</span>
-                      </div>
+                      <PostCard 
+                        key={post._id}
+                        id={post._id}
+                        title={post.name}
+                        imageSrc={post.images} 
+                        userId={post.userId!._id}
+                        rating={post.rating || 0}
+                        comments={post.comments || 0}
+                        userProfilePic={post.userId?.profilePic || "default_pic_url"}
+                        userName={post.userId?.username || "Usuario Desconocido"}
+                        type={post.images.length > 0 && post.images.some(img => img.includes('video') || img.includes('youtube')) ? 'video' : 'image'} 
+                        categories={post.category} 
+                        me={me}
+                        setMe={setMe}
+                      />
                     ))}
                   </div>
                 ) : (
@@ -488,7 +510,7 @@ function SearchFilterView() {
           <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
           <SimplifiedProfile user={me} postCount={postCount}/>
           <div className="sidebar-navigation">
-              <Navigation user={me} />
+              <Navigation user={me} active={2} />
           </div>
         </aside>
       </div>

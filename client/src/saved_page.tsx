@@ -1,4 +1,3 @@
-import { Search, MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
 import "./main_page.css"; 
 import Navigation from "./navigation";
 import { useEffect, useState } from "react"; 
@@ -9,7 +8,7 @@ import type { RecipePost } from "./postcard";
 import PostCard from "./postcard";
 
 
-function Main_page() {
+function SavedPage() {
   const [me, setMe] = useState<UserInterface | null>(null);
   const [posts, setPosts] = useState<RecipePost[]>([]); 
   const [postCount, setPostCount] = useState(0); 
@@ -23,24 +22,21 @@ function Main_page() {
     })
       .then(response => setMe(response.data))
       .catch(console.error);
-      
-    setPostCount(480); 
-      
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    axios.get<RecipePost[]>('http://localhost:3000/recipes/feed', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(response => {
-        setPosts(response.data.slice(0, 15));
-      })
-      .catch(console.error);
-  }, []);
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        axios.get('http://localhost:3000/recipes/saved', {
+        headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            setPosts(response.data);
+        })
+        .catch(console.error);
+    }, []);
 
-  useEffect(() => {
+    useEffect(() => {
         if (me) {
             const token = localStorage.getItem("token");
 
@@ -59,12 +55,12 @@ function Main_page() {
       {/* Lista de Posts y Búsqueda */}
       <main className="principal posts-area">
         
-        <h2 className="section-title">Posts</h2>
+        <h2 className="section-title">Recetas guardadas</h2>
 
         {/* Contenedor de la cuadrícula de posts */}
         <div className="posts-grid">
           {posts.length === 0 ? (
-            <p>No hay recetas disponibles en tu feed. ¡Sigue a alguien!</p>
+            <p>No has guardado ninguna receta. ¡Guarda una!</p>
           ) : (
             posts.map(post => (
               <PostCard 
@@ -93,7 +89,7 @@ function Main_page() {
         <SimplifiedProfile user={me} postCount={postCount}/>
 
         <div className="sidebar-navigation">
-          <Navigation user={me} active={1}/>
+          <Navigation user={me} active={5} />
           <div className="layout-link">Layout</div>
         </div>
       </aside>
@@ -101,4 +97,4 @@ function Main_page() {
   );
 }
 
-export default Main_page;
+export default SavedPage;

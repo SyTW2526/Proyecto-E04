@@ -9,6 +9,7 @@ import Navigation from "./navigation";
 import MediaCarousel from './MediaCarousel';
 import SimplifiedProfile from './simplifiedProfile';
 import type { UserInterface } from './interfaces/UserInterface';
+import SaveButton from './botonSave';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -20,13 +21,13 @@ interface Recipe {
     ingredients: {ingredient: string, quantity: string}[];
     tools: string[];
     userId: {_id: string, username: string, profilePic:string}; 
-    category: string; // Pasta, postre, carne, etc. 
+    category: string[]; // Pasta, postre, carne, etc. 
     images: string[]; // URLs de imágenes o vídeos 
     videos: string[]; // URLs de vídeos 
     creacionDate: Date;
 }
 
-interface Review {
+export interface Review {
     _id: string;
     userId: {_id: string, username: string, profilePic:string};
     recipeId: string;
@@ -134,13 +135,7 @@ function Recipe() {
         }
     }, [me])
     
-      if (!me) return <div className="loading">Cargando perfil...</div>;
-    
-      const followersCount = me.followers.length;
-      const followingCount = me.following.length;
-      const usernameDisplay = me.username; 
-      const handleDisplay = `@${me.username.toLowerCase()}`; 
-
+    if (!me) return <div className="loading">Cargando perfil...</div>;
     if (!receta) return <div></div>;
     if (!resenas) return <div></div>;
     if (!user) return <div></div>;
@@ -173,8 +168,12 @@ function Recipe() {
                     <div className="InformacionReceta">
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
-                                <img className="foto-perfil-grande" src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
-                                <p>{receta!.userId.username}</p>
+                                <a href={`/user/${receta.userId.username}`} className="profile-link" aria-label={`Ir al perfil de ${receta.userId.username}`}>
+                                    <img className="foto-perfil-grande" src={`http://localhost:3000/${receta!.userId.profilePic}`}></img>
+                                </a>
+                                <a href={`/user/${receta.userId.username}`} className="profile-link" aria-label={`Ir al perfil de ${receta.userId.username}`}>
+                                    <span className="post-user-name">{receta.userId.username}</span>
+                                </a>
                             </div>
                             {userIsOwner && (
                                 <div className="boton-control-receta">
@@ -201,10 +200,13 @@ function Recipe() {
                                 {resenasEmpty && (
                                     <><Star /> <p>-</p></>
                                 )}
+                                <SaveButton user={me} setUser={setMe} id={receta._id}></SaveButton>
                             </div>
                             <div className="CategoriasReceta">
                                 <h3>Categorías</h3>
-                                <div>{receta!.category}</div>
+                                <div className="categorias-interior">
+                                    {receta.category.map((cat, index) => (<div key={`categoria${index}`}>{cat}</div>))}
+                                </div>
                             </div>
                             <div className="IngredientesReceta">
                                 <h3>Ingredientes</h3>
@@ -380,11 +382,13 @@ function Recipe() {
                                     ) : (
                                         <>
                                             <div className="UsuarioResena">
-                                                <img src={`http://localhost:3000${resena.userId.profilePic}`} />
-                                                <p>{resena.userId.username}</p>
+                                                <img className="foto-perfil-grande" src={`http://localhost:3000/${resena.userId.profilePic}` } />
+                                                <a href={`/user/${resena.userId._id}`} className="profile-link" aria-label={`Ir al perfil de ${receta.userId.username}`}>
+                                                    <span>{resena.userId.username}</span>
+                                                </a>
                                             </div>
                                             <div className="informacionResena">
-                                                <p>V: {resena.rating}</p>
+                                                <div className="valoracionResena"><Star size={20}/><p>{resena.rating}</p></div>
                                                 <p className="textoResena">{resena.text}</p>
                                             </div>
 
@@ -425,7 +429,7 @@ function Recipe() {
                 <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
                 <SimplifiedProfile user={me} postCount={postCount}/>
                 <div className="sidebar-navigation">
-                    <Navigation user={me} />
+                    <Navigation user={me} active={0}/>
                 </div>
             </aside>
         </>

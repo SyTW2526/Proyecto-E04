@@ -247,6 +247,35 @@ recipeRouter.get('/recipes/feed', auth, async (req, res) => {
   }
 });
 
+recipeRouter.get('/recipes/saved', auth, async (req, res) => {
+  const authenticatedRequest = req as AuthRequest;
+  if (!authenticatedRequest.user) {
+    return res.status(401).send({ error: 'Usuario no autenticado.' });
+  }
+
+  try {
+    if (!Types.ObjectId.isValid(authenticatedRequest.user._id)) {
+      return res.status(400).send({ error: 'ID de usuario no válido proporcionado.' });
+    }
+
+    const user = await User.findById(authenticatedRequest.user._id);
+    if (!user) {
+      return res.status(404).send({ error: 'Usuario no encontrado.' });
+    }
+
+    const recipes = [];
+
+    for (let rec of user.saved) {
+      recipes.push(await Recipe.findById(rec).populate({ path: 'userId', select: ['username', 'profilePic'] }));
+    }
+
+    res.send(recipes);
+
+  } catch (err) {
+    res.status(500).send({ error: 'Error interno del servidor al generar el feed.' });
+  }
+});
+
 /**
  * Manejador GET de /recipes. Permite obtener la información de una receta a partir de su ID único pasado como parámetro dinámico.
  */

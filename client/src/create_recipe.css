@@ -70,24 +70,9 @@ select {
     float:left;
 }
 
-.ImagenesReceta {
+.ImagenesPublicacion {
     width:95%;
     margin:10px;
-}
-
-.CategoriaPublicacion {
-    width:95%;
-}
-
-.CategoriaPublicacion div {
-    display: inline-flex; 
-    align-items: center;
-    width:max-content;
-    gap: 8px;
-    background-color:#f6e2b3;
-    border-radius: 20px;
-    margin-bottom:8px;
-    margin-left:10px;
 }
 
 .CategoriaPublicacion div select {
@@ -95,17 +80,22 @@ select {
     min-width: 150px;
 }
 
+button {
+    align-items: center;
+}
+
 .IngredientesReceta,
-.UtensiliosReceta {
+.UtensiliosReceta
+.CategoriaPublicacion {
     width:95%;
     margin-bottom:30px;
 }
 
 .filaIngrediente,
-.filaUtensilio {
+.filaUtensilio,
+.filaCategorias {
     display: inline-flex; 
     align-items: center;
-    gap: 8px;
     background-color:#f6e2b3;
     border-radius: 20px;
     margin-bottom:8px;
@@ -113,11 +103,12 @@ select {
 }
 
 .filaIngrediente input {
-    width:20%;
+    width:37%;
 }
 
 .filaIngrediente,
-.filaUtensilio select {
+.filaUtensilio,
+.filaCategoria select {
     width: auto; 
     min-width: 150px;
 }
