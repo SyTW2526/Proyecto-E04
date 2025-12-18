@@ -157,7 +157,7 @@ function FollowingPage({ type }: FollowProps) {
             <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
             <SimplifiedProfile user={me} postCount={postCount}/>
             <div className="sidebar-navigation">
-                <Navigation user={me} />
+                <Navigation user={me} active={0} />
             </div>
         </aside>
     </>

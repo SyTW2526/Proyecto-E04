@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import type { UserInterface } from './interfaces/UserInterface';
 import SimplifiedProfile from './simplifiedProfile';
+import { Minus, X } from 'lucide-react';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -19,7 +20,7 @@ interface RecipeFormState {
     ingredients: { ingredient: string, quantity: string }[];
     tools: string[];
     userId: string; 
-    category: string; // Pasta, postre, carne, etc. 
+    category: string[]; // Pasta, postre, carne, etc. 
     images?: string[]; // URLs de imágenes o vídeos 
     videos?: string[]; // URLs de vídeos 
 }
@@ -90,9 +91,9 @@ const RecipeSchema = yup.object().shape({
             return new Set(filteredTools).size === filteredTools.length;
         }
     ),
-    category: yup.string().required('La receta debe pertenecer a una categoría'),
+    category: yup.array().of(yup.string().required('Hay categorias no asignadas')),
     userId: yup.string(),
-    images: yup.array().of(yup.string()), //.min(1, 'Se debe adjuntar al menos una imagen').max(5, 'No se pueden adjuntar más de 5 imágenes'),
+    images: yup.array().of(yup.string()).max(5, 'No se pueden adjuntar más de 5 imágenes'), //.min(1, 'Se debe adjuntar al menos una imagen').max(5, 'No se pueden adjuntar más de 5 imágenes'),
     videos: yup.array().of(yup.string()).max(3, 'No se pueden adjuntar más de tres vídeos')
 });
 
@@ -152,7 +153,7 @@ function CreateRecipe() {
                         steps: '',
                         ingredients: [{ ingredient: '', quantity: '' }],
                         tools: [''],
-                        category: '',
+                        category: [''],
                         userId: '',
                         images: [],
                         videos: []
@@ -171,7 +172,7 @@ function CreateRecipe() {
                             // ---- Campos de texto ----
                             formData.append("name", values.name);
                             formData.append("steps", values.steps);
-                            formData.append("category", values.category);
+                            values.category.forEach(t => formData.append("category", t));
                             formData.append("userId", user.data._id);
 
                             formData.append("ingredients", JSON.stringify(values.ingredients));
@@ -229,7 +230,7 @@ function CreateRecipe() {
                             <div className="ContenedorPublicacion">
                                 <div className="InformacionPublicacion">
                                     <div className="IzquierdaReceta">
-                                        <div className="ImagenesReceta">
+                                        <div className="ImagenesPublicacion">
                                             <h3>Imágenes</h3>
                                             <input 
                                                 type="file" 
@@ -265,14 +266,57 @@ function CreateRecipe() {
                                         </div>
                                         <div className="CategoriaPublicacion">
                                             <h3>Categorías</h3>
-                                            <div>
-                                                <select name="category" onChange={handleChange} value={values.category} onBlur={handleBlur}>
-                                                    <option value="">Seleccione la categoría</option>
-                                                    {categories.map((category) => (
-                                                        <option key={category} value={category}>{category}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
+                                            <FieldArray name="category">
+                                                {({ push, remove }) => (
+                                                    <>
+                                                        <div className="listaCategorias">
+                                                            {values.category.map((_, index) => (
+                                                                <div key={`categoria${index}`} className="filaCategorias">
+
+                                                                    <select
+                                                                        name={`category[${index}]`}
+                                                                        value={values.category[index]}
+                                                                        onChange={handleChange}
+                                                                        onBlur={handleBlur}
+                                                                    >
+                                                                        <option value="">Seleccione utensilio</option>
+                                                                        {categories.map((cat) => (
+                                                                            <option key={cat} value={cat}>
+                                                                                {cat}
+                                                                            </option>
+                                                                        ))}
+                                                                    </select>
+
+                                                                    {/* Botón eliminar */}
+                                                                    {values.category.length > 1 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="botonEliminar"
+                                                                            onClick={() => remove(index)}
+                                                                        >
+                                                                            <X size={24}/>
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {/* ÚNICO BOTÓN + */}
+                                                        <button
+                                                            type="button"
+                                                            className="botonMasGeneral"
+                                                            onClick={() => push('')}
+                                                        >
+                                                            + Añadir categoría
+                                                        </button>
+
+                                                        {/* Errores */}
+                                                        {typeof errors.category === "string" && (
+                                                            <p className="help is-danger">{errors.category}</p>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </FieldArray>
                                             {touched.category && errors.category && (
                                                 <p className="help is-danger">{errors.category}</p>
                                             )}
@@ -315,7 +359,7 @@ function CreateRecipe() {
                                                                                 className="botonEliminar"
                                                                                 onClick={() => remove(index)}
                                                                             >
-                                                                                -
+                                                                                <X size={24}/>
                                                                             </button>
                                                                         )}
                                                                     </div>
@@ -394,7 +438,7 @@ function CreateRecipe() {
                                                                             className="botonEliminar"
                                                                             onClick={() => remove(index)}
                                                                         >
-                                                                            -
+                                                                            <X size={24}/>
                                                                         </button>
                                                                     )}
                                                                 </div>
@@ -443,7 +487,7 @@ function CreateRecipe() {
                 <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
                 <SimplifiedProfile user={me} postCount={postCount}/>
                 <div className="sidebar-navigation">
-                    <Navigation user={me} />
+                    <Navigation user={me} active={4}/>
                 </div>
             </aside>
             </div>

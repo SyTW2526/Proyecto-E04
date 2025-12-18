@@ -8,6 +8,8 @@ import Recipe from "./recipe";
 import Navigation from "./navigation";
 import FollowButton from "./botonFollow";
 import type { UserInterface } from "./interfaces/UserInterface";
+import SimplifiedProfile from "./simplifiedProfile";
+import PostCard, { type RecipePost } from "./postcard";
 
 const UserSchema = yup.object().shape({
   username: yup.string().required("El nombre de usuario es obligatorio").min(3),
@@ -23,7 +25,8 @@ function UserPage() {
   const [me, setMe] = useState<UserInterface | null>(null);
   const [editing, setEditing] = useState(false); // <--- Controla si estamos editando
   const [isFollowing, setIsFollowing] = useState(false);
-  const [posts, setPosts] = useState<Recipe[] | null>(null);
+  const [posts, setPosts] = useState<RecipePost[] | null>(null);
+  const [postCount, setPostCount] = useState(0);
 
   useEffect(() => {
     axios.get('http://localhost:3000/users/' + id)
@@ -45,6 +48,30 @@ function UserPage() {
       setIsFollowing(me.following.includes(user._id));
     }
   }, [user, me]);
+
+  useEffect(() => {
+    if (me) {
+      const token = localStorage.getItem("token");
+  
+      axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(response => setPostCount(response.data.length))
+        .catch(error => console.error(error));
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (user) {
+      const token = localStorage.getItem("token");
+  
+      axios.get(`http://localhost:3000/recipes?userId=${user._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(response => setPosts(response.data))
+        .catch(error => console.error(error));
+    }
+  }, [user]);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -85,7 +112,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 };
 
   if (!user || !me) return <></>;
-  //if (!posts) return <></>;
+  if (!posts) return <></>;
 
   const isMe = user._id === me._id;
 
@@ -98,7 +125,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <div className="fila-datos">
             <div className="fotoUsuario">
               <img src={`http://localhost:3000/${user.profilePic}`} alt="Foto de perfil" className="foto-perfil" />
-              <div className="cambiar-foto">
+              {isMe && (<div className="cambiar-foto">
                 <button onClick={handleButtonClick}>Cambiar foto</button>
 
                 <input
@@ -108,7 +135,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   accept="image/*"
                   onChange={handleFileChange}
                 />
-              </div>
+              </div>)}
             </div>
 
             {!editing ? (
@@ -192,12 +219,38 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         <h2>Recetas</h2>
         {/* Aquí puedes mapear los posts del usuario si los tienes */}
         <div className="posts-grid">
-          
+          {posts.length === 0 ? (
+            <p>No has guardado ninguna receta. ¡Guarda una!</p>
+          ) : (
+            posts.map(post => (
+              <PostCard 
+                key={post._id}
+                id={post._id}
+                title={post.name}
+                imageSrc={post.images} 
+                userId={post.userId!._id}
+                rating={post.rating || 0}
+                comments={post.comments || 0}
+                userProfilePic={post.userId?.profilePic || "default_pic_url"}
+                userName={post.userId?.username || "Usuario Desconocido"}
+                type={post.images.length > 0 && post.images.some(img => img.includes('video') || img.includes('youtube')) ? 'video' : 'image'} 
+                categories={post.category} 
+                me={me}
+                setMe={setMe}
+              />
+            ))
+          )}
         </div>
       </main>
 
       <aside className="panel-derecho">
-        <Navigation user={me} />
+        <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
+        {!isMe && (<SimplifiedProfile user={me} postCount={postCount}/>)}
+
+        <div className="sidebar-navigation">
+          {isMe && (<Navigation user={me} active={3}/>)}
+          {!isMe && (<Navigation user={me} active={0}/>)}
+        </div>
       </aside>
     </div>
   );

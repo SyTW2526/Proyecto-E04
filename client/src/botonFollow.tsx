@@ -13,12 +13,8 @@ function FollowButton({ user, setUser, me, setMe }: FollowButtonProps) {
     const [isFollowing, setIsFollowing] = useState(false);
     
     useEffect(() => {
-        if (user && me) {
-          setIsFollowing(me.following.includes(user._id));
-        }
-    }, [user, me]);
-
-    if (!user || !me) return <></>
+        setIsFollowing(me.following.includes(user._id));
+    }, []);
 
     return (
     <>

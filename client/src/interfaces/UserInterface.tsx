@@ -8,5 +8,6 @@ export interface UserInterface {
   followers: string[]; 
   following: string[]; 
   recentSearches: string[];
+  saved: string[];
   createdAt: Date;
 }

@@ -204,7 +204,7 @@ userRouter.patch('/users', async (req, res) => {
     });
   }
 
-  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers'];
+  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers', 'saved'];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
@@ -242,7 +242,7 @@ userRouter.patch('/users/:id', async (req, res) => {
     });
   }
 
-  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers'];
+  const allowedUpdates = ['username', 'email', 'bio', 'password', 'following', 'followers', 'saved'];
   const actualUpdates = Object.keys(req.body);
   const isValidUpdate = actualUpdates.every((update) =>
     allowedUpdates.includes(update)
