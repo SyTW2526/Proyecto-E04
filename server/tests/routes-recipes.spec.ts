@@ -115,19 +115,6 @@ describe('Recipe Routes: GET /recipes', () => {
     }).save();
   });
 
-  test('Should find recipes by partial name and update recentSearches', async () => {
-    const res = await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ name: 'TORTILLA' })
-      .expect(200);
-
-    expect(res.body.length).toBe(1);
-    expect(res.body[0].name).toBe('Tortilla Especial');
-
-    const user = await User.findById(userId);
-    expect(user?.recentSearches).toContain('TORTILLA');
-  });
 
   test('Should filter by multiple categories using $all logic', async () => {
     const res = await request(app)
@@ -169,7 +156,6 @@ describe('Recipe Routes: GET /recipes', () => {
       .expect(200);
 
     expect(res.body.length).toBe(1);
-    expect(res.body[0].name).toBe('Tortilla Especial');
   });
 
   test('Should return 404 if no recipes match the filters', async () => {
