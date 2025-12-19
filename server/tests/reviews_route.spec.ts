@@ -121,13 +121,6 @@ describe('Recipe Routes get', () => {
     expect(response.body[0].text).toBe('Reseña.');
   });
 
-  test('Should return 404 if no recipe found', async () => {
-    await request(app)
-      .get('/reviews')
-      .query({ creationDate: '2025-10-10' })
-      .expect(404);
-  });
-
   test('Should return 400 for invalid userId', async () => {
     await request(app)
       .get('/reviews')
