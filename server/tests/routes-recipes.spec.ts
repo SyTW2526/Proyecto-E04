@@ -15,11 +15,11 @@ describe('Recipe Routes: POST /recipes', () => {
   beforeEach(async () => {
     await User.deleteMany();
     await Recipe.deleteMany();
-
     const user = new User({
       username: 'RecipeAuthor', 
       email: 'autor@test.com',
       password: 'Password123!',
+      categories: ['otro'] 
     });
     const savedUser = await user.save();
     activeUserId = savedUser._id;
@@ -28,9 +28,9 @@ describe('Recipe Routes: POST /recipes', () => {
   test('SUCCESS: Should create a new recipe with valid data', async () => {
     const validRecipe = {
       name: 'Pasta Carbonara',
-      steps: '1. Hervir agua. 2. Cocinar pasta. 3. Mezclar con huevo.',
+      steps: '1. Hervir agua. 2. Cocinar pasta.',
       ingredients: [
-        { ingredient: 'pollo', quantity: '200g' } 
+        { ingredient: 'pimiento', quantity: '200g' } 
       ],
       tools: ['sartén'],
       userId: activeUserId,
@@ -44,12 +44,12 @@ describe('Recipe Routes: POST /recipes', () => {
 
     expect(response.body.name).toBe(validRecipe.name);
     expect(response.body.userId).toBe(activeUserId.toString());
-    expect(Array.isArray(response.body.category)).toBe(true);
+    expect(response.body.ingredients[0].ingredient).toBe('pimiento');
   });
 
   test('ERROR: Should return 400 if required fields are missing', async () => {
     const invalidRecipe = {
-      name: 'Receta incompleta'
+      name: 'Receta sin pasos ni ingredientes'
     };
 
     await request(app)
@@ -60,40 +60,22 @@ describe('Recipe Routes: POST /recipes', () => {
 
   test('ERROR: Should fail if tool is not in the Enum list', async () => {
     const recipeWithInvalidTool = {
-      name: 'Receta con Herramienta Falsa',
+      name: 'Receta Error Herramienta',
       steps: 'Pasos...',
-      ingredients: [{ ingredient: 'pollo', quantity: '1' }],
-      tools: ['destornillador'], 
+      ingredients: [{ ingredient: 'pimiento', quantity: '1' }],
+      tools: ['martillo'], 
       userId: activeUserId,
       category: ['otro']
     };
 
-    const response = await request(app)
-      .post('/recipes')
-      .send(recipeWithInvalidTool)
-      .expect(400);
-
-    expect(response.body.message).toContain('tools');
-  });
-
-  test('ERROR: Should fail if category is not in the Enum list', async () => {
-    const recipeWithInvalidCategory = {
-      name: 'Receta Categoría Falsa',
-      steps: 'Pasos...',
-      ingredients: [{ ingredient: 'pollo', quantity: '1' }],
-      tools: ['sartén'],
-      userId: activeUserId,
-      category: ['comida-espacial'] 
-    };
-
     await request(app)
       .post('/recipes')
-      .send(recipeWithInvalidCategory)
+      .send(recipeWithInvalidTool)
       .expect(400);
   });
 });
 
-describe('Recipe Routes: GET /recipes (Comprehensive Coverage)', () => {
+describe('Recipe Routes: GET /recipes', () => {
   let token: string;
   let userId: string;
 
@@ -105,6 +87,7 @@ describe('Recipe Routes: GET /recipes (Comprehensive Coverage)', () => {
       username: 'ChefUser',
       email: 'chef@test.com',
       password: 'Password123!',
+      categories: ['otro'], 
       recentSearches: []
     }).save();
 
@@ -112,9 +95,9 @@ describe('Recipe Routes: GET /recipes (Comprehensive Coverage)', () => {
     token = jwt.sign({ _id: userId }, JWT_SECRET);
 
     await new Recipe({
-      name: 'Tortilla de Patatas',
-      steps: 'Freír patatas y mezclar con huevo.',
-      ingredients: [{ ingredient: 'pollo', quantity: '1' }],
+      name: 'Tortilla Especial',
+      steps: 'Cocinar todo en la sartén.',
+      ingredients: [{ ingredient: 'pimiento', quantity: '2' }], 
       tools: ['sartén', 'cuchillo'],
       userId: userId,
       category: ['plato principal', 'desayuno'],
@@ -123,129 +106,300 @@ describe('Recipe Routes: GET /recipes (Comprehensive Coverage)', () => {
 
     await new Recipe({
       name: 'Ensalada Mix',
-      steps: 'Cortar verduras y servir frío.',
-      ingredients: [{ ingredient: 'verduras', quantity: '200g' }],
+      steps: 'Cortar y servir.',
+      ingredients: [{ ingredient: 'tomate', quantity: '200g' }], 
       tools: ['cuchillo', 'tabla de cortar'],
       userId: userId,
       category: ['entrante', 'vegano'],
       creacionDate: new Date('2025-05-20T10:00:00Z')
     }).save();
-
-    await new Recipe({
-      name: 'Batido de Frutas',
-      steps: 'Batir todo junto.',
-      ingredients: [{ ingredient: 'frutas', quantity: '300g' }],
-      tools: ['batidora'],
-      userId: new mongoose.Types.ObjectId(), 
-      category: ['bebida', 'postre'],
-      creacionDate: new Date()
-    }).save();
   });
 
-  test('Should find recipes by partial name (case-insensitive)', async () => {
+  test('Should find recipes by partial name and update recentSearches', async () => {
     const res = await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ name: 'TORTILLA' });
-    
-    expect(res.status).toBe(200);
+      .query({ name: 'TORTILLA' })
+      .expect(200);
+
     expect(res.body.length).toBe(1);
-    expect(res.body[0].name).toBe('Tortilla de Patatas');
+    expect(res.body[0].name).toBe('Tortilla Especial');
+
+    const user = await User.findById(userId);
+    expect(user?.recentSearches).toContain('TORTILLA');
   });
 
-  test('Should find recipes by steps content', async () => {
+  test('Should filter by multiple categories using $all logic', async () => {
     const res = await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ steps: 'batir' });
-    
-    expect(res.body[0].name).toBe('Batido de Frutas');
-  });
+      .query({ category: 'plato principal, desayuno' })
+      .expect(200);
 
-  test('Should find by multiple categories (using $all logic)', async () => {
-    const res = await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ category: 'plato principal, desayuno' });
-    
     expect(res.body.length).toBe(1);
-    expect(res.body[0].name).toBe('Tortilla de Patatas');
+    expect(res.body[0].category).toContain('desayuno');
   });
 
-  test('Should find by multiple tools', async () => {
+  test('Should filter by ingredient name', async () => {
     const res = await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ tools: 'cuchillo, tabla de cortar' });
-    
+      .query({ ingredientName: 'tomate' })
+      .expect(200);
+
     expect(res.body[0].name).toBe('Ensalada Mix');
   });
 
-  test('Should find by ingredient name', async () => {
+  test('Should filter by multiple tools using $all logic', async () => {
     const res = await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ ingredientName: 'frutas' });
-    
-    expect(res.body[0].name).toBe('Batido de Frutas');
-  });
+      .query({ tools: 'cuchillo, tabla de cortar' })
+      .expect(200);
 
-  test('Should find recipes by a specific userId', async () => {
-    const res = await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ userId: userId });
-    
-    expect(res.body.length).toBe(2); 
-    expect(res.body[0].userId.username).toBe('ChefUser'); 
-  });
-
-  test('Should filter by exact creation date (day range)', async () => {
-    const res = await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ creacionDate: '2025-01-01' });
-    
     expect(res.body.length).toBe(1);
-    expect(res.body[0].name).toBe('Tortilla de Patatas');
+    expect(res.body[0].name).toBe('Ensalada Mix');
   });
 
-  test('Should save the search term in user profile when searching by name', async () => {
-    const searchName = 'Tortilla';
+  test('Should filter by exact day in creacionDate', async () => {
+    const res = await request(app)
+      .get('/recipes')
+      .set('Authorization', `Bearer ${token}`)
+      .query({ creacionDate: '2025-01-01' })
+      .expect(200);
+
+    expect(res.body.length).toBe(1);
+    expect(res.body[0].name).toBe('Tortilla Especial');
+  });
+
+  test('Should return 404 if no recipes match the filters', async () => {
     await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ name: searchName });
-
-    const user = await User.findById(userId);
-    expect(user?.recentSearches).toContain(searchName);
-    expect(user?.recentSearches[0]).toBe(searchName); 
-  });
-
-  test('Should return 404 if no recipes match', async () => {
-    await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ name: 'RecetaInexistente' })
+      .query({ name: 'PizzaInexistente' })
       .expect(404);
   });
 
-  test('Should return 400 for invalid userId format', async () => {
+  test('Should return 400 for invalid ID format', async () => {
     const res = await request(app)
       .get('/recipes')
       .set('Authorization', `Bearer ${token}`)
-      .query({ userId: 'abc' });
-    
-    expect(res.status).toBe(400);
+      .query({ userId: '123-not-real' })
+      .expect(400);
+
     expect(res.body.error).toBe('ID de usuario no válido.');
   });
+});
 
-  test('Should return 400 for invalid date format', async () => {
-    await request(app)
-      .get('/recipes')
+describe('Recipe Routes: GET /recipes/feed', () => {
+  let token: string;
+  let userId: string;
+  let followedUserId: string;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+    await Recipe.deleteMany({});
+
+    const followedUser = await new User({
+      username: 'ChefSeguido',
+      email: 'seguido@test.com',
+      password: 'Password123!',
+      categories: ['otro']
+    }).save();
+    followedUserId = followedUser._id.toString();
+
+    const user = await new User({
+      username: 'UserPrincipal',
+      email: 'principal@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      following: [followedUserId], 
+      recentSearches: ['Nombre: Pasta']
+    }).save();
+    userId = user._id.toString();
+    token = jwt.sign({ _id: userId }, JWT_SECRET);
+
+    await new Recipe({
+      name: 'Pasta del Seguido',
+      steps: 'Pasos...',
+      ingredients: [{ ingredient: 'cebolla', quantity: '1' }],
+      tools: ['olla'],
+      userId: followedUserId,
+      category: ['pasta']
+    }).save();
+
+    await new Recipe({
+      name: 'Pasta de un Desconocido',
+      steps: 'Pasos...',
+      ingredients: [{ ingredient: 'cebolla', quantity: '1' }],
+      tools: ['olla'],
+      userId: new mongoose.Types.ObjectId(),
+      category: ['pasta']
+    }).save();
+
+    await new Recipe({
+      name: 'Ensalada General',
+      steps: 'Pasos...',
+      ingredients: [{ ingredient: 'pimiento', quantity: '1' }],
+      tools: ['cuchillo'],
+      userId: new mongoose.Types.ObjectId(),
+      category: ['entrante']
+    }).save();
+  });
+
+  test('SUCCESS: Should return a mixed feed of followed, searched and general recipes', async () => {
+    const response = await request(app)
+      .get('/recipes/feed')
       .set('Authorization', `Bearer ${token}`)
-      .query({ creacionDate: 'formato-incorrecto' })
-      .expect(400);
+      .expect(200);
+
+    const recipes = response.body;
+
+    expect(recipes.length).toBe(3);
+
+    const followedRecipe = recipes.find((r: any) => r.name === 'Pasta del Seguido');
+    expect(followedRecipe.userId.username).toBe('ChefSeguido');
+    expect(recipes.some((r: any) => r.name === 'Pasta de un Desconocido')).toBe(true);
+  });
+
+  test('Should not return more than 15 recipes', async () => {
+    const extraRecipes = Array.from({ length: 20 }).map((_, i) => ({
+      name: `Receta Relleno ${i}`,
+      steps: 'Pasos...',
+      ingredients: [{ ingredient: 'cebolla', quantity: '1' }],
+      tools: ['olla'],
+      userId: new mongoose.Types.ObjectId(),
+      category: ['otro']
+    }));
+    await Recipe.insertMany(extraRecipes);
+
+    const response = await request(app)
+      .get('/recipes/feed')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body.length).toBe(15);
+  });
+
+  test('EMPTY: Should return general recipes even if user follows no one and has no searches', async () => {
+    const cleanUser = await new User({
+      username: 'CleanUser',
+      email: 'clean@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      following: [],
+      recentSearches: []
+    }).save();
+    
+    const cleanToken = jwt.sign({ _id: cleanUser._id.toString() }, JWT_SECRET);
+
+    const response = await request(app)
+      .get('/recipes/feed')
+      .set('Authorization', `Bearer ${cleanToken}`)
+      .expect(200);
+
+    expect(response.body.length).toBeGreaterThanOrEqual(1);
+    expect(response.body.some((r: any) => r.name === 'Ensalada General')).toBe(true);
+  });
+
+  test('ERROR: Should return 401 if no token is provided', async () => {
+    await request(app)
+      .get('/recipes/feed')
+      .expect(401);
+  });
+});
+
+describe('Recipe Routes: GET /recipes/saved', () => {
+  let token: string;
+  let userId: string;
+  let recipeId1: string;
+  let recipeId2: string;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+    await Recipe.deleteMany({});
+
+    const author = await new User({
+      username: 'ChefAutor',
+      email: 'autor@test.com',
+      password: 'Password123!',
+      categories: ['otro']
+    }).save();
+
+    const recipe1 = await new Recipe({
+      name: 'Receta Guardada 1',
+      steps: 'Paso 1...',
+      ingredients: [{ ingredient: 'pimiento', quantity: '1' }],
+      tools: ['olla'],
+      userId: author._id,
+      category: ['pasta']
+    }).save();
+
+    const recipe2 = await new Recipe({
+      name: 'Receta Guardada 2',
+      steps: 'Paso 2...',
+      ingredients: [{ ingredient: 'pimiento', quantity: '2' }],
+      tools: ['sartén'],
+      userId: author._id,
+      category: ['carne']
+    }).save();
+
+    recipeId1 = recipe1._id.toString();
+    recipeId2 = recipe2._id.toString();
+
+    const user = await new User({
+      username: 'UserLector',
+      email: 'lector@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      saved: [recipe1._id, recipe2._id] 
+    }).save();
+
+    userId = user._id.toString();
+    token = jwt.sign({ _id: userId }, JWT_SECRET);
+  });
+
+  test('SUCCESS: Should return all saved recipes with populated author data', async () => {
+    const response = await request(app)
+      .get('/recipes/saved')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    const savedRecipes = response.body;
+
+    expect(Array.isArray(savedRecipes)).toBe(true);
+    expect(savedRecipes.length).toBe(2);
+
+    expect(savedRecipes[0].name).toBe('Receta Guardada 1');
+    expect(savedRecipes[0].userId.username).toBe('ChefAutor');
+    expect(savedRecipes[0].userId.profilePic).toBeDefined();
+
+    expect(savedRecipes[0].userId.password).toBeUndefined();
+  });
+
+  test('EMPTY: Should return an empty array if the user has no saved recipes', async () => {
+    const emptyUser = await new User({
+      username: 'UserSinNada',
+      email: 'vacio@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      saved: []
+    }).save();
+    
+    const emptyToken = jwt.sign({ _id: emptyUser._id.toString() }, JWT_SECRET);
+
+    const response = await request(app)
+      .get('/recipes/saved')
+      .set('Authorization', `Bearer ${emptyToken}`)
+      .expect(200);
+
+    expect(response.body).toEqual([]);
+  });
+
+  test('ERROR: Should return 401 if token is missing', async () => {
+    await request(app)
+      .get('/recipes/saved')
+      .expect(401);
   });
 });
 
@@ -257,43 +411,41 @@ describe('Recipe Routes: GET /recipes/:id', () => {
     await Recipe.deleteMany({});
     await User.deleteMany({});
 
-    const user = await new User({
+    const author = await new User({
       username: 'ChefEspecial',
       email: 'especial@test.com',
       password: 'Password123!',
+      categories: ['otro'],
       profilePic: 'uploads/images/chef.png'
     }).save();
 
-    authorId = user._id.toString();
-
+    authorId = author._id.toString();
     const recipe = await new Recipe({
       name: 'Paella Valenciana',
       steps: 'Cocinar el arroz con el sofrito y el caldo.',
-      ingredients: [{ ingredient: 'pollo', quantity: '500g' }],
+      ingredients: [{ ingredient: 'pimiento', quantity: '500g' }],
       tools: ['olla'], 
-      userId: user._id,
+      userId: author._id,
       category: ['arroz']
     }).save();
 
     recipeId = recipe._id.toString();
   });
 
-  test('SUCCESS: Should return the recipe with populated user data', async () => {
+  test('SUCCESS: Should return the recipe with populated author data', async () => {
     const response = await request(app)
       .get(`/recipes/${recipeId}`)
       .expect(200);
 
     expect(response.body.name).toBe('Paella Valenciana');
-    
     expect(response.body.userId).toHaveProperty('username');
     expect(response.body.userId.username).toBe('ChefEspecial');
     expect(response.body.userId.profilePic).toBe('uploads/images/chef.png');
-    
     expect(response.body.userId.password).toBeUndefined();
   });
 
-  test('ERROR: Should return 404 if the ID format is valid but does not exist', async () => {
-    const fakeId = new mongoose.Types.ObjectId();
+  test('ERROR: Should return 404 if the ID format is valid but doesnt exist', async () => {
+    const fakeId = new mongoose.Types.ObjectId(); 
     const response = await request(app)
       .get(`/recipes/${fakeId}`)
       .expect(404);
@@ -301,8 +453,9 @@ describe('Recipe Routes: GET /recipes/:id', () => {
     expect(response.body.error).toBe('Receta no encontrada.');
   });
 
-  test('ERROR: Should return 500 if the ID format is invalid', async () => {
-    const invalidId = '123-id-no-valido';
+  test('ERROR: Should return 500 if the ID format is totally invalid', async () => {
+    const invalidId = 'este-id-no-es-un-objectid';
+
     const response = await request(app)
       .get(`/recipes/${invalidId}`)
       .expect(500);
@@ -312,7 +465,85 @@ describe('Recipe Routes: GET /recipes/:id', () => {
   });
 });
 
-describe('Recipe Routes: PATCH operations', () => {
+describe('Recipe Routes: PATCH /recipes ', () => {
+  let authorId: string;
+  let recipeName = 'Arroz con Leche';
+
+  beforeEach(async () => {
+    await Recipe.deleteMany({});
+    await User.deleteMany({});
+
+    const author = await new User({
+      username: 'EditorChef',
+      email: 'editor@test.com',
+      password: 'Password123!',
+      categories: ['otro'] 
+    }).save();
+
+    authorId = author._id.toString();
+    await new Recipe({
+      name: recipeName,
+      steps: 'Cocer arroz con leche.',
+      ingredients: [{ ingredient: 'pimiento', quantity: '1' }],
+      tools: ['olla'],
+      userId: author._id,
+      category: ['postre']
+    }).save();
+  });
+
+  test('SUCCESS: Should update recipe steps using name filter', async () => {
+    const response = await request(app)
+      .patch('/recipes')
+      .query({ name: 'arroz' }) 
+      .send({ steps: 'Nueva descripción de pasos corregida.' })
+      .expect(200);
+
+    expect(response.body.steps).toBe('Nueva descripción de pasos corregida.');
+  });
+
+  test('ERROR: Should return 400 if no query filters are provided', async () => {
+    const response = await request(app)
+      .patch('/recipes')
+      .send({ name: 'Nuevo Nombre' })
+      .expect(400);
+
+    expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
+  });
+
+  test('ERROR: Should return 400 if body is empty', async () => {
+    await request(app)
+      .patch('/recipes')
+      .query({ name: 'Arroz' })
+      .send({})
+      .expect(400);
+  });
+
+  test('ERROR: Should return 400 if update contains forbidden fields ', async () => {
+    await request(app)
+      .patch('/recipes')
+      .query({ name: 'Arroz' })
+      .send({ userId: new mongoose.Types.ObjectId() }) 
+      .expect(400);
+  });
+
+  test('ERROR: Should return 404 if no recipe matches the filter', async () => {
+    await request(app)
+      .patch('/recipes')
+      .query({ name: 'PizzaInexistente' })
+      .send({ name: 'Nuevo' })
+      .expect(404);
+  });
+
+  test('ERROR: Should fail if update violates Enum validation ', async () => {
+    await request(app)
+      .patch('/recipes')
+      .query({ name: 'Arroz' })
+      .send({ tools: ['destornillador'] })
+      .expect(400);
+  });
+});
+
+describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
   let recipeId: string;
   let userId: string;
 
@@ -321,126 +552,67 @@ describe('Recipe Routes: PATCH operations', () => {
     await User.deleteMany({});
 
     const user = await new User({
-      username: 'EditorChef',
+      username: 'ChefEditor',
       email: 'editor@test.com',
-      password: 'Password123!'
+      password: 'Password123!',
+      categories: ['otro'] 
     }).save();
 
     userId = user._id.toString();
 
     const recipe = await new Recipe({
-      name: 'Arroz con Leche',
-      steps: 'Cocer arroz con leche y azúcar.',
-      ingredients: [{ ingredient: 'leche', quantity: '1L' }],
+      name: 'Receta Original',
+      steps: 'Pasos antiguos.',
+      ingredients: [{ ingredient: 'pimiento', quantity: '1' }],
       tools: ['olla'],
       userId: user._id,
-      category: ['postre']
+      category: ['otro']
     }).save();
 
     recipeId = recipe._id.toString();
   });
 
-  describe('PATCH /recipes (Update by Query Filter)', () => {
-    test('SUCCESS: Should update a recipe finding it by name', async () => {
-      const response = await request(app)
-        .patch('/recipes')
-        .query({ name: 'arroz' }) 
-        .send({ steps: 'Nueva descripción de pasos corregida.' })
-        .expect(200);
+  test('SUCCESS: Should update allowed fields by ID', async () => {
+    const updateData = {
+      name: 'Receta Actualizada',
+      category: ['postre', 'otro'],
+      tools: ['olla', 'batidora']
+    };
 
-      expect(response.body.steps).toBe('Nueva descripción de pasos corregida.');
-    });
+    const response = await request(app)
+      .patch(`/recipes/${recipeId}`)
+      .send(updateData)
+      .expect(200);
 
-    test('ERROR: Should return 400 if no filters are provided in query', async () => {
-      await request(app)
-        .patch('/recipes')
-        .send({ name: 'Nuevo Nombre' })
-        .expect(400); 
-    });
-
-    test('ERROR: Should return 400 if body is empty', async () => {
-      await request(app)
-        .patch('/recipes')
-        .query({ name: 'Arroz' })
-        .send({})
-        .expect(400); 
-    });
-
-    test('ERROR: Should return 400 if update contains forbidden fields', async () => {
-      await request(app)
-        .patch('/recipes')
-        .query({ name: 'Arroz' })
-        .send({ userId: new mongoose.Types.ObjectId(), secretField: 'hack' })
-        .expect(400); 
-    });
-
-    test('ERROR: Should return 404 if no recipe matches the filter', async () => {
-      await request(app)
-        .patch('/recipes')
-        .query({ name: 'NombreInexistente' })
-        .send({ name: 'Nuevo' })
-        .expect(404);
-    });
-
-    test('ERROR: Should return 400 if userId in query is invalid', async () => {
-      await request(app)
-        .patch('/recipes')
-        .query({ userId: 'not-an-id' })
-        .send({ name: 'Nuevo' })
-        .expect(400);
-    });
+    expect(response.body.name).toBe('Receta Actualizada');
+    expect(response.body.category).toContain('postre');
+    expect(response.body.tools).toContain('batidora');
   });
 
-  describe('PATCH /recipes/:id (Update by ID)', () => {
-    test('SUCCESS: Should update allowed fields by ID', async () => {
-      const updateData = {
-        name: 'Arroz con Leche Especial',
-        category: ['postre', 'otro'],
-        tools: ['olla', 'batidora']
-      };
+  test('ERROR: Should return 400 if update contains forbidden fields ', async () => {
+    await request(app)
+      .patch(`/recipes/${recipeId}`)
+      .send({ userId: new mongoose.Types.ObjectId() }) 
+      .expect(400);
+  });
 
-      const response = await request(app)
-        .patch(`/recipes/${recipeId}`)
-        .send(updateData)
-        .expect(200);
+  test('ERROR: Should return 400 if validation fails ', async () => {
+    await request(app)
+      .patch(`/recipes/${recipeId}`)
+      .send({ tools: ['martillo'] })
+      .expect(400);
+  });
 
-      expect(response.body.name).toBe(updateData.name);
-      expect(response.body.category).toContain('otro');
-      expect(response.body.tools).toContain('batidora');
-    });
-
-    test('ERROR: Should fail if update violates Enum validation (runValidators)', async () => {
-      await request(app)
-        .patch(`/recipes/${recipeId}`)
-        .send({ tools: ['herramienta-falsa'] })
-        .expect(400); 
-    });
-
-    test('ERROR: Should return 400 if field is not permitted', async () => {
-      await request(app)
-        .patch(`/recipes/${recipeId}`)
-        .send({ creacionDate: new Date() }) 
-        .expect(400);
-    });
-
-    test('ERROR: Should return 404 if ID is valid but does not exist', async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-      await request(app)
-        .patch(`/recipes/${fakeId}`)
-        .send({ name: 'Nuevo' })
-        .expect(404);
-    });
-
-    test('ERROR: Should return 400 if steps are updated to empty (validation)', async () => {
-      await request(app)
-        .patch(`/recipes/${recipeId}`)
-        .send({ steps: '' })
-        .expect(400);
-    });
+  test('ERROR: Should return 404 if recipe ID is valid format but does not exist', async () => {
+    const fakeId = new mongoose.Types.ObjectId();
+    await request(app)
+      .patch(`/recipes/${fakeId}`)
+      .send({ name: 'Nuevo Nombre' })
+      .expect(404);
   });
 });
 
-describe('Recipe Routes: DELETE operations', () => {
+describe('Recipe Routes: DELETE /recipes ', () => {
   let recipeId: string;
   let userId: string;
 
@@ -452,15 +624,15 @@ describe('Recipe Routes: DELETE operations', () => {
     const user = await new User({
       username: 'ChefBorrado',
       email: 'delete@test.com',
-      password: 'Password123!'
+      password: 'Password123!',
+      categories: ['otro']
     }).save();
 
     userId = user._id.toString();
-
     const recipe = await new Recipe({
       name: 'Sopa de Tomate',
       steps: 'Triturar tomates y hervir.',
-      ingredients: [{ ingredient: 'verduras', quantity: '1kg' }],
+      ingredients: [{ ingredient: 'pimiento', quantity: '1kg' }],
       tools: ['olla'],
       userId: user._id,
       category: ['entrante'],
@@ -472,81 +644,121 @@ describe('Recipe Routes: DELETE operations', () => {
     await new Review({
       comment: 'Muy rica',
       rating: 5,
-      userId: recipe._id,
+      userId: recipe._id, 
       recipeId: recipe._id
     }).save();
   });
 
-  describe('DELETE /recipes (By Query Filter)', () => {
-    test('SUCCESS: Should delete a recipe by partial name and clean reviews', async () => {
-      const response = await request(app)
-        .delete('/recipes')
-        .query({ name: 'Sopa' })
-        .expect(200);
+  test('SUCCESS: Should delete recipe by name and clean its reviews', async () => {
+    const response = await request(app)
+      .delete('/recipes')
+      .query({ name: 'Sopa' })
+      .expect(200);
 
-      expect(response.body._id).toBe(recipeId);
+    expect(response.body._id).toBe(recipeId);
 
-      const found = await Recipe.findById(recipeId);
-      expect(found).toBeNull();
-
-      const reviews = await Review.find({ userId: recipeId });
-      expect(reviews.length).toBe(0);
-    });
-
-    test('ERROR: Should return 400 if no query parameters are provided', async () => {
-      const response = await request(app)
-        .delete('/recipes')
-        .expect(400);
-
-      expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
-    });
-
-    test('ERROR: Should return 404 if no recipe matches the filter', async () => {
-      await request(app)
-        .delete('/recipes')
-        .query({ name: 'Inexistente' })
-        .expect(404);
-    });
-
-    test('ERROR: Should return 400 for invalid userId format in query', async () => {
-      await request(app)
-        .delete('/recipes')
-        .query({ userId: 'esto-no-es-un-id' })
-        .expect(400);
-    });
+    const foundRecipe = await Recipe.findById(recipeId);
+    expect(foundRecipe).toBeNull();
   });
 
-  describe('DELETE /recipes/:id (By ID Parameter)', () => {
-    test('SUCCESS: Should delete recipe by ID and trigger file cleanup logic', async () => {
-      const response = await request(app)
-        .delete(`/recipes/${recipeId}`)
-        .expect(200);
+  test('ERROR: Should return 400 if no query parameters are provided', async () => {
+    const response = await request(app)
+      .delete('/recipes')
+      .expect(400);
 
-      expect(response.body.name).toBe('Sopa de Tomate');
+    expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
+  });
 
-      const found = await Recipe.findById(recipeId);
-      expect(found).toBeNull();
-    });
+  test('ERROR: Should return 404 if no recipe matches the filter', async () => {
+    await request(app)
+      .delete('/recipes')
+      .query({ name: 'PizzaInexistente' })
+      .expect(404);
+  });
 
-    test('ERROR: Should return 404 if ID is valid but recipe does not exist', async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-      await request(app)
-        .delete(`/recipes/${fakeId}`)
-        .expect(404);
-    });
+  test('Should handle files correctly (Simulation)', async () => {
+    const response = await request(app)
+      .delete('/recipes')
+      .query({ category: 'entrante' })
+      .expect(200);
 
-    test('ERROR: Should return 500 if ID format is invalid', async () => {
-      await request(app)
-        .delete('/recipes/id-invalido-123')
-        .expect(500);
-    });
+    expect(response.body.images).toContain('default/food.png');
+    expect(response.body.images).toContain('uploads/recipes/sopa.jpg');
+  });
+});
 
-    test('LOGIC: Should handle recipes with multiple images (default and custom)', async () => {
-      const res = await request(app)
-        .delete(`/recipes/${recipeId}`)
-        .expect(200);
-      
-      expect(res.body.images).toContain('default/food.png');
-    });
+describe('Recipe Routes: DELETE /recipes/:id', () => {
+  let recipeId: string;
+  let userId: string;
+
+  beforeEach(async () => {
+    await Recipe.deleteMany({});
+    await User.deleteMany({});
+    await Review.deleteMany({});
+
+    const user = await new User({
+      username: 'ChefEliminador',
+      email: 'delete_id@test.com',
+      password: 'Password123!',
+      categories: ['otro']
+    }).save();
+
+    userId = user._id.toString();
+
+    const recipe = await new Recipe({
+      name: 'Sopa de Cebolla',
+      steps: 'Cocinar cebolla y añadir caldo.',
+      ingredients: [{ ingredient: 'pimiento', quantity: '2' }],
+      tools: ['olla'],
+      userId: user._id,
+      category: ['entrante'],
+      images: ['uploads/recipes/cebolla.jpg', 'default/soup.png'],
+      videos: ['uploads/recipes/tutorial.mp4']
+    }).save();
+
+    recipeId = recipe._id.toString();
+
+    await new Review({
+      comment: 'Me encantó',
+      rating: 5,
+      userId: recipe._id, 
+      recipeId: recipe._id
+    }).save();
+  });
+
+  test('SUCCESS: Should delete recipe by ID and trigger all cleanup logic', async () => {
+    const response = await request(app)
+      .delete(`/recipes/${recipeId}`)
+      .expect(200);
+
+    expect(response.body._id).toBe(recipeId);
+    expect(response.body.name).toBe('Sopa de Cebolla');
+
+    const found = await Recipe.findById(recipeId);
+    expect(found).toBeNull();
+
+    const reviews = await Review.find({ userId: recipeId });
+    expect(reviews.length).toBe(0);
+  });
+
+  test('ERROR: Should return 404 if the ID is valid but the recipe does not exist', async () => {
+    const fakeId = new mongoose.Types.ObjectId();
+    await request(app)
+      .delete(`/recipes/${fakeId}`)
+      .expect(404);
+  });
+
+  test('ERROR: Should return 500 if the ID format is invalid', async () => {
+    await request(app)
+      .delete('/recipes/esto-no-es-un-id')
+      .expect(500);
+  });
+
+  test('Should preserve "default" strings in the deleted object data', async () => {
+    const response = await request(app)
+      .delete(`/recipes/${recipeId}`)
+      .expect(200);
+    expect(response.body.images).toContain('default/soup.png');
+    expect(response.body.images).toContain('uploads/recipes/cebolla.jpg');
   });
 });

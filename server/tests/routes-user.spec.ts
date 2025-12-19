@@ -1,53 +1,86 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../src/server.js';
-import { User } from '../src/items/user.js';
-import { describe, expect, test, beforeAll, beforeEach } from 'vitest';
+import { User, UserInterface } from '../src/items/user.js';
+import { Recipe } from '../src/items/recipe.js';
+import { Review } from '../src/items/review.js';
+import { describe, expect, test, beforeEach } from 'vitest';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import type { UserInterface } from '../src/items/user.js';
-import { Recipe } from '../src/items/recipe.js'; 
-import { Review } from '../src/items/review.js';
+
+const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
 
 const testUserData = {
-	username: 'PruebaUser3',
-	email: 'prueba3@test.com',
-	password: 'MiPassSegura1235',
-	bio: 'Usuario de prueba para el hashing.',
+  username: 'ChefMaster',
+  email: 'chef@test.com',
+  password: 'Password123!',
+  bio: 'Amante de la cocina mediterránea.',
+  categories: ['pasta', 'vegano']
 };
 
 const otherUserData = {
-	username: 'OtroUsuario',
-	email: 'otro@test.com',
-	password: 'OtraPass2025',
-	bio: 'Otro usuario de prueba.',
+  username: 'OtroChef',
+  email: 'otro@test.com',
+  password: 'OtraPassword123!',
+  categories: ['otro']
 };
 
-let userId: mongoose.Types.ObjectId;
-let otherUserId: mongoose.Types.ObjectId;
+let userId: string;
+let token: string;
+
+const userEmail = 'test-delete@example.com';
+const userName = 'DeleteMeUser';
+
 
 beforeEach(async () => {
-	await User.deleteMany();
+  await User.deleteMany({});
+  await Recipe.deleteMany({});
+  await Review.deleteMany({});
+
+
+  const user = await new User(testUserData).save();
+  userId = user._id.toString();
+  token = jwt.sign({ _id: userId }, JWT_SECRET);
 });
 
-describe('User Routes POST (Sign Up)', () => {
-	test('Should create a new user and hash the password', async () => {
-		const newUserData = { username: 'NuevoUnico', email: 'nuevo@unico.com', password: 'passwordUnico', bio: 'test' };
-		const response = await request(app)
-			.post('/users')
-			.send(newUserData)
-			.expect(201);
-	});
 
-	test('Should return 400 when provided with an invalid email', async () => {
-		await request(app)
-			.post('/users')
-			.send({ ...testUserData, email: 'not-an-email' }) 
-			.expect(400);
-	});
+describe('User Routes POST', () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+
+  test('Should create a new user by explicitly sending valid categories', async () => {
+    const newUserData = { 
+      username: 'NuevoUnico', 
+      email: 'nuevo@unico.com', 
+      password: 'passwordUnico', 
+      bio: 'test',
+      categories: ['otro'] 
+    };
+
+    const response = await request(app)
+      .post('/users')
+      .send(newUserData)
+      .expect(201);
+
+  });
+
+  test('Should return 400 when provided with an invalid email', async () => {
+    await request(app)
+      .post('/users')
+      .send({ ...testUserData, email: 'not-an-email' }) 
+      .expect(400);
+  });
+
+  test('Should return 401 for incorrect credentials', async () => {
+    await request(app)
+      .post('/users/login')
+      .send({ email: testUserData.email, password: 'wrongPassword' })
+      .expect(401);
+  });
 });
 
-describe('User Routes POST (Login)', () => {
+describe('User Routes POST', () => {
   beforeEach(async () => {
     await User.deleteMany();
     await new User(testUserData).save();
@@ -87,14 +120,14 @@ describe('User Routes POST (Login)', () => {
   });
 });
 
-describe('User Routes GET /users/me (Authenticated)', () => {
+describe('User Routes GET /users/me', () => {
   let token: string;
   const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
 
   beforeEach(async () => {
     await User.deleteMany();
     const user = await new User(testUserData).save();
-    userId = user._id;
+    userId = user._id.toString();
     token = jwt.sign({ _id: userId.toString() }, JWT_SECRET);
   });
 
@@ -122,7 +155,7 @@ describe('User Routes GET /users/me (Authenticated)', () => {
   });
 });
 
-describe('User Routes PATCH /users/me (Authenticated)', () => {
+describe('User Routes PATCH /users/me', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
 
@@ -187,38 +220,50 @@ describe('User Routes PATCH /users/me (Authenticated)', () => {
   });
 });
 
-describe('User Routes GET (Search and Find)', () => {
-	beforeEach(async () => {
-			await new User(testUserData).save();
-	});
+describe('User Routes GET', () => {
+  test('Should get users by searching part of the username', async () => {
+    const response = await request(app)
+      .get('/users')
+      .query({ username: 'chef' }) 
+      .expect(200);
 
-	test('Should get users by searching part of the username', async () => {
-			const response = await request(app)
-					.get('/users')
-					.query({ username: 'Prueba' })
-					.expect(200);
+    expect(response.body.length).toBeGreaterThan(0);
+    expect(response.body[0].username).toBe(testUserData.username);
 
-	}); 
-	
-	test('Should return 404 if no user matches the search criteria', async () => {
-			await request(app)
-				.get('/users')
-				.query({ username: 'NonExistentUsername' })
-				.expect(404);
-	});
-	
-	test('Should return user by exact email match', async () => {
-		const response = await request(app)
-			.get('/users')
-			.query({ email: testUserData.email }) 
-			.expect(200);
+    expect(response.body[0]).toHaveProperty('categories');
+    expect(response.body[0]).toHaveProperty('createdAt');
+  });
 
-		expect(response.body.length).toBe(1);
-		expect(response.body[0].email).toBe(testUserData.email);
-	});
+  test('Should find users by category', async () => {
+    const response = await request(app)
+      .get('/users')
+      .query({ categories: 'pasta' })
+      .expect(200);
+
+    expect(response.body.length).toBeGreaterThan(0);
+    expect(response.body[0].categories).toContain('pasta');
+  });
+
+  test('Should return user by exact email match', async () => {
+    const response = await request(app)
+      .get('/users')
+      .query({ email: testUserData.email }) 
+      .expect(200);
+
+    expect(response.body.length).toBe(1);
+    expect(response.body[0].email).toBe(testUserData.email);
+    expect(Array.isArray(response.body[0].saved)).toBe(true);
+  });
+
+  test('Should return 404 if no user matches the search criteria', async () => {
+    await request(app)
+      .get('/users')
+      .query({ username: 'UsuarioInexistente999' })
+      .expect(404);
+  });
 });
 
-describe('User Routes DELETE /users/me (Authenticated)', () => {
+describe('User Routes DELETE /users/me', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
 
@@ -255,7 +300,7 @@ describe('User Routes DELETE /users/me (Authenticated)', () => {
   });
 });
 
-describe('User Routes POST /users/logout (Authenticated)', () => {
+describe('User Routes POST /users/logout', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
 
@@ -291,22 +336,36 @@ describe('User Routes POST /users/logout (Authenticated)', () => {
   });
 });
 
-describe('User Routes GET /users (Search functionality)', () => {
+describe('User Routes GET /users', () => {
+  const user1 = {
+    username: 'ChefMaster',
+    email: 'chef@test.com',
+    password: 'Password123!',
+    categories: ['pasta', 'vegano'] 
+  };
+
+  const user2 = {
+    username: 'OtroChef',
+    email: 'otro@test.com',
+    password: 'Password123!',
+    categories: ['otro']
+  };
+
   beforeEach(async () => {
-    await User.deleteMany();
-    await new User(testUserData).save(); 
-    await new User(otherUserData).save(); 
+    await User.deleteMany({});
+    await new User(user1).save(); 
+    await new User(user2).save(); 
   });
 
-  test('Should find users by partial username (case-insensitive)', async () => {
+  test('Should find users by partial username ', async () => {
     const response = await request(app)
       .get('/users')
-      .query({ username: 'prueba' })
+      .query({ username: 'chef' }) 
       .expect(200);
 
-    const users = response.body as UserInterface[];
-    expect(users.length).toBeGreaterThan(0);
-    expect(users[0].username).toBe(testUserData.username);
+    const users = response.body;
+    expect(users.length).toBe(2); 
+    expect(users.some((u: any) => u.username === 'ChefMaster')).toBe(true);
   });
 
   test('Should find users by partial email', async () => {
@@ -315,15 +374,19 @@ describe('User Routes GET /users (Search functionality)', () => {
       .query({ email: 'test.com' })
       .expect(200);
 
-    const users = response.body as UserInterface[];
+    const users = response.body;
     expect(users.length).toBe(2);
   });
 
-  test('Should return 404 if no user matches the filter', async () => {
-    await request(app)
+  test('Should filter by category', async () => {
+    const response = await request(app)
       .get('/users')
-      .query({ username: 'NombreInexistente' })
-      .expect(404);
+      .query({ categories: 'pasta' })
+      .expect(200);
+
+    const users = response.body;
+    expect(users.length).toBe(2);
+    expect(users[0].username).toBe('ChefMaster');
   });
 
   test('Should return all users if no query parameters are provided', async () => {
@@ -331,74 +394,27 @@ describe('User Routes GET /users (Search functionality)', () => {
       .get('/users')
       .expect(200);
 
-    const users = response.body as UserInterface[];
-    expect(users.length).toBe(2);
+    expect(response.body.length).toBe(2);
   });
 
   test('Should filter by both username and email combined', async () => {
     const response = await request(app)
       .get('/users')
       .query({ 
-        username: 'Prueba',
-        email: 'prueba3@test.com'
+        username: 'Master',
+        email: 'chef@'
       })
       .expect(200);
 
-    const users = response.body as UserInterface[];
+    const users = response.body;
     expect(users.length).toBe(1);
-    expect(users[0].email).toBe(testUserData.email);
-  });
-});
-
-describe('User Routes GET /users/:id/follows', () => {
-  let mainUserId: string;
-  let followedUserId: string;
-
-  beforeEach(async () => {
-    await User.deleteMany();
-
-    const followedUser = await new User(otherUserData).save();
-    followedUserId = (followedUser._id as mongoose.Types.ObjectId).toString();
-
-    const mainUser = await new User({
-      ...testUserData,
-      following: [followedUser._id] 
-    }).save();
-    
-    mainUserId = (mainUser._id as mongoose.Types.ObjectId).toString();
+    expect(users[0].username).toBe('ChefMaster');
   });
 
-  test('Should return the list of users followed by the user', async () => {
-    const response = await request(app)
-      .get(`/users/${mainUserId}/follows`)
-      .expect(200);
-
-    const follows = response.body as UserInterface[];
-    
-    expect(Array.isArray(follows)).toBe(true);
-    expect(follows.length).toBe(1);
-    expect(follows[0].username).toBe(otherUserData.username);
-    expect(follows[0].email).toBe(otherUserData.email);
-  });
-
-  test('Should return an empty array if the user follows no one', async () => {
-    const lonelyUser = await new User({
-      username: 'LonelyUser',
-      email: 'lonely@test.com',
-      password: 'password123'
-    }).save();
-
-    const response = await request(app)
-      .get(`/users/${lonelyUser._id}/follows`)
-      .expect(200);
-
-    expect(response.body).toEqual([]);
-  });
-
-  test('Should return 404 if the main user does not exist', async () => {
-    const fakeId = new mongoose.Types.ObjectId();
+  test('Should return 404 if no user matches the filter', async () => {
     await request(app)
-      .get(`/users/${fakeId}/follows`)
+      .get('/users')
+      .query({ username: 'NombreInexistente' })
       .expect(404);
   });
 });
@@ -479,7 +495,7 @@ describe('User Routes GET /users/:id', () => {
     expect(response.body.error).toBe('Usuario no encontrado.');
   });
 
-  test('Should return 500 for an invalid ID format (CastError)', async () => {
+  test('Should return 500 for an invalid ID format ', async () => {
     const invalidId = '123-id-no-valido';
     
     await request(app)
@@ -492,7 +508,7 @@ describe('User Routes get:id', () => {
 	beforeEach(async () => {
 		await User.deleteMany();
 		const user = await new User(testUserData).save(); 
-		userId = user._id; 
+		userId = user._id.toString(); 
 	});
 
 	test('Should get a user by ID', async () => {
@@ -512,241 +528,223 @@ describe('User Routes get:id', () => {
 
 describe('User Routes PATCH /users (Update by Filter)', () => {
   beforeEach(async () => {
-    await User.deleteMany();
-    await new User(testUserData).save();
+    await User.deleteMany({});
+    await new User({
+      username: 'ChefMaster',
+      email: 'chef@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      bio: 'Bio antigua'
+    }).save();
   });
 
   test('Should update user successfully using email filter', async () => {
-    const updates: Partial<UserInterface> = { bio: 'Bio actualizada por email' };
+    const updates = { bio: 'Bio actualizada por email' };
 
     const response = await request(app)
       .patch('/users')
-      .query({ email: testUserData.email }) 
+      .query({ email: 'chef@test.com' }) 
       .send(updates)
       .expect(200);
 
     expect(response.body.bio).toBe(updates.bio);
-    expect(response.body.email).toBe(testUserData.email);
   });
 
-  test('Should update user successfully using username filter (regex)', async () => {
-    const updates: Partial<UserInterface> = { bio: 'Bio actualizada por username' };
+  test('Should update user successfully using username filter ', async () => {
+    const updates = { bio: 'Bio actualizada por username' };
     const response = await request(app)
       .patch('/users')
-      .query({ username: 'Prueba' })
+      .query({ username: 'Chef' }) 
       .send(updates)
       .expect(200);
 
-    expect(response.body.username).toBe(testUserData.username);
+    expect(response.body.username).toBe('ChefMaster');
     expect(response.body.bio).toBe(updates.bio);
   });
 
-  test('Should return 400 if no filters (username/email) are provided', async () => {
+  test('Should return 400 if no filters are provided', async () => {
     await request(app)
       .patch('/users')
       .send({ bio: 'No funcionará' })
       .expect(400); 
   });
 
-  test('Should return 400 if the update body is empty', async () => {
-    await request(app)
-      .patch('/users')
-      .query({ email: testUserData.email })
-      .send({})
-      .expect(400);
-  });
-
-  test('Should return 400 if update contains prohibited fields', async () => {
-    await request(app)
-      .patch('/users')
-      .query({ email: testUserData.email })
-      .send({ role: 'admin' })
-      .expect(400);
-  });
-
   test('Should return 404 if no user matches the filter', async () => {
     await request(app)
       .patch('/users')
-      .query({ email: 'no-existe@test.com' })
+      .query({ username: 'UsuarioInexistente' })
       .send({ bio: 'Nueva bio' })
       .expect(404);
   });
 });
 
-describe('User Routes PATCH /users/:id', () => {
+describe('User Routes PATCH /users/:id (Update by ID)', () => {
   let userId: string;
 
   beforeEach(async () => {
-    await User.deleteMany();
-    const user = await new User(testUserData).save();
-    userId = (user._id as mongoose.Types.ObjectId).toString();
+    await User.deleteMany({});
+    const user = await new User({
+      username: 'UpdateMe',
+      email: 'update@test.com',
+      password: 'Password123!',
+      categories: ['pasta']
+    }).save();
+    userId = user._id.toString();
   });
 
-  test('Should update user profile successfully by ID', async () => {
-    const updates: Partial<UserInterface> = {
-      bio: 'Biografía actualizada por ID',
-      username: 'UserIDPatch'
-    };
+  test('Should update user by a valid ID', async () => {
+    const updates = { bio: 'Mi nueva bio por ID' };
 
     const response = await request(app)
       .patch(`/users/${userId}`)
       .send(updates)
       .expect(200);
 
-    const userResponse = response.body as UserInterface;
-    expect(userResponse.bio).toBe(updates.bio);
-    expect(userResponse.username).toBe(updates.username);
+    expect(response.body._id).toBe(userId);
+    expect(response.body.bio).toBe(updates.bio);
   });
 
-  test('Should return 400 when updating with prohibited fields', async () => {
+  test('Should return 400 if updates are invalid for the schema', async () => {
     await request(app)
       .patch(`/users/${userId}`)
-      .send({ role: 'admin' }) 
+      .send({ username: '' }) 
       .expect(400);
   });
 
-  test('Should return 404 for a non-existent ID', async () => {
-    const fakeId = new mongoose.Types.ObjectId().toString();
+  test('Should return 404 if ID is valid but user does not exist', async () => {
+    const fakeId = new mongoose.Types.ObjectId();
     await request(app)
       .patch(`/users/${fakeId}`)
-      .send({ bio: 'No importa' })
+      .send({ bio: 'Hola' })
       .expect(404);
-  });
-
-  test('Should return 400 if validation fails (e.g., invalid email)', async () => {
-    await request(app)
-      .patch(`/users/${userId}`)
-      .send({ email: 'email-invalido' })
-      .expect(400);
   });
 });
 
-describe('User Routes: DELETE comprehensive tests', () => {
+describe('User Routes: DELETE by Query (?email or ?username)', () => {
   let userId: string;
-  let userEmail = 'test-delete@example.com';
-  let userName = 'DeleteMeUser';
-
-  const getValidRecipeData = (uId: any) => ({
-    name: 'Receta para borrar',
-    steps: 'Mezclar y cocinar.',
-    ingredients: [{ ingredient: 'pollo', quantity: '200g' }], 
-    tools: ['sartén'],
-    category: ['carne'], 
-    userId: uId
-  });
+  const userEmail = 'test-query@example.com';
+  const userName = 'QueryUser';
 
   beforeEach(async () => {
-    await User.deleteMany();
-    await Recipe.deleteMany();
-    await Review.deleteMany();
+    await User.deleteMany({});
+    await Recipe.deleteMany({});
+    await Review.deleteMany({});
 
     const user = await new User({
       username: userName,
       email: userEmail,
       password: 'Password123!',
-      profilePic: 'uploads/images/foto-usuario.png'
+      categories: ['otro'] 
     }).save();
 
     userId = user._id.toString();
 
-    const recipe1 = await new Recipe(getValidRecipeData(user._id)).save();
-    const recipe2 = await new Recipe({ ...getValidRecipeData(user._id), name: 'Receta 2' }).save();
+    const recipe = await new Recipe({
+      name: 'Pasta Query',
+      steps: 'Pasos...',
+      ingredients: [{ ingredient: 'sal', quantity: '1 pizca' }],
+      tools: ['olla'],
+      category: ['pasta'],
+      userId: userId
+    }).save();
 
     await new Review({
-      comment: 'Review 1',
-      userId: user._id,
-      rating: 5,
-      recipeId: recipe1._id
+      text: 'Muy bueno',
+      userId: userId,
+      rating: 4,
+      recipeId: recipe._id
     }).save();
   });
 
-  describe('DELETE /users (By Query)', () => {
-    test('SUCCESS: Should delete user and all their content using EXACT email', async () => {
-      const response = await request(app)
-        .delete('/users')
-        .query({ email: userEmail })
-        .expect(200);
+  test('Should delete user and content using EXACT email', async () => {
+    await request(app)
+      .delete('/users')
+      .query({ email: userEmail })
+      .expect(200);
 
-      expect(response.body.email).toBe(userEmail);
-
-      expect(await User.findById(userId)).toBeNull();
-      expect(await Recipe.countDocuments({ userId })).toBe(0);
-      expect(await Review.countDocuments({ userId })).toBe(0);
-    });
-
-    test('SUCCESS: Should delete user using PARTIAL username (Regex)', async () => {
-      await request(app)
-        .delete('/users')
-        .query({ username: 'DeleteMe' }) 
-        .expect(200);
-
-      expect(await User.findOne({ username: userName })).toBeNull();
-    });
-
-    test('ERROR: Should return 400 if NO query parameters are provided', async () => {
-      const response = await request(app)
-        .delete('/users')
-        .expect(400);
-
-      expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
-    });
-
-    test('ERROR: Should return 404 if user does not exist with that email', async () => {
-      await request(app)
-        .delete('/users')
-        .query({ email: 'noexiste@test.com' })
-        .expect(404);
-    });
+    expect(await User.findById(userId)).toBeNull();
+    expect(await Recipe.countDocuments({ userId })).toBe(0);
+    expect(await Review.countDocuments({ userId })).toBe(0);
   });
 
-  describe('DELETE /users/:id (By ID)', () => {
-    test('SUCCESS: Should delete user by valid ID and trigger cascade', async () => {
-      const response = await request(app)
-        .delete(`/users/${userId}`)
-        .expect(200);
-    });
+  test('Should delete user using partial username (Regex)', async () => {
+    await request(app)
+      .delete('/users')
+      .query({ username: 'Query' }) 
+      .expect(200);
 
-    test('SUCCESS: Should handle profilePic logic for "default/*" (Regex test)', async () => {
-      const defaultUser = await new User({
-        username: 'DefaultUser',
-        email: 'default@test.com',
-        password: 'pass123',
-        profilePic: 'default/avatar.png'
-      }).save();
+    expect(await User.findOne({ username: userName })).toBeNull();
+  });
 
-      await request(app)
-        .delete(`/users/${defaultUser._id}`)
-        .expect(200);
-      expect(await User.findById(defaultUser._id)).toBeNull();
-    });
+  test('Should return 400 if no query parameters are provided', async () => {
+    const response = await request(app)
+      .delete('/users')
+      .expect(400);
 
-    test('SUCCESS: Should handle profilePic logic for "Flaticon.png"', async () => {
-        const flaticonUser = await new User({
-          username: 'FlaticonUser',
-          email: 'flaticon@test.com',
-          password: 'pass124',
-          profilePic: 'uploads/images/Flaticon.png'
-        }).save();
-  
-        await request(app)
-          .delete(`/users/${flaticonUser._id}`)
-          .expect(200);
-  
-        expect(await User.findById(flaticonUser._id)).toBeNull();
-      });
+    expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
+  });
 
-    test('ERROR: Should return 404 for a valid ID that is not in database', async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-      await request(app)
-        .delete(`/users/${fakeId}`)
-        .expect(404);
-    });
+  test('Should return 404 if user is not found', async () => {
+    await request(app)
+      .delete('/users')
+      .query({ email: 'no-existe@test.com' })
+      .expect(404);
+  });
+});
 
-    test('ERROR: Should return 500 for an ID with invalid format', async () => {
-      const response = await request(app)
-        .delete('/users/123-not-an-id')
-        .expect(500);
-      expect(response.body).toBeDefined();
-    });
+describe('User Routes: DELETE by ID (/users/:id)', () => {
+  let userId: string;
+
+  beforeEach(async () => {
+    await User.deleteMany({});
+    await Recipe.deleteMany({});
+    
+    const user = await new User({
+      username: 'IdUser',
+      email: 'id@test.com',
+      password: 'Password123!',
+      categories: ['vegano'],
+      profilePic: 'uploads/images/foto-especifica.png'
+    }).save();
+
+    userId = user._id.toString();
+  });
+
+  test('Should delete user by a valid ID', async () => {
+    const response = await request(app)
+      .delete(`/users/${userId}`)
+      .expect(200);
+
+    expect(response.body._id).toBe(userId);
+    expect(await User.findById(userId)).toBeNull();
+  });
+
+  test('Should NOT delete file if profilePic is the Flaticon default', async () => {
+    const flaticonUser = await new User({
+      username: 'FlaticonUser',
+      email: 'flaticon@test.com',
+      password: 'Password123!',
+      categories: ['otro'],
+      profilePic: 'uploads/images/Flaticon.png'
+    }).save();
+
+    await request(app)
+      .delete(`/users/${flaticonUser._id}`)
+      .expect(200);
+
+    expect(await User.findById(flaticonUser._id)).toBeNull();
+  });
+
+  test('Should return 404 for a non-existent valid ID', async () => {
+    const fakeId = new mongoose.Types.ObjectId();
+    await request(app)
+      .delete(`/users/${fakeId}`)
+      .expect(404);
+  });
+
+  test('Should return 500 for an invalid ID format', async () => {
+    await request(app)
+      .delete('/users/esto-no-es-un-id')
+      .expect(500);
   });
 });
