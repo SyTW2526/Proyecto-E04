@@ -5,6 +5,7 @@ import { recipeRouter } from './routes/recipes-route.js';
 import cors from "cors";
 import { reviewRouter } from './routes/reviews_route.js';
 import { seedDefaultRecipes } from './db/seedRecipes.js';
+import cookieParser from 'cookie-parser';
 
 export const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors({
   optionsSuccessStatus: 204
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/default", express.static("default"));

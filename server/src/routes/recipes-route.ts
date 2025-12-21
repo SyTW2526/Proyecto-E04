@@ -21,7 +21,7 @@ recipeRouter.use(express.json());
  * Manejador POST de /recipes. Permite almacenar el documento de una receta.
  */
 recipeRouter.post('/recipes', async (req, res) => {
-  const recipe = new Recipe(req.body);
+  const recipe = new Recipe({ ...req.body, _id: new mongoose.Types.ObjectId()});
 
   try {
     await recipe.save();
@@ -40,25 +40,21 @@ recipeRouter.post('/recipes/files',
     { name: "videos", maxCount: 5 }
   ]), async (req, res) => {
 
+  const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
 
-  if (!req.files) {
-    return res.status(400).send({ error: "Error al subir archivos" });
-  }
-
-  const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
-  const imageFiles = files["images"] || [];
-  const videoFiles = files["videos"] || [];
+  const imageFiles = files?.images || [];
+  const videoFiles = files?.videos || [];
 
   const imagePaths = imageFiles.map(f => "uploads/images/" + f.filename);
   const videoPaths = videoFiles.map(f => "uploads/videos/" + f.filename);
 
   const recipe = new Recipe({
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     steps: req.body.steps,
     ingredients: JSON.parse(req.body["ingredients"]),
     tools: req.body["tools"],
-    category: req.body.category,
+    category: req.body["category"],
     userId: req.body.userId,
     images: imagePaths,
     videos: videoPaths
@@ -146,7 +142,7 @@ recipeRouter.get('/recipes', auth, async (req, res) => {
       }
     }
   } else {
-    res.status(404).send({ error: 'Receta no encontrada.' });
+    res.status(200).send([])
   }
   } catch (err) {
     console.error('Error en la búsqueda de recetas:', err); 

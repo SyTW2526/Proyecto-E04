@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { User } from '../items/user.js';
 import { receiveMessageOnPort } from 'worker_threads';
 import { Recipe } from '../items/recipe.js';
@@ -23,29 +23,45 @@ const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
  * Manejador POST de /users. Permite crear un nuevo usuario.
  */
 userRouter.post('/users', async (req, res) => {
-  const user = new User(req.body);
+  const user = new User({ ...req.body, _id: new mongoose.Types.ObjectId()});
 
   try {
     await user.save();
     res.status(201).send(user);
   } catch (err) {
+    console.log(err)
     res.status(400).send(err);
   }
 });
 
 userRouter.post('/users/login', async (req, res) => {
     const { email, password } = req.body;
+
     try {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).send({ error: 'Credenciales inválidas.' });
         }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).send({ error: 'Credenciales inválidas.' });
         }
-        const token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET, { expiresIn: '7 days' });
-        res.status(200).send({ user, token });
+
+        const token = jwt.sign(
+            { _id: user._id.toString() },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        res.status(200).send({ user });
     } catch (e) {
         res.status(500).send({ error: 'Error del servidor durante la autenticación.' });
     }
@@ -104,6 +120,7 @@ userRouter.delete('/users/me', auth, async (req, res) => {
 userRouter.post('/users/logout', auth, async (req, res) => {
     const authenticatedRequest = req as AuthRequest;
     try { 
+        res.clearCookie('token');
         res.status(200).send({ message: `${authenticatedRequest.user.username} ha cerrado sesión exitosamente.` });
     } catch (e) {
         res.status(500).send({ error: 'Fallo al procesar el cierre de sesión.' });
@@ -358,6 +375,7 @@ userRouter.delete('/users/:id', async (req, res) => {
 
         if (!regex.test(user.profilePic!) && user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
 
+        res.clearCookie('token');
         res.send(user);
       }
     }

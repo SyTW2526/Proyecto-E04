@@ -22,16 +22,20 @@ export const auth = async (
     next: NextFunction
 ) => {
     try {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        if (!token) throw new Error();
+        const token = req.cookies?.token;
+
+        if (!token) {
+            throw new Error('No token');
+        }
 
         const decoded = jwt.verify(token, JWT_SECRET) as IDecodedPayload;
         const user = await User.findById(decoded._id) as (UserInterface & { _id: string }) | null;
 
-        if (!user) throw new Error();
-        (req as AuthRequest).token = token;
+        if (!user) {
+            throw new Error('No user');
+        }
+
         (req as AuthRequest).user = user;
-        
         next();
     } catch (e) {
         res.status(401).send({ error: 'Por favor, autentíquese.' });

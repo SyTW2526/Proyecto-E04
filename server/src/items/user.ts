@@ -1,13 +1,13 @@
 import { Types, model, Schema } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import { Recipe } from './recipe.js';
 
 /**
  * Interfaz UserInterface.
  * Representa a un usuario de la aplicación.
  */
 export interface UserInterface {
+  _id: Types.ObjectId;
   username: string;
   email: string;
   password: string;
@@ -16,7 +16,6 @@ export interface UserInterface {
   followers: Types.ObjectId[];
   following: Types.ObjectId[];   
   recentSearches: string[];
-  categories: string[];
   saved: Types.ObjectId[];
   createdAt: Date;
 }
@@ -26,6 +25,9 @@ export interface UserInterface {
  * Representa la información almacenada de cada usuario.
  */
 const UserSchema = new Schema<UserInterface>({
+  _id: {
+    type: Schema.Types.ObjectId
+  },
   username: {
     type: String,
     required: true,
@@ -70,33 +72,6 @@ const UserSchema = new Schema<UserInterface>({
   recentSearches: {
     type: [String], 
     default: [], 
-  },
-  categories: {
-    type: [String],
-    enum: [
-        'entrante',
-        'plato principal',
-        'guarnición',
-        'postre',
-        'desayuno',
-        'merienda',
-        'bebida',
-        'salsa o aderezo',
-        'panadería',
-        'pasta',
-        'arroz',
-        'carne', 
-        'pescado',
-        'marisco',
-        'pollo',
-        'vegetariano', 
-        'vegano',
-        'sin gluten',
-        'bajo en carbohidratos',
-        'alto en proteínas',
-        'otro'
-    ],
-    default: ['General']
   },
   saved: {
     type: [Schema.Types.ObjectId],

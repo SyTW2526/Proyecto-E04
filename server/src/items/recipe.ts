@@ -1,13 +1,15 @@
-import { connect, model, Schema } from 'mongoose';
+import { connect, model, Schema, Types } from 'mongoose';
 import validator from 'validator';
+import { IngredientQuantity } from '../types/ingredient-quantity.js';
 
 /**
  * Interfaz Recipe. Representa una receta.
  */
 export interface RecipeInterface {
+  _id: Types.ObjectId;
   name: string;
   steps: string;
-  ingredients: string[];
+  ingredients: IngredientQuantity[];
   tools: string[];
   userId: Schema.Types.ObjectId; 
   category: string[]; // Pasta, postre, carne, etc. 
@@ -23,6 +25,9 @@ const ingredients: string[] = [ 'harina', 'azucar', 'sal', 'huevo', 'leche', 'ma
  * Representa toda la información que se ha de almacenar sobre una receta.
  */
 const RecipeSchema = new Schema<RecipeInterface>({
+  _id: {
+    type: Schema.Types.ObjectId
+  },
   name: {
     type: String,
     required: true,
@@ -35,9 +40,11 @@ const RecipeSchema = new Schema<RecipeInterface>({
   ingredients: {
     type: [{ingredient: String, quantity: String}], // Lista de ingredientes
     required: true,
-    validate: (value: {ingredient: string, quantity: string}) => {
-      if (ingredients.some((ing) => ing === value.ingredient)) {
-        throw new Error('Se ha introducido un ingrediente no válido.');
+    validate: (value: {ingredient: string, quantity: string}[]) => {
+      for (const val of value) {
+        if (!ingredients.some((ing) => ing === val.ingredient)) {
+          throw new Error('Se ha introducido un ingrediente no válido.');
+        }
       }
     }
   },
