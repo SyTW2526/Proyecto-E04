@@ -44,8 +44,6 @@ interface ContentCardProps {
 const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userId, userName, categories, me, setMe }: ContentCardProps) => {
   const displayImage = Array.isArray(imageSrc) ? imageSrc[0] : imageSrc;
   const isVideo = (imageSrc as string[]).some(src => src.includes('video') || src.includes('youtube'));
-  const getToken = (): string | null => localStorage.getItem('token');
-  const token = getToken();
 
   const [reviewCount, setReviewCount] = useState(0);
   const [valoracion, setValoracion] = useState<string | number>('-');

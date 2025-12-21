@@ -7,6 +7,7 @@ import FollowButton from "./botonFollow";
 import './following_page.css'
 import type { UserInterface } from "./interfaces/UserInterface";
 import SimplifiedProfile from "./simplifiedProfile";
+import { Helmet } from "react-helmet";
 
 interface FollowProps {
   type: boolean
@@ -29,9 +30,8 @@ function FollowingPage({ type }: FollowProps) {
     }, [id]);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
         axios.get('http://localhost:3000/users/me', {
-        headers: { Authorization: `Bearer ${token}` }
+            withCredentials: true
         })
         .then(response => setMe(response.data))
         .catch(console.error);
@@ -55,10 +55,8 @@ function FollowingPage({ type }: FollowProps) {
 
     useEffect(() => {
         if (me) {
-            const token = localStorage.getItem("token");
-    
             axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
             .catch(error => console.error(error));
@@ -74,6 +72,9 @@ function FollowingPage({ type }: FollowProps) {
 
   return (
     <>
+        <Helmet>
+            <title>Follows de {me.username} / RecipeVault</title>
+        </Helmet>
         <div className="contenedorGeneral">
             <div className="contenedorUsuarios">
                 <div className="usuarioFollows">

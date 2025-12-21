@@ -89,9 +89,9 @@ function Navigation({ user, active }: NavigationProps) {
 
                 <div className="linea" />
 
-                <button className="boton-panel logout" onClick={() => {
+                <button className="boton-panel logout" onClick={async () => {
                     try {
-                        const response = axios.post('http://users/logout');
+                        const response = await axios.post('http://localhost:3000/users/logout', {}, { withCredentials: true });
                         console.log(response);
 
                         navigate('/login');

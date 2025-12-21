@@ -6,6 +6,7 @@ import type { UserInterface } from "./interfaces/UserInterface";
 import SimplifiedProfile from "./simplifiedProfile";
 import type { RecipePost } from "./postcard";
 import PostCard from "./postcard";
+import { Helmet } from "react-helmet";
 
 
 function SavedPage() {
@@ -14,21 +15,16 @@ function SavedPage() {
   const [postCount, setPostCount] = useState(0); 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     axios.get<UserInterface>('http://localhost:3000/users/me', {
-      headers: { Authorization: `Bearer ${token}` }
+      withCredentials: true
     })
       .then(response => setMe(response.data))
       .catch(console.error);
   }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
         axios.get('http://localhost:3000/recipes/saved', {
-        headers: { Authorization: `Bearer ${token}` }
+          withCredentials: true
         })
         .then(response => {
             setPosts(response.data);
@@ -38,10 +34,8 @@ function SavedPage() {
 
     useEffect(() => {
         if (me) {
-            const token = localStorage.getItem("token");
-
             axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
             .catch(error => console.error(error));
@@ -52,6 +46,9 @@ function SavedPage() {
 
   return (
     <div className="contenedor">
+      <Helmet>
+        <title>Guardados / RecipeVault</title>
+      </Helmet>
       {/* Lista de Posts y Búsqueda */}
       <main className="principal posts-area">
         

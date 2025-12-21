@@ -14,7 +14,7 @@ function FollowButton({ user, setUser, me, setMe }: FollowButtonProps) {
     
     useEffect(() => {
         setIsFollowing(me.following.includes(user._id));
-    }, []);
+    }, [me.following, user._id]);
 
     return (
     <>

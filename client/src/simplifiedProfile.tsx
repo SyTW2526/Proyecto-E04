@@ -25,11 +25,11 @@ function SimplifiedProfile({ user, postCount }: ProfileProps) {
                 </div>
                 <div>
                     <span className="stat-number">{followersCount > 999 ? `${(followersCount / 1000).toFixed(1)}k` : followersCount}</span>
-                    <span className="stat-label">Followers</span>
+                    <span className="stat-label">Seguidores</span>
                 </div>
                 <div>
                     <span className="stat-number">{followingCount}</span>
-                    <span className="stat-label">Following</span>
+                    <span className="stat-label">Seguidos</span>
                 </div>
             </div>
 

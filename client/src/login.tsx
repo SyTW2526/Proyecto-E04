@@ -3,7 +3,8 @@ import './login.css';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 interface SignUpFormState  {
   username: string;
@@ -22,13 +23,25 @@ const SignInSchema = yup.object().shape({
 })
 
 const SignUpSchema = yup.object().shape({
-    username: yup.string().required('El nombre de usuario es obligatorio').min(4, 'El nombre de usuario debe de tener al menos 4 caracteres'),
-    email: yup.string().email('Debe de ser un email').required('El email es obligatorio'),
+    username: yup.string().required('El nombre de usuario es obligatorio').min(4, 'El nombre de usuario debe de tener al menos 4 caracteres').max(30, 'El nombre de usuario no puede exceder los 30 caracteres'),
+    email: yup.string().email('Debe de ser un email').required('El email es obligatorio').max(40, 'El email no puede exceder los 40 caracteres'),
     password: yup.string().required('La contraseña es obligatoria').min(6, 'La contraseña debe de tener al menos 6 caracteres')
 })
 
 function LogIn() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/users/me', {
+            withCredentials: true
+        })
+        .then(() => {
+            navigate('/home');
+        })
+        .catch(() => {
+        
+        });
+    }, [navigate]);
 
     const [loginError, setLoginError] = useState('');
     const [registerError, setRegisterError] = useState('');
@@ -36,11 +49,12 @@ function LogIn() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async function signIn(signInData: any) {
         try {
-            const responseSignIn = await axios.post('http://localhost:3000/users/login', signInData);
+            const responseSignIn = await axios.post('http://localhost:3000/users/login', signInData, {
+                withCredentials: true
+            });
             console.log(responseSignIn);
 
             if (responseSignIn.status === 200) {
-                localStorage.setItem("token", responseSignIn.data.token)
                 navigate("/home");
             }
         } catch (error) {
@@ -54,11 +68,9 @@ function LogIn() {
 
     return (
         <>
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <Helmet>
                 <title>Log-In / RecipeVault</title>
-            </head>
+            </Helmet>
             <div className="ContenedorGeneral">
                 <div className="ContenedorInicio">
                     <div className="Logo">

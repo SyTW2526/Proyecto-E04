@@ -17,7 +17,7 @@
       "id": "d9bfc39a-f93d-435e-826c-13918e51f9db",
       "comment": "",
       "command": "setWindowSize",
-      "target": "1181x900",
+      "target": "1500x900",
       "targets": [],
       "value": ""
     }, {
@@ -47,7 +47,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "usuario5@gmail.com"
+      "value": "elena.sanchez@test.com"
     }, {
       "id": "795b4401-be92-4ff8-83f0-c9c2c0476c3b",
       "comment": "",
@@ -75,7 +75,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
       ],
-      "value": "usuario"
+      "value": "Password123!"
     }, {
       "id": "dbd99d43-7386-4fdd-83d8-a92b2fb35318",
       "comment": "",
@@ -89,33 +89,35 @@
       ],
       "value": ""
     }, {
-      "id": "7a7708ff-85a5-4868-b8f0-2fd1c148e285",
+      "id": "08aaced5-7e33-4f3e-8243-bb3dee671780",
       "comment": "",
-      "command": "mouseOver",
-      "target": "css=.tarjeta:nth-child(2) .post-save-button-inner",
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(3)",
       "targets": [
-        ["css=.tarjeta:nth-child(2) .post-save-button-inner", "css:finder"],
-        ["xpath=//div[@id='root']/div/main/div[2]/div[2]/a/div[2]/div/button", "xpath:idRelative"],
-        ["xpath=//div[2]/a/div[2]/div/button", "xpath:position"]
+        ["css=.boton-panel:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div[2]/div/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Perfil')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "b4761f61-6aa4-4cce-a8f0-5985aab39d51",
+      "id": "c114f523-e763-4620-9b2d-5e11aa3d9b4a",
       "comment": "",
-      "command": "mouseOut",
-      "target": "css=.tarjeta:nth-child(2) .post-save-button-inner",
-      "targets": [
-        ["css=.tarjeta:nth-child(2) .post-save-button-inner", "css:finder"],
-        ["xpath=//div[@id='root']/div/main/div[2]/div[2]/a/div[2]/div/button", "xpath:idRelative"],
-        ["xpath=//div[2]/a/div[2]/div/button", "xpath:position"]
-      ],
+      "command": "assertElementNotPresent",
+      "target": "css=.post-card:nth-child(2)",
+      "targets": [],
       "value": ""
     }, {
       "id": "de93712b-7040-4a14-b66b-ed2e50013563",
       "comment": "",
-      "command": "open",
-      "target": "http://localhost:5173/publish/post",
-      "targets": [],
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(4)",
+      "targets": [
+        ["css=.boton-panel:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div[2]/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Publicar')]", "xpath:innerText"]
+      ],
       "value": ""
     }, {
       "id": "6303361e-129b-4958-a6cb-c3ae73c2baf4",
@@ -132,67 +134,114 @@
       ],
       "value": ""
     }, {
-      "id": "61b51558-baf8-4bd9-9a22-154d42434daa",
+      "id": "0e7155e9-3078-44aa-82a3-5987a8c241f7",
       "comment": "",
       "command": "type",
       "target": "id=name",
-      "targets": [
-        ["id=name", "id"],
-        ["name=name", "name"],
-        ["css=#name", "css:finder"],
-        ["xpath=//input[@id='name']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "Nombre receta 5"
+      "targets": [],
+      "value": "Nombre receta"
     }, {
-      "id": "ac22af35-0bd7-47ca-b701-cdd7993605e9",
+      "id": "c107bb2c-45fb-43db-8770-77fda3bc0916",
       "comment": "",
       "command": "click",
-      "target": "name=images",
+      "target": "name=category[0]",
       "targets": [
-        ["name=images", "name"],
-        ["css=.ImagenesReceta > input:nth-child(2)", "css:finder"],
-        ["xpath=//input[@name='images']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div/input", "xpath:idRelative"],
-        ["xpath=//div/div/input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "d10fda4f-d406-47dc-8112-75bf14ce2c38",
-      "comment": "",
-      "command": "click",
-      "target": "name=category",
-      "targets": [
-        ["name=category", "name"],
-        ["css=div:nth-child(2) > select", "css:finder"],
-        ["xpath=//select[@name='category']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/select", "xpath:idRelative"],
+        ["name=category[0]", "name"],
+        ["css=.filaCategorias > select", "css:finder"],
+        ["xpath=//select[@name='category[0]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "4e28cb7f-5695-4e45-beb8-d08efe6d6efa",
+      "id": "f3a6e405-4187-4292-a09d-ada920bb35f8",
       "comment": "",
       "command": "select",
-      "target": "name=category",
+      "target": "name=category[0]",
       "targets": [],
       "value": "label=entrante"
     }, {
-      "id": "aabc646e-471b-4eae-866b-b7e6fae59607",
+      "id": "8c8cddd1-a47d-4d2c-a83d-37e26909e49f",
       "comment": "",
       "command": "click",
-      "target": "css=div:nth-child(2) > select > option:nth-child(2)",
+      "target": "css=.filaCategorias option:nth-child(2)",
       "targets": [
-        ["css=div:nth-child(2) > select > option:nth-child(2)", "css:finder"],
+        ["css=.filaCategorias option:nth-child(2)", "css:finder"],
         ["xpath=//option[@value='entrante']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/select/option[2]", "xpath:idRelative"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div/select/option[2]", "xpath:idRelative"],
         ["xpath=//option[2]", "xpath:position"],
         ["xpath=//option[contains(.,'entrante')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "e692233c-62f2-4021-8917-9363c3320cc4",
+      "id": "2c3c975d-a4c5-4a8e-83b1-aeb9bf4cd2b7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.CategoriaPublicacion > .botonMasGeneral",
+      "targets": [
+        ["css=.CategoriaPublicacion > .botonMasGeneral", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir categoría')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "08d22a29-f01a-439e-bc41-76c03f35c62e",
+      "comment": "",
+      "command": "click",
+      "target": "name=category[1]",
+      "targets": [
+        ["name=category[1]", "name"],
+        ["css=.filaCategorias:nth-child(2) > select", "css:finder"],
+        ["xpath=//select[@name='category[1]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ef9c198c-7abb-4078-afb8-1979f0beaf1f",
+      "comment": "",
+      "command": "select",
+      "target": "name=category[1]",
+      "targets": [],
+      "value": "label=plato principal"
+    }, {
+      "id": "f743cdb9-364d-4e6f-8802-5c8c1f91f073",
+      "comment": "",
+      "command": "click",
+      "target": "css=.filaCategorias:nth-child(2) option:nth-child(3)",
+      "targets": [
+        ["css=.filaCategorias:nth-child(2) option:nth-child(3)", "css:finder"],
+        ["xpath=(//option[@value='plato principal'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div[2]/select/option[3]", "xpath:idRelative"],
+        ["xpath=//div[2]/select/option[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ed97d96e-132e-4c9a-b273-60efc27bb619",
+      "comment": "",
+      "command": "click",
+      "target": "css=.CategoriaPublicacion > .botonMasGeneral",
+      "targets": [
+        ["css=.CategoriaPublicacion > .botonMasGeneral", "css:finder"],
+        ["xpath=(//button[@type='button'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir categoría')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e5a0cb77-9d62-42d3-9ea6-904ef71cd01b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.filaCategorias:nth-child(3) .lucide",
+      "targets": [
+        ["css=.filaCategorias:nth-child(3) .lucide", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "a3918c76-626c-4123-ba85-808b12948a97",
       "comment": "",
       "command": "click",
       "target": "name=ingredients[0].ingredient",
@@ -205,27 +254,27 @@
       ],
       "value": ""
     }, {
-      "id": "f033bf35-f926-438b-aa80-11decea6ff8c",
+      "id": "ea6f30b5-9b1e-4adc-9e8d-99091b0b3c97",
       "comment": "",
       "command": "select",
       "target": "name=ingredients[0].ingredient",
       "targets": [],
-      "value": "label=vainilla"
+      "value": "label=frutas"
     }, {
-      "id": "91f26c2c-b614-4ba0-8138-5812c24fccb9",
+      "id": "8f6ed436-dc65-4947-bdc3-085bc0fbbaee",
       "comment": "",
       "command": "click",
-      "target": "css=.filaIngrediente option:nth-child(11)",
+      "target": "css=.filaIngrediente option:nth-child(12)",
       "targets": [
-        ["css=.filaIngrediente option:nth-child(11)", "css:finder"],
-        ["xpath=//option[@value='vainilla']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div/select/option[11]", "xpath:idRelative"],
-        ["xpath=//div[3]/div/div/select/option[11]", "xpath:position"],
-        ["xpath=//option[contains(.,'vainilla')]", "xpath:innerText"]
+        ["css=.filaIngrediente option:nth-child(12)", "css:finder"],
+        ["xpath=//option[@value='frutas']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div/select/option[12]", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/select/option[12]", "xpath:position"],
+        ["xpath=//option[contains(.,'frutas')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "30cdb5f3-0854-4b2d-a78c-83a402de5bbf",
+      "id": "5f707760-5ee5-4d75-9469-201e392fe7e2",
       "comment": "",
       "command": "click",
       "target": "name=ingredients[0].quantity",
@@ -238,7 +287,7 @@
       ],
       "value": ""
     }, {
-      "id": "2fcea393-4097-4c03-8355-e56b76e04ece",
+      "id": "55cc7915-d16c-4dc1-a226-fb584ab40b4f",
       "comment": "",
       "command": "type",
       "target": "name=ingredients[0].quantity",
@@ -249,20 +298,102 @@
         ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div/input", "xpath:idRelative"],
         ["xpath=//div[3]/div/div/input", "xpath:position"]
       ],
-      "value": "2g"
+      "value": "3g"
     }, {
-      "id": "deef924a-5813-470e-bd0a-deca2a269349",
+      "id": "b474e568-d414-4b62-b869-8ab636922b4a",
       "comment": "",
       "command": "click",
-      "target": "css=.IngredientesReceta",
+      "target": "css=.IngredientesReceta > .botonMasGeneral",
       "targets": [
-        ["css=.IngredientesReceta", "css:finder"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]", "xpath:idRelative"],
-        ["xpath=//div[3]", "xpath:position"]
+        ["css=.IngredientesReceta > .botonMasGeneral", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/button", "xpath:idRelative"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir ingrediente')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "651084f7-279d-41e0-985e-e0b677145c97",
+      "id": "0440dda1-e453-4b0c-a707-d6810ab9ba11",
+      "comment": "",
+      "command": "click",
+      "target": "name=ingredients[1].ingredient",
+      "targets": [
+        ["name=ingredients[1].ingredient", "name"],
+        ["css=.filaIngrediente:nth-child(2) > select", "css:finder"],
+        ["xpath=//select[@name='ingredients[1].ingredient']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a8b62050-8515-4a68-84da-f17fa5dc0240",
+      "comment": "",
+      "command": "select",
+      "target": "name=ingredients[1].ingredient",
+      "targets": [],
+      "value": "label=verduras"
+    }, {
+      "id": "b12337e4-b221-45e1-8870-dea6a3861b3f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.filaIngrediente:nth-child(2) option:nth-child(13)",
+      "targets": [
+        ["css=.filaIngrediente:nth-child(2) option:nth-child(13)", "css:finder"],
+        ["xpath=(//option[@value='verduras'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/select/option[13]", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div[2]/select/option[13]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ecb56306-6c45-4114-b44e-806a258d7cdd",
+      "comment": "",
+      "command": "click",
+      "target": "name=ingredients[1].quantity",
+      "targets": [
+        ["name=ingredients[1].quantity", "name"],
+        ["css=.filaIngrediente:nth-child(2) > input", "css:finder"],
+        ["xpath=//input[@name='ingredients[1].quantity']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "dabe497d-babd-4e7b-b470-62e2b7d018c2",
+      "comment": "",
+      "command": "type",
+      "target": "name=ingredients[1].quantity",
+      "targets": [
+        ["name=ingredients[1].quantity", "name"],
+        ["css=.filaIngrediente:nth-child(2) > input", "css:finder"],
+        ["xpath=//input[@name='ingredients[1].quantity']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "3g"
+    }, {
+      "id": "79152012-8c4f-40b9-b9af-007064c1a3d1",
+      "comment": "",
+      "command": "click",
+      "target": "css=.IngredientesReceta > .botonMasGeneral",
+      "targets": [
+        ["css=.IngredientesReceta > .botonMasGeneral", "css:finder"],
+        ["xpath=(//button[@type='button'])[6]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/button", "xpath:idRelative"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir ingrediente')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fba29ac8-4fd5-4232-a822-cb212b770bf7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.filaIngrediente:nth-child(3) .lucide",
+      "targets": [
+        ["css=.filaIngrediente:nth-child(3) .lucide", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "659d809f-e545-43cb-8de9-f66449df425f",
       "comment": "",
       "command": "click",
       "target": "name=tools[0]",
@@ -275,66 +406,40 @@
       ],
       "value": ""
     }, {
-      "id": "51dd526e-3aa8-413d-ac72-e2941e8bf400",
+      "id": "7f3ac20a-5031-47f2-9ac2-2be3f0a3f2cd",
       "comment": "",
       "command": "select",
       "target": "name=tools[0]",
       "targets": [],
-      "value": "label=caldero"
+      "value": "label=colador"
     }, {
-      "id": "0929a52a-93f8-4c14-9c7e-e95517897c36",
+      "id": "6e90c6bf-67c4-41c6-9b39-149fd910bed5",
       "comment": "",
       "command": "click",
-      "target": "css=.filaUtensilio option:nth-child(12)",
+      "target": "css=.filaUtensilio option:nth-child(11)",
       "targets": [
-        ["css=.filaUtensilio option:nth-child(12)", "css:finder"],
-        ["xpath=//option[@value='caldero']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div/select/option[12]", "xpath:idRelative"],
-        ["xpath=//div[4]/div/div/select/option[12]", "xpath:position"],
-        ["xpath=//option[contains(.,'caldero')]", "xpath:innerText"]
+        ["css=.filaUtensilio option:nth-child(11)", "css:finder"],
+        ["xpath=//option[@value='colador']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div/select/option[11]", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/select/option[11]", "xpath:position"],
+        ["xpath=//option[contains(.,'colador')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "5a4c9895-f6e2-4c3a-9fb3-17787a79da06",
+      "id": "abb0181e-b8a5-44f1-b9a3-d869f846e5c4",
       "comment": "",
       "command": "click",
       "target": "css=.UtensiliosReceta > .botonMasGeneral",
       "targets": [
         ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
-        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=(//button[@type='button'])[7]", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
         ["xpath=//div[4]/button", "xpath:position"],
         ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "ed7e390e-bb96-476b-a385-45f2b6635d9d",
-      "comment": "",
-      "command": "mouseOver",
-      "target": "css=.UtensiliosReceta > .botonMasGeneral",
-      "targets": [
-        ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
-        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
-        ["xpath=//div[4]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "3ff2fc74-2083-410e-aa7e-815a5fbb6963",
-      "comment": "",
-      "command": "mouseOut",
-      "target": "css=.UtensiliosReceta > .botonMasGeneral",
-      "targets": [
-        ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
-        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
-        ["xpath=//div[4]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "623720f4-0dee-45ce-aeb3-752da1a0e0ff",
+      "id": "694c7c4f-60d3-4921-849d-9dab6af649a0",
       "comment": "",
       "command": "click",
       "target": "name=tools[1]",
@@ -343,18 +448,18 @@
         ["css=.filaUtensilio:nth-child(2) > select", "css:finder"],
         ["xpath=//select[@name='tools[1]']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div[2]/select", "xpath:idRelative"],
-        ["xpath=//div[2]/select", "xpath:position"]
+        ["xpath=//div[4]/div/div[2]/select", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "7692f3e4-b008-42bf-a87e-876435d359b9",
+      "id": "9c073d18-e75d-4ad0-9cbf-fad9ddb07432",
       "comment": "",
       "command": "select",
       "target": "name=tools[1]",
       "targets": [],
       "value": "label=rodillo"
     }, {
-      "id": "0b374b28-62c9-4685-8e1c-f97b26d1d992",
+      "id": "597a53fc-1087-4a5f-be72-9d1b141e0299",
       "comment": "",
       "command": "click",
       "target": "css=.filaUtensilio:nth-child(2) option:nth-child(13)",
@@ -362,22 +467,33 @@
         ["css=.filaUtensilio:nth-child(2) option:nth-child(13)", "css:finder"],
         ["xpath=(//option[@value='rodillo'])[2]", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div[2]/select/option[13]", "xpath:idRelative"],
-        ["xpath=//div[2]/select/option[13]", "xpath:position"]
+        ["xpath=//div[4]/div/div[2]/select/option[13]", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "4f81aebb-d790-4b26-ae2b-7723b58bf669",
+      "id": "ddb70cb5-8c0a-4fbd-a39c-37a70383de35",
       "comment": "",
       "command": "click",
-      "target": "css=.IzquierdaReceta",
+      "target": "css=.UtensiliosReceta > .botonMasGeneral",
       "targets": [
-        ["css=.IzquierdaReceta", "css:finder"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div", "xpath:idRelative"],
-        ["xpath=//div[2]/div/div", "xpath:position"]
+        ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
+        ["xpath=(//button[@type='button'])[9]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
+        ["xpath=//div[4]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
-      "id": "8ad884cf-cc5a-41a0-a390-914c6dd805d1",
+      "id": "3a82e558-c3ec-441a-944c-6e02ce0ca1b3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.filaUtensilio:nth-child(3) .lucide",
+      "targets": [
+        ["css=.filaUtensilio:nth-child(3) .lucide", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "35ab5a8a-e4ce-4559-ae95-2939e5f0b1b3",
       "comment": "",
       "command": "click",
       "target": "id=steps",
@@ -391,7 +507,7 @@
       ],
       "value": ""
     }, {
-      "id": "8432b31f-1258-41a3-9f91-23ca5c2a6e14",
+      "id": "00842ac2-a32d-4c6a-aed5-4f56eed77ceb",
       "comment": "",
       "command": "type",
       "target": "id=steps",
@@ -403,9 +519,9 @@
         ["xpath=//div[@id='root']/div/form/div[2]/div/div[2]/div/textarea", "xpath:idRelative"],
         ["xpath=//textarea", "xpath:position"]
       ],
-      "value": "jghnfndjbfnjbnjbjnjnfdjnbnjnbnjfnfdjnjnfjn<jnznzlnzzzbznnbznznznjzjffjnbfjmjnznjkfkkfdkgfbknbfdkbkfjkbkjbfkmfbkdzbbfkjzd"
+      "value": "Nfdjhdghhjdfajvahdfajgvudhfavnjvndfjsvhjfdjkvndfavjnhdfajvhjndfjbhdfsjbndfsjvnjfdfhnvjfdvbjhfdjnbjkjsdvndsfjkbhkjsbsdkjf"
     }, {
-      "id": "49a9b20e-93a8-4ec6-b169-0f7ba3922662",
+      "id": "a561968b-a02c-42af-b5ef-2a12a4719690",
       "comment": "",
       "command": "click",
       "target": "css=.botonPublicar",
@@ -414,6 +530,240 @@
         ["xpath=//input[@value='Publicar']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div/form/div[2]/div/div[2]/div/input", "xpath:idRelative"],
         ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "efd69b4d-842e-442a-a456-a635e6e17bb9",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=h2",
+      "targets": [
+        ["css=h2", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/h2", "xpath:idRelative"],
+        ["xpath=//h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Nombre receta')]", "xpath:innerText"]
+      ],
+      "value": "Nombre receta"
+    }, {
+      "id": "de5cb1de-1767-4cfd-830a-e612ef5c8547",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=h2",
+      "targets": [
+        ["css=h2", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/h2", "xpath:idRelative"],
+        ["xpath=//h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Nombre receta')]", "xpath:innerText"]
+      ],
+      "value": "Nombre receta"
+    }, {
+      "id": "cbf6bb24-a30d-4b89-878e-66bfd1b1b212",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.post-user-name",
+      "targets": [
+        ["css=.post-user-name", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div/a[2]/span", "xpath:idRelative"],
+        ["xpath=//a[2]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'ChefElenaES')]", "xpath:innerText"]
+      ],
+      "value": "ChefElenaES"
+    }, {
+      "id": "aa64272c-deb6-4862-a7af-c38b03b00446",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.CategoriasReceta > h3",
+      "targets": [
+        ["css=.CategoriasReceta > h3", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[4]/h3", "xpath:idRelative"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Categorías')]", "xpath:innerText"]
+      ],
+      "value": "Categorías"
+    }, {
+      "id": "51f01515-0e6e-4969-b7da-4e54439610c1",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.categorias-interior > div:nth-child(1)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4810a65b-1511-4a40-8ad1-006df5615a68",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.categorias-interior > div:nth-child(2)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "eaab84de-8565-4abc-9c9e-9e3d0582e5e8",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.IngredientesReceta > h3",
+      "targets": [
+        ["css=.IngredientesReceta > h3", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[5]/h3", "xpath:idRelative"],
+        ["xpath=//div[5]/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Ingredientes')]", "xpath:innerText"]
+      ],
+      "value": "Ingredientes"
+    }, {
+      "id": "71751feb-211d-4b37-9b7f-4bf839661e12",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.IngredientesReceta li:nth-child(1)",
+      "targets": [
+        ["css=.IngredientesReceta li:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[5]/ul/li", "xpath:idRelative"],
+        ["xpath=//li", "xpath:position"],
+        ["xpath=//li[contains(.,'frutas: 3g')]", "xpath:innerText"]
+      ],
+      "value": "frutas: 3g"
+    }, {
+      "id": "d22a3dd9-7d7a-4663-873b-5eeaf35a1618",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.IngredientesReceta li:nth-child(2)",
+      "targets": [
+        ["css=.IngredientesReceta li:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[5]/ul/li[2]", "xpath:idRelative"],
+        ["xpath=//li[2]", "xpath:position"],
+        ["xpath=//li[contains(.,'verduras: 3g')]", "xpath:innerText"]
+      ],
+      "value": "verduras: 3g"
+    }, {
+      "id": "debda71b-7fb8-4cf5-9bbe-f0a6adc27c6f",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.UtensiliosReceta > h3",
+      "targets": [
+        ["css=.UtensiliosReceta > h3", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[6]/h3", "xpath:idRelative"],
+        ["xpath=//div[6]/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Utensilios')]", "xpath:innerText"]
+      ],
+      "value": "Utensilios"
+    }, {
+      "id": "baed5891-9d2c-4213-a98b-8f2c09d9705f",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.UtensiliosReceta li:nth-child(1)",
+      "targets": [
+        ["css=.UtensiliosReceta li:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[6]/ul/li", "xpath:idRelative"],
+        ["xpath=//div[6]/ul/li", "xpath:position"],
+        ["xpath=//li[contains(.,'colador')]", "xpath:innerText"]
+      ],
+      "value": "colador"
+    }, {
+      "id": "bee6fbd2-573e-4f96-a5e9-f001275c715b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.UtensiliosReceta li:nth-child(2)",
+      "targets": [
+        ["css=.UtensiliosReceta li:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[6]/ul/li[2]", "xpath:idRelative"],
+        ["xpath=//div[6]/ul/li[2]", "xpath:position"],
+        ["xpath=//li[contains(.,'rodillo')]", "xpath:innerText"]
+      ],
+      "value": "rodillo"
+    }, {
+      "id": "04c86c14-40ef-4ee8-8dd5-6d0ba598e545",
+      "comment": "",
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(3)",
+      "targets": [
+        ["css=.boton-panel:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/aside/div[2]/div/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Perfil')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "eea8f522-6a8f-4e9d-9f15-27a59b1144bd",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.post-card:nth-child(2)",
+      "targets": [
+        ["css=.post-card:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div[2]/div[2]", "xpath:idRelative"],
+        ["xpath=//main/div[2]/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8ebf9f7-5f24-4b1a-805a-468300579819",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.tarjeta:nth-child(2) .post-user-name",
+      "targets": [
+        ["css=.tarjeta:nth-child(2) .post-user-name", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div[2]/div[2]/div/div/a/span", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/a/span", "xpath:position"]
+      ],
+      "value": "ChefElenaES"
+    }, {
+      "id": "16ab6d8e-c424-4c4b-9ccc-8b31ce1d2f6b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.tarjeta:nth-child(2) .post-title",
+      "targets": [
+        ["css=.tarjeta:nth-child(2) .post-title", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div[2]/div[2]/a/div[2]/h3", "xpath:idRelative"],
+        ["xpath=//div[2]/a/div[2]/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Nombre receta')]", "xpath:innerText"]
+      ],
+      "value": "Nombre receta"
+    }, {
+      "id": "bd8d5ee6-de87-43d6-b4ab-5cb01cf4dfdc",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tarjeta:nth-child(2) .post-categories-container",
+      "targets": [
+        ["css=.tarjeta:nth-child(2) .post-categories-container", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div[2]/div[2]/a/div[2]/div[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/a/div[2]/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "18d08453-8b3f-4a19-9dd2-5e8a259b05a9",
+      "comment": "",
+      "command": "click",
+      "target": "css=.boton-control-receta > button:nth-child(2)",
+      "targets": [
+        ["css=.boton-control-receta > button:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div[2]/div/div/div[2]/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Borrar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "46b6c8ed-eb49-455c-a2a0-57897ceb8af3",
+      "comment": "",
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(3)",
+      "targets": [
+        ["css=.boton-panel:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div[2]/div/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Perfil')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9cec1388-197c-481c-a687-cc9d9a19842d",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.post-card:nth-child(2)",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6e15306c-9de7-4ca4-b141-335362c9ef86",
+      "comment": "",
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(1)",
+      "targets": [
+        ["css=.boton-panel:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/button", "xpath:idRelative"],
+        ["xpath=//aside/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Inicio')]", "xpath:innerText"]
       ],
       "value": ""
     }]
@@ -431,7 +781,7 @@
       "id": "ac83fd8f-d3f2-4640-8352-578e5c7f55b4",
       "comment": "",
       "command": "setWindowSize",
-      "target": "1181x900",
+      "target": "1500x900",
       "targets": [],
       "value": ""
     }, {
@@ -461,7 +811,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "usuario5@gmail.com"
+      "value": "elena.sanchez@test.com"
     }, {
       "id": "22f7521a-d2d8-4a3b-8ae9-2ce7f089be6a",
       "comment": "",
@@ -489,19 +839,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
       ],
-      "value": "usuario"
-    }, {
-      "id": "3243060e-3072-4b28-8522-b57c93d8edab",
-      "comment": "",
-      "command": "click",
-      "target": "css=.InicioRegistro:nth-child(2) > form",
-      "targets": [
-        ["css=.InicioRegistro:nth-child(2) > form", "css:finder"],
-        ["xpath=//form[@action='#']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/div/div[2]/form", "xpath:idRelative"],
-        ["xpath=//form", "xpath:position"]
-      ],
-      "value": ""
+      "value": "Password123!"
     }, {
       "id": "c8980f3f-3f06-425b-9e69-9d7a383890b2",
       "comment": "",
@@ -515,11 +853,16 @@
       ],
       "value": ""
     }, {
-      "id": "83fbd40c-4736-407c-8aa6-9f36a1e1f835",
+      "id": "865be8f8-e3dc-4fd3-a38d-a8d01645bee2",
       "comment": "",
-      "command": "open",
-      "target": "http://localhost:5173/publish/post",
-      "targets": [],
+      "command": "click",
+      "target": "css=.boton-panel:nth-child(4)",
+      "targets": [
+        ["css=.boton-panel:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div[2]/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Publicar')]", "xpath:innerText"]
+      ],
       "value": ""
     }, {
       "id": "a592dbef-2312-42ca-ba63-536acb38e7e6",
@@ -550,18 +893,6 @@
       ],
       "value": "aaa"
     }, {
-      "id": "21760d17-f3c5-4c75-8690-d6275c2d59bd",
-      "comment": "",
-      "command": "mouseDown",
-      "target": "css=.TextoPublicacion > h3",
-      "targets": [
-        ["css=.TextoPublicacion > h3", "css:finder"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div[2]/div/h3", "xpath:idRelative"],
-        ["xpath=//div[2]/div/h3", "xpath:position"],
-        ["xpath=//h3[contains(.,'Pasos:')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
       "id": "d6864ff6-c2bd-4581-b826-74c60c0138b4",
       "comment": "",
       "command": "click",
@@ -573,6 +904,13 @@
         ["xpath=//form", "xpath:position"]
       ],
       "value": ""
+    }, {
+      "id": "d9d316eb-2a7d-4231-9f91-a2d06b61f561",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help",
+      "targets": [],
+      "value": "El nombre de la receta debe de tener al menos 6 caracteres"
     }, {
       "id": "e2aea3b2-715f-406b-817f-46fa6e51f7b9",
       "comment": "",
@@ -603,12 +941,12 @@
       "id": "c719448d-0a1d-43d9-94fe-773fffb9225a",
       "comment": "",
       "command": "click",
-      "target": "name=category",
+      "target": "name=category[0]",
       "targets": [
-        ["name=category", "name"],
-        ["css=div:nth-child(2) > select", "css:finder"],
-        ["xpath=//select[@name='category']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/select", "xpath:idRelative"],
+        ["name=category[0]", "name"],
+        ["css=.filaCategorias > select", "css:finder"],
+        ["xpath=//select[@name='category[0]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div/select", "xpath:idRelative"],
         ["xpath=//select", "xpath:position"]
       ],
       "value": ""
@@ -624,22 +962,29 @@
       ],
       "value": ""
     }, {
+      "id": "b2ea35c2-1f92-4b72-8273-0dbfe1882036",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(2)",
+      "targets": [],
+      "value": "Seleccione una categoría"
+    }, {
       "id": "e519ed12-691f-4cd4-9675-b3311bf22beb",
       "comment": "",
       "command": "assertText",
-      "target": "css=.CategoriaPublicacion > .help",
+      "target": "css=.help:nth-child(2)",
       "targets": [
-        ["css=.CategoriaPublicacion > .help", "css:finder"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/p", "xpath:idRelative"],
-        ["xpath=//div[2]/p", "xpath:position"],
-        ["xpath=//p[contains(.,'La receta debe pertenecer a una categoría')]", "xpath:innerText"]
+        ["css=.help:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/p", "xpath:idRelative"],
+        ["xpath=//div[2]/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Seleccione una categoría')]", "xpath:innerText"]
       ],
-      "value": "La receta debe pertenecer a una categoría"
+      "value": "Seleccione una categoría"
     }, {
       "id": "d994a804-d099-41da-b17a-1593c1be1715",
       "comment": "",
       "command": "click",
-      "target": "name=category",
+      "target": "name=category[0]",
       "targets": [
         ["name=category", "name"],
         ["css=div:nth-child(2) > select", "css:finder"],
@@ -652,9 +997,16 @@
       "id": "bad09805-9494-4d9c-a2a8-06daa015cd6c",
       "comment": "",
       "command": "select",
-      "target": "name=category",
+      "target": "name=category[0]",
       "targets": [],
       "value": "label=entrante"
+    }, {
+      "id": "8f2178cb-49fd-4ff9-8965-164f56f60516",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.CategoriaPublicacion > .help",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "d9b5b4c4-a89f-4147-9f1c-be65fb071cd4",
       "comment": "",
@@ -663,17 +1015,90 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "a7e612c9-223f-42be-b57b-107bbc1f1385",
+      "id": "c3c952f2-f6d0-47d2-9412-51df886fcc39",
       "comment": "",
       "command": "click",
-      "target": "css=div:nth-child(2) > select > option:nth-child(2)",
+      "target": "css=.CategoriaPublicacion > .botonMasGeneral",
       "targets": [
-        ["css=div:nth-child(2) > select > option:nth-child(2)", "css:finder"],
-        ["xpath=//option[@value='entrante']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/select/option[2]", "xpath:idRelative"],
-        ["xpath=//option[2]", "xpath:position"],
-        ["xpath=//option[contains(.,'entrante')]", "xpath:innerText"]
+        ["css=.CategoriaPublicacion > .botonMasGeneral", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'+ Añadir categoría')]", "xpath:innerText"]
       ],
+      "value": ""
+    }, {
+      "id": "a6867b8e-5be8-44e5-ac1c-f1ebaa52f948",
+      "comment": "",
+      "command": "click",
+      "target": "name=category[1]",
+      "targets": [
+        ["name=category[1]", "name"],
+        ["css=.filaCategorias:nth-child(2) > select", "css:finder"],
+        ["xpath=//select[@name='category[1]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7703e7eb-53dc-41ef-8d25-61b8fae79e7f",
+      "comment": "",
+      "command": "select",
+      "target": "name=category[1]",
+      "targets": [],
+      "value": "label=entrante"
+    }, {
+      "id": "9e7a4afb-40a8-4609-bdb1-6571449611d3",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "No puede haber categorías duplicadas"
+    }, {
+      "id": "8f500c59-5425-475c-93db-657614299eeb",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(4)",
+      "targets": [
+        ["css=.help:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/p", "xpath:idRelative"],
+        ["xpath=//div[2]/p", "xpath:position"],
+        ["xpath=//p[contains(.,'No puede haber categorías duplicadas')]", "xpath:innerText"]
+      ],
+      "value": "No puede haber categorías duplicadas"
+    }, {
+      "id": "3da890fa-10af-4029-9251-7f09e4e3bb79",
+      "comment": "",
+      "command": "click",
+      "target": "name=category[1]",
+      "targets": [
+        ["name=category[1]", "name"],
+        ["css=.filaCategorias:nth-child(2) > select", "css:finder"],
+        ["xpath=//select[@name='category[1]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[2]/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[2]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b940124a-4ceb-4705-ae4e-d771e073af73",
+      "comment": "",
+      "command": "select",
+      "target": "name=category[1]",
+      "targets": [],
+      "value": "label=plato principal"
+    }, {
+      "id": "b563215c-df2b-4926-b081-51469dc3d3cc",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "f028d7c1-26a7-4593-bbd2-1c0e6611ded2",
+      "comment": "",
+      "command": "assertElementNotPresent",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
       "value": ""
     }, {
       "id": "fa677ddf-72fa-4d5e-b399-c641bce88d36",
@@ -700,17 +1125,6 @@
       ],
       "value": ""
     }, {
-      "id": "fadf415b-667c-41b8-80f4-61216a361c99",
-      "comment": "",
-      "command": "mouseDown",
-      "target": "css=.IngredientesReceta",
-      "targets": [
-        ["css=.IngredientesReceta", "css:finder"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]", "xpath:idRelative"],
-        ["xpath=//div[3]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "d89f1ce3-3790-48e3-b295-ec5cd036ebf4",
       "comment": "",
       "command": "click",
@@ -721,6 +1135,13 @@
         ["xpath=//div[3]", "xpath:position"]
       ],
       "value": ""
+    }, {
+      "id": "65f1b62a-98c1-45f6-9672-f500e93a2ea8",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(2)",
+      "targets": [],
+      "value": "Seleccione un ingrediente"
     }, {
       "id": "971de300-ed53-463a-a27a-03be509a84b2",
       "comment": "",
@@ -754,6 +1175,13 @@
       "targets": [],
       "value": "label=frutas"
     }, {
+      "id": "92046da4-2fe6-4018-8031-cd37dbef9635",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help:nth-child(2)",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "0f160d13-ac8e-4e16-b800-398dd9cf3bf0",
       "comment": "",
       "command": "assertElementNotPresent",
@@ -785,6 +1213,13 @@
       ],
       "value": ""
     }, {
+      "id": "905bb9c7-82f3-494d-ab9a-0015b5115e2f",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(2)",
+      "targets": [],
+      "value": "Introduzca una cantidad"
+    }, {
       "id": "4e2312ad-d5ce-439e-b3b7-c69ece54592e",
       "comment": "",
       "command": "assertText",
@@ -796,19 +1231,6 @@
         ["xpath=//p[contains(.,'Introduzca una cantidad')]", "xpath:innerText"]
       ],
       "value": "Introduzca una cantidad"
-    }, {
-      "id": "0a1dd29c-1dfb-40a9-96e1-d1f31daf01a1",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaIngrediente option:nth-child(12)",
-      "targets": [
-        ["css=.filaIngrediente option:nth-child(12)", "css:finder"],
-        ["xpath=//option[@value='frutas']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div/select/option[12]", "xpath:idRelative"],
-        ["xpath=//div[3]/div/div/select/option[12]", "xpath:position"],
-        ["xpath=//option[contains(.,'frutas')]", "xpath:innerText"]
-      ],
-      "value": ""
     }, {
       "id": "5661facd-7ef2-4893-9b15-b0f63afed393",
       "comment": "",
@@ -835,6 +1257,13 @@
         ["xpath=//div[3]/div/div/input", "xpath:position"]
       ],
       "value": "2g"
+    }, {
+      "id": "aace7c7d-2f2a-47c8-900b-78d1e6c6aca2",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help:nth-child(2)",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "8c8feb90-d2ab-4e77-b0bd-346de8681f61",
       "comment": "",
@@ -887,18 +1316,6 @@
       "targets": [],
       "value": "label=frutas"
     }, {
-      "id": "f60d0293-5d9b-4052-b9ec-61d8b545788d",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaIngrediente:nth-child(2) option:nth-child(12)",
-      "targets": [
-        ["css=.filaIngrediente:nth-child(2) option:nth-child(12)", "css:finder"],
-        ["xpath=(//option[@value='frutas'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/select/option[12]", "xpath:idRelative"],
-        ["xpath=//div[2]/select/option[12]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "643f139b-69c6-4edf-b8bd-b7088e1971a0",
       "comment": "",
       "command": "click",
@@ -924,6 +1341,13 @@
         ["xpath=//div[2]/input", "xpath:position"]
       ],
       "value": "3g"
+    }, {
+      "id": "a339ea09-a81d-4376-b928-276d6209b2ef",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "No puede haber ingredientes duplicados"
     }, {
       "id": "e68fa699-acba-4684-8a4f-92d6b57eb42f",
       "comment": "",
@@ -967,23 +1391,18 @@
       "targets": [],
       "value": "label=vainilla"
     }, {
+      "id": "a206c0ac-d480-4ad0-bee1-57c0080b4236",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "d07895d9-c4b1-4d4e-adce-b43ba2b2d2f5",
       "comment": "",
       "command": "assertElementNotPresent",
       "target": "css=.help:nth-child(4)",
       "targets": [],
-      "value": ""
-    }, {
-      "id": "056daf91-2041-4563-9108-aac11d82277e",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaIngrediente:nth-child(2) option:nth-child(11)",
-      "targets": [
-        ["css=.filaIngrediente:nth-child(2) option:nth-child(11)", "css:finder"],
-        ["xpath=(//option[@value='vainilla'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[3]/div/div[2]/select/option[11]", "xpath:idRelative"],
-        ["xpath=//div[2]/select/option[11]", "xpath:position"]
-      ],
       "value": ""
     }, {
       "id": "773b18e7-c62e-459f-a3e5-410a3dd497e7",
@@ -1030,19 +1449,6 @@
       "targets": [],
       "value": "label=colador"
     }, {
-      "id": "e2699f2f-f013-4474-927f-a55caa1f833a",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaUtensilio option:nth-child(11)",
-      "targets": [
-        ["css=.filaUtensilio option:nth-child(11)", "css:finder"],
-        ["xpath=//option[@value='colador']", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div/select/option[11]", "xpath:idRelative"],
-        ["xpath=//div[4]/div/div/select/option[11]", "xpath:position"],
-        ["xpath=//option[contains(.,'colador')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
       "id": "fd1019cc-bb63-4a04-8db4-1123cbd58f49",
       "comment": "",
       "command": "click",
@@ -1068,31 +1474,49 @@
       ],
       "value": ""
     }, {
-      "id": "7f24b02b-a5ed-4b7b-baf7-376d7bcbe1fc",
+      "id": "3671c4bb-09a8-43b1-b06f-ea9fc894e844",
       "comment": "",
-      "command": "mouseOver",
-      "target": "css=.UtensiliosReceta > .botonMasGeneral",
+      "command": "click",
+      "target": "name=tools[1]",
       "targets": [
-        ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
-        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
-        ["xpath=//div[4]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
+        ["name=tools[1]", "name"],
+        ["css=.filaUtensilio:nth-child(2) > select", "css:finder"],
+        ["xpath=//select[@name='tools[1]']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div[2]/select", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div[2]/select", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "0ce07818-fd83-44e3-800c-2a2b74aad065",
+      "id": "7c934081-f35f-444a-96ec-e96972803c19",
       "comment": "",
-      "command": "mouseOut",
-      "target": "css=.UtensiliosReceta > .botonMasGeneral",
+      "command": "click",
+      "target": "css=.UtensiliosReceta > h3",
       "targets": [
-        ["css=.UtensiliosReceta > .botonMasGeneral", "css:finder"],
-        ["xpath=(//button[@type='button'])[6]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/button", "xpath:idRelative"],
-        ["xpath=//div[4]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'+ Añadir utensilio')]", "xpath:innerText"]
+        ["css=.UtensiliosReceta > h3", "css:finder"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/h3", "xpath:idRelative"],
+        ["xpath=//div[4]/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Utensilios')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "32477dd0-6035-4356-86e1-914ce07a3d0c",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.listaUtensilios > .help",
+      "targets": [],
+      "value": "Seleccione un utensilio"
+    }, {
+      "id": "596d37d9-d8f8-4df3-b9e8-c280836d5058",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.listaUtensilios > .help",
+      "targets": [
+        ["css=.listaUtensilios > .help", "css:finder"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/p", "xpath:idRelative"],
+        ["xpath=//div[4]/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Seleccione un utensilio')]", "xpath:innerText"]
+      ],
+      "value": "Seleccione un utensilio"
     }, {
       "id": "a70d0403-1779-4606-8b3a-3e7fdb56f6ab",
       "comment": "",
@@ -1114,6 +1538,13 @@
       "targets": [],
       "value": "label=colador"
     }, {
+      "id": "ec472558-910b-4f8e-8e8e-1a83a91ca982",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "No puede haber utensilios duplicados"
+    }, {
       "id": "fd3e9828-f4f3-41d4-a5bb-a548a85989c7",
       "comment": "",
       "command": "assertText",
@@ -1125,18 +1556,6 @@
         ["xpath=//p[contains(.,'No puede haber utensilios duplicados')]", "xpath:innerText"]
       ],
       "value": "No puede haber utensilios duplicados"
-    }, {
-      "id": "754f92cb-737a-43c5-b115-10ff3f6b1526",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaUtensilio:nth-child(2) option:nth-child(11)",
-      "targets": [
-        ["css=.filaUtensilio:nth-child(2) option:nth-child(11)", "css:finder"],
-        ["xpath=(//option[@value='colador'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div[2]/select/option[11]", "xpath:idRelative"],
-        ["xpath=//div[4]/div/div[2]/select/option[11]", "xpath:position"]
-      ],
-      "value": ""
     }, {
       "id": "a87c901a-513d-4704-b3c6-ffb13756164a",
       "comment": "",
@@ -1158,23 +1577,18 @@
       "targets": [],
       "value": "label=rodillo"
     }, {
-      "id": "746e4310-3ce0-41ab-8d73-d776a2688374",
+      "id": "ed202ba1-689f-45e0-b40a-8b2b0e75bb46",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help:nth-child(4)",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "4414da80-eead-45c1-9bc9-06d4b23c5fec",
       "comment": "",
       "command": "assertElementNotPresent",
       "target": "css=.help:nth-child(4)",
       "targets": [],
-      "value": ""
-    }, {
-      "id": "28960e8f-6287-4786-aca5-0407e01e9d23",
-      "comment": "",
-      "command": "click",
-      "target": "css=.filaUtensilio:nth-child(2) option:nth-child(13)",
-      "targets": [
-        ["css=.filaUtensilio:nth-child(2) option:nth-child(13)", "css:finder"],
-        ["xpath=(//option[@value='rodillo'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='root']/div/form/div[2]/div/div/div[4]/div/div[2]/select/option[13]", "xpath:idRelative"],
-        ["xpath=//div[4]/div/div[2]/select/option[13]", "xpath:position"]
-      ],
       "value": ""
     }, {
       "id": "44637e00-3577-47de-ace1-f202e20ab2ff",
@@ -1201,6 +1615,13 @@
         ["xpath=//div[3]", "xpath:position"]
       ],
       "value": ""
+    }, {
+      "id": "39710b7e-6a33-48ee-99b4-75b686174e80",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.TextoPublicacion > .help",
+      "targets": [],
+      "value": "La receta debe tener unos pasos a seguir"
     }, {
       "id": "fa47e072-4951-4c8f-8f4a-a172e3bea9ba",
       "comment": "",
@@ -1253,6 +1674,13 @@
       ],
       "value": ""
     }, {
+      "id": "1b7780d8-5aae-4dec-af8f-3b45b26d48c0",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.TextoPublicacion > .help",
+      "targets": [],
+      "value": "Los pasos de la receta deben de tener al menos 50 caracteres"
+    }, {
       "id": "3c517291-29a7-4fcc-b107-3efb6777c102",
       "comment": "",
       "command": "assertText",
@@ -1279,6 +1707,39 @@
       ],
       "value": ""
     }, {
+      "id": "e8ecbdff-7539-42cb-8113-e02a6e41731c",
+      "comment": "",
+      "command": "type",
+      "target": "id=steps",
+      "targets": [
+        ["id=steps", "id"],
+        ["name=steps", "name"],
+        ["css=#steps", "css:finder"],
+        ["xpath=//textarea[@id='steps']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div[2]/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "dsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngfdsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngf"
+    }, {
+      "id": "5d81676a-5ede-4520-9c3d-4bd1cfadca4d",
+      "comment": "",
+      "command": "waitForText",
+      "target": "css=.TextoPublicacion > .help",
+      "targets": [],
+      "value": "Los pasos de la receta no puede tener más de 3000 caracteres"
+    }, {
+      "id": "67744ad1-a0ac-4398-8da3-eaf5e39db411",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.TextoPublicacion > .help",
+      "targets": [
+        ["css=.TextoPublicacion > .help", "css:finder"],
+        ["xpath=//div[@id='root']/div/form/div[2]/div/div[2]/div/p", "xpath:idRelative"],
+        ["xpath=//div[2]/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Los pasos de la receta no puede tener más de 3000 caracteres')]", "xpath:innerText"]
+      ],
+      "value": "Los pasos de la receta no puede tener más de 3000 caracteres"
+    }, {
       "id": "d7e2708f-5666-4aea-aef6-d9ca142e1345",
       "comment": "",
       "command": "type",
@@ -1292,6 +1753,13 @@
         ["xpath=//textarea", "xpath:position"]
       ],
       "value": "dsgdfbhsgsngdfbhhbnmjytjsrhfsghnfgsnjgsjngshjgfsjgfhngf"
+    }, {
+      "id": "438ba8f6-eac7-46b9-bfbe-dacc43954d11",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.TextoPublicacion > .help",
+      "targets": [],
+      "value": "30000"
     }, {
       "id": "18f81bcd-4d4f-487d-b77c-b4cdd27da2f9",
       "comment": "",
@@ -1340,6 +1808,13 @@
       ],
       "value": "aaaooo"
     }, {
+      "id": "87b4f738-44e8-4c77-a958-54a8c6129cd9",
+      "comment": "",
+      "command": "waitForElementNotPresent",
+      "target": "css=.help",
+      "targets": [],
+      "value": "30000"
+    }, {
       "id": "84ca8ce2-1906-4a3e-b1d9-1f1fb5172bad",
       "comment": "",
       "command": "assertElementNotPresent",
@@ -1354,7 +1829,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": []
+    "tests": ["8215e25e-06ad-4940-a34a-13e4440fb7eb", "5c2c20bf-4901-44d4-a14c-ef39d3c1b49e"]
   }],
   "urls": ["http://localhost:5173/"],
   "plugins": []

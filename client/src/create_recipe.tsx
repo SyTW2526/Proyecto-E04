@@ -10,6 +10,7 @@ import React from 'react';
 import type { UserInterface } from './interfaces/UserInterface';
 import SimplifiedProfile from './simplifiedProfile';
 import { Minus, X } from 'lucide-react';
+import { Helmet } from 'react-helmet';
 
 //https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
 //https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
@@ -57,13 +58,13 @@ const tools = [
     'cuchillo', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador'
 ]
 
-const RecipeSchema = yup.object().shape({
-    name: yup.string().required('Se necesita poner un nombre a la receta').min(6, 'El nombre de la receta debe de tener al menos 6 caracteres'),
-    steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50, 'Los pasos de la receta deben de tener al menos 50 caracteres'),
+export const RecipeSchema = yup.object().shape({
+    name: yup.string().required('Se necesita poner un nombre a la receta').min(6, 'El nombre de la receta debe de tener al menos 6 caracteres').max(50, 'El nombre de la receta no puede tener más de 50 caracteres'),
+    steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50, 'Los pasos de la receta deben de tener al menos 50 caracteres').max(3000, 'Los pasos de la receta no puede tener más de 3000 caracteres'),
     ingredients: yup.array().of(yup.object().shape({
         ingredient: yup.string().required("Seleccione un ingrediente"),
         quantity: yup.string().required("Introduzca una cantidad")
-    })).min(1, 'La receta debe de tener al menos un ingrediente')
+    }))
     .test(
         "unique-ingredients",
         "No puede haber ingredientes duplicados",
@@ -78,26 +79,39 @@ const RecipeSchema = yup.object().shape({
             return new Set(ingredientNames).size === ingredientNames.length;
         }
     ),
-    tools: yup.array().of(yup.string().required('Hay utensilios sin asignar')).min(1, 'La receta tiene que utilizar al menos un utensilio')
+    tools: yup.array().of(yup.string().required('Seleccione un utensilio'))
     .test(
         "unique-tools",
         "No puede haber utensilios duplicados",
         (tools) => {
             if (!tools) return true;
-
-            // ignorar elementos vacíos: solo revisamos duplicados si el string no está vacío
-            const filteredTools = tools.filter(t => t && t.trim() !== "").map(t => t.trim().toLowerCase());
+            const filteredTools = tools.filter(t => t || "").map(t => t.trim().toLowerCase());
 
             return new Set(filteredTools).size === filteredTools.length;
         }
     ),
-    category: yup.array().of(yup.string().required('Hay categorias no asignadas')),
+    category: yup
+    .array()
+    .of(yup.string().required('Seleccione una categoría'))
+    .test(
+        "unique-categories",
+        "No puede haber categorías duplicadas",
+        (category) => {
+        if (!category) return true;
+
+        const filteredCategories = category
+            .filter(c => c)
+            .map(c => c.trim().toLowerCase());
+
+        return new Set(filteredCategories).size === filteredCategories.length;
+        }
+    ),
     userId: yup.string(),
-    images: yup.array().of(yup.string()).max(5, 'No se pueden adjuntar más de 5 imágenes'), //.min(1, 'Se debe adjuntar al menos una imagen').max(5, 'No se pueden adjuntar más de 5 imágenes'),
+    images: yup.array().of(yup.string()).max(5, 'No se pueden adjuntar más de 5 imágenes'),
     videos: yup.array().of(yup.string()).max(3, 'No se pueden adjuntar más de tres vídeos')
 });
 
-function isIngredientError(
+export function isIngredientError(
   error: unknown
 ): error is { ingredient?: string; quantity?: string } {
   return typeof error === "object" && error !== null;
@@ -115,11 +129,8 @@ function CreateRecipe() {
     const [postCount, setPostCount] = useState(0); 
     
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-    
         axios.get<UserInterface>('http://localhost:3000/users/me', {
-            headers: { Authorization: `Bearer ${token}` }
+            withCredentials: true
         })
         .then(response => setMe(response.data))
         .catch(console.error);      
@@ -127,10 +138,8 @@ function CreateRecipe() {
 
     useEffect(() => {
         if (me) {
-            const token = localStorage.getItem("token");
-        
             axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
             .catch(error => console.error(error));
@@ -141,11 +150,9 @@ function CreateRecipe() {
 
     return (
         <>
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Crear receta / RecipeVault</title>
-            </head>
+            <Helmet>
+                <title>Publicar / RecipeVault</title>
+            </Helmet>
             <div className="ContenedorGeneralReceta">
                 <Formik
                     initialValues = {{
@@ -161,10 +168,8 @@ function CreateRecipe() {
                     validationSchema={RecipeSchema}
                     onSubmit={async (values: RecipeFormState) => {
                         try {
-                            const token = localStorage.getItem("token");
-
                             const user = await axios.get('http://localhost:3000/users/me', {
-                                headers: { Authorization: `Bearer ${token}` }
+                                withCredentials: true
                             });
 
                             const formData = new FormData();
@@ -200,8 +205,8 @@ function CreateRecipe() {
                                 {
                                     headers: {
                                         "Content-Type": "multipart/form-data",
-                                        Authorization: `Bearer ${token}`
-                                    }
+                                    },
+                                    withCredentials: true
                                 }
                             );
 
@@ -212,6 +217,7 @@ function CreateRecipe() {
                         } catch (error) {
                             if (axios.isAxiosError(error) && error.response) {
                                 setCreationError(error.response.data.message);
+                                console.error(error);
                             } else {
                                 setCreationError('Error inesperado al crear la receta');
                             }
@@ -271,33 +277,43 @@ function CreateRecipe() {
                                                     <>
                                                         <div className="listaCategorias">
                                                             {values.category.map((_, index) => (
-                                                                <div key={`categoria${index}`} className="filaCategorias">
+                                                                <>
+                                                                    <div key={`categoria${index}`} className="filaCategorias">
 
-                                                                    <select
-                                                                        name={`category[${index}]`}
-                                                                        value={values.category[index]}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                    >
-                                                                        <option value="">Seleccione utensilio</option>
-                                                                        {categories.map((cat) => (
-                                                                            <option key={cat} value={cat}>
-                                                                                {cat}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-
-                                                                    {/* Botón eliminar */}
-                                                                    {values.category.length > 1 && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="botonEliminar"
-                                                                            onClick={() => remove(index)}
+                                                                        <select
+                                                                            name={`category[${index}]`}
+                                                                            value={values.category[index]}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
                                                                         >
-                                                                            <X size={24}/>
-                                                                        </button>
+                                                                            <option value="">Seleccione categoría</option>
+                                                                            {categories.map((cat) => (
+                                                                                <option key={cat} value={cat}>
+                                                                                    {cat}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+
+                                                                        {/* Botón eliminar */}
+                                                                        {values.category.length > 1 && (
+                                                                            <button
+                                                                                type="button"
+                                                                                className="botonEliminar"
+                                                                                onClick={() => remove(index)}
+                                                                            >
+                                                                                <X size={24}/>
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                    {Array.isArray(touched.category) &&
+                                                                    Array.isArray(errors.category) &&
+                                                                    touched.category[index] &&
+                                                                    errors.category[index] && (
+                                                                        <p className="help is-danger">
+                                                                            {errors.category[index]}
+                                                                        </p>
                                                                     )}
-                                                                </div>
+                                                                </>
                                                             ))}
                                                         </div>
 
@@ -317,9 +333,6 @@ function CreateRecipe() {
                                                     </>
                                                 )}
                                             </FieldArray>
-                                            {touched.category && errors.category && (
-                                                <p className="help is-danger">{errors.category}</p>
-                                            )}
                                         </div>
                                         <div className="IngredientesReceta">
                                             <h3>Ingredientes</h3>
@@ -384,11 +397,6 @@ function CreateRecipe() {
                                                                             )}
                                                                 </React.Fragment>
                                                             ))}
-
-                                                            {/* ERROR GLOBAL DE LA LISTA */}
-                                                            {typeof errors.ingredients === "string" && (
-                                                                <p className="help is-danger">{errors.ingredients}</p>
-                                                            )}
                                                         </div>
 
                                                         {/* ÚNICO BOTÓN + */}
@@ -400,7 +408,7 @@ function CreateRecipe() {
                                                             + Añadir ingrediente
                                                         </button>
 
-                                                        {/* Errores */}
+                                                        {/* ERROR GLOBAL DE LA LISTA */}
                                                         {typeof errors.ingredients === "string" && (
                                                             <p className="help is-danger">{errors.ingredients}</p>
                                                         )}
@@ -415,33 +423,43 @@ function CreateRecipe() {
                                                     <>
                                                         <div className="listaUtensilios">
                                                             {values.tools.map((_, index) => (
-                                                                <div key={index} className="filaUtensilio">
+                                                                <>
+                                                                    <div key={index} className="filaUtensilio">
 
-                                                                    <select
-                                                                        name={`tools[${index}]`}
-                                                                        value={values.tools[index]}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                    >
-                                                                        <option value="">Seleccione utensilio</option>
-                                                                        {tools.map((tool) => (
-                                                                            <option key={tool} value={tool}>
-                                                                                {tool}
-                                                                            </option>
-                                                                        ))}
-                                                                    </select>
-
-                                                                    {/* Botón eliminar */}
-                                                                    {values.tools.length > 1 && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="botonEliminar"
-                                                                            onClick={() => remove(index)}
+                                                                        <select
+                                                                            name={`tools[${index}]`}
+                                                                            value={values.tools[index]}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
                                                                         >
-                                                                            <X size={24}/>
-                                                                        </button>
+                                                                            <option value="">Seleccione utensilio</option>
+                                                                            {tools.map((tool) => (
+                                                                                <option key={tool} value={tool}>
+                                                                                    {tool}
+                                                                                </option>
+                                                                            ))}
+                                                                        </select>
+
+                                                                        {/* Botón eliminar */}
+                                                                        {values.tools.length > 1 && (
+                                                                            <button
+                                                                                type="button"
+                                                                                className="botonEliminar"
+                                                                                onClick={() => remove(index)}
+                                                                            >
+                                                                                <X size={24}/>
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                    {Array.isArray(touched.tools) &&
+                                                                    Array.isArray(errors.tools) &&
+                                                                    touched.tools[index] &&
+                                                                    errors.tools[index] && (
+                                                                    <p className="help is-danger">
+                                                                        {errors.tools[index]}
+                                                                    </p>
                                                                     )}
-                                                                </div>
+                                                                </>
                                                             ))}
                                                         </div>
 
@@ -454,7 +472,7 @@ function CreateRecipe() {
                                                             + Añadir utensilio
                                                         </button>
 
-                                                        {/* Errores */}
+                                                        {/* ERROR GLOBAL DE LA LISTA */}
                                                         {typeof errors.tools === "string" && (
                                                             <p className="help is-danger">{errors.tools}</p>
                                                         )}

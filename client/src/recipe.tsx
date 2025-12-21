@@ -10,22 +10,8 @@ import MediaCarousel from './MediaCarousel';
 import SimplifiedProfile from './simplifiedProfile';
 import type { UserInterface } from './interfaces/UserInterface';
 import SaveButton from './botonSave';
-
-//https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
-//https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
-
-interface Recipe {
-    _id: string;
-    name: string;
-    steps: string;
-    ingredients: {ingredient: string, quantity: string}[];
-    tools: string[];
-    userId: {_id: string, username: string, profilePic:string}; 
-    category: string[]; // Pasta, postre, carne, etc. 
-    images: string[]; // URLs de imágenes o vídeos 
-    videos: string[]; // URLs de vídeos 
-    creacionDate: Date;
-}
+import { Helmet } from 'react-helmet';
+import type { Recipe } from './interfaces/RecipeInterface';
 
 export interface Review {
     _id: string;
@@ -98,10 +84,8 @@ function Recipe() {
 
     const [user, setUser] = useState<{ _id: string } | null>(null);
     useEffect(() => {
-        const token = localStorage.getItem("token");
-
         axios.get('http://localhost:3000/users/me', {
-            headers: { Authorization: `Bearer ${token}` }
+            withCredentials: true
         })
         .then(response => {
             setUser(response.data);
@@ -113,11 +97,8 @@ function Recipe() {
     const [postCount, setPostCount] = useState(0); 
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
         axios.get<UserInterface>('http://localhost:3000/users/me', {
-        headers: { Authorization: `Bearer ${token}` }
+            withCredentials: true
         })
         .then(response => setMe(response.data))
         .catch(console.error);
@@ -125,10 +106,8 @@ function Recipe() {
 
     useEffect(() => {
         if (me) {
-            const token = localStorage.getItem("token");
-
             axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
             .catch(error => console.error(error));
@@ -155,11 +134,9 @@ function Recipe() {
 
     return (
         <>
-            <head>
-                <meta charSet="UTF-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>{receta.name} / RecipeVault</title>
-            </head>
+            <Helmet>
+                <title>{receta.name} de {receta.userId.username} / RecipeVault</title>
+            </Helmet>
             <div className="ContenedorGeneralReceta">
                 <div className="NombreReceta">
                     <h2>{receta!.name}</h2>

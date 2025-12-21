@@ -9,6 +9,7 @@ import type { UserInterface } from "./interfaces/UserInterface";
 import type { RecipePost } from "./postcard";
 import PostCard from "./postcard";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const FilterKey = {
   INGREDIENTS: 'ingredients',
@@ -154,34 +155,23 @@ function SearchFilterView() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]); 
   const [openSelector, setOpenSelector] = useState<FilterKeyType | ''>(''); 
 
-  const getToken = (): string | null => localStorage.getItem('token');
-
   const updateUserSearches = useCallback(async (newSearches: string[]) => {
-    const token = getToken();
-    if (!token) return;
     try {
-      await fetch(`${BASE_API_URL}/users/updateSearches`, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ recentSearches: newSearches }) 
-      });
+      await axios.post(`${BASE_API_URL}/users/updateSearches`, 
+        { recentSearches: newSearches },
+        { withCredentials: true } );
       setRecentSearches(newSearches); 
     } catch (error) { console.error("Error BD Searches:", error); }
   }, [BASE_API_URL]);
 
   const fetchUserMe = useCallback(async () => {
-    const token = getToken();
-    if (!token) return; 
     try {
-      const response = await fetch(`${BASE_API_URL}/users/me`, { 
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` },
+      const response = await axios.get(`${BASE_API_URL}/users/me`, { 
+        withCredentials: true
       });
-      if (response.ok) {
-        const userData = await response.json();
+        const userData = await response.data;
         setMe(userData); 
         setRecentSearches(userData.recentSearches || []);
-      }
     } catch (error) { console.error("Error Profile:", error); }
   }, [BASE_API_URL]);
 
@@ -214,18 +204,12 @@ function SearchFilterView() {
   if (isLoading) return;
   setIsLoading(true);
   setIsAdvancedSearchOpen(false);
-  
-  const token = getToken();
-  const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) };
 
   try {
     if (searchMode === 'users') {
       setSearchResults(null);
-      const response = await fetch(`${BASE_API_URL}/users?username=${term.trim()}`, { 
-        method: 'GET', 
-        headers 
-      });
-      const data = await response.json();
+      const response = await axios.get(`${BASE_API_URL}/users?username=${term.trim()}`, { withCredentials: true });
+      const data = await response.data;
       const results = Array.isArray(data) ? data : [];
       setUserResults(results);
 
@@ -246,17 +230,14 @@ function SearchFilterView() {
       if (cat.length > 0) params.append('category', cat.join(','));
       if (ut.length > 0) params.append('tools', ut.join(','));
 
-      const response = await fetch(`${BASE_API_URL}/recipes?${params.toString()}`, { 
-        method: 'GET', 
-        headers 
-      });
+      const response = await axios.get(`${BASE_API_URL}/recipes?${params.toString()}`, { withCredentials: true });
       
-      if (!response.ok) {
+      if (response.status !== 200) {
         setSearchResults([]);
         return;
       }
 
-      const data = await response.json();
+      const data = await response.data;
       const results = Array.isArray(data) ? data : [];
       setSearchResults(results);
 
@@ -278,10 +259,8 @@ function SearchFilterView() {
   const [postCount, setPostCount] = useState(0);
   useEffect(() => {
     if (me) {
-      const token = localStorage.getItem("token");
-  
       axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        withCredentials: true
       })
         .then(response => setPostCount(response.data.length))
         .catch(error => console.error(error));
@@ -292,6 +271,9 @@ function SearchFilterView() {
 
   return (
     <>
+      <Helmet>
+        <title>Buscador / RecipeVault</title>
+      </Helmet>
       <FilterSelector 
           type={openSelector}
           options={openSelector ? [...filterMap[openSelector].list] : []}

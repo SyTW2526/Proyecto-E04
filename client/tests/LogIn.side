@@ -114,7 +114,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "aaaaaa@gmail.com"
+      "value": "elena.sanchez@test.com"
     }, {
       "id": "a5c8830f-7b70-4da6-8f22-a08e7d2c7e3a",
       "comment": "",
@@ -142,7 +142,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input[2]", "xpath:idRelative"],
         ["xpath=//input[2]", "xpath:position"]
       ],
-      "value": "usuusu"
+      "value": "Password123!"
     }, {
       "id": "0210cb11-a87e-49cf-a038-0afb65680e1a",
       "comment": "",
@@ -158,10 +158,133 @@
     }, {
       "id": "40ceff1e-3c19-4004-8031-795accd05dda",
       "comment": "",
-      "command": "assertTitle",
-      "target": "Inicio / RecipeVault",
-      "targets": [],
+      "command": "assertText",
+      "target": "css=.section-title",
+      "targets": [
+        ["css=.section-title", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/h2", "xpath:idRelative"],
+        ["xpath=//h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Posts')]", "xpath:innerText"]
+      ],
+      "value": "Posts"
+    }, {
+      "id": "5e879fa6-665d-41b5-a788-53a9b62481e4",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.foto-perfil-grande",
+      "targets": [
+        ["css=.foto-perfil-grande", "css:finder"],
+        ["xpath=//img[@alt='Foto de perfil de ChefElenaES']", "xpath:img"],
+        ["xpath=//div[@id='root']/div/aside/div/img", "xpath:idRelative"],
+        ["xpath=//aside/div/img", "xpath:position"]
+      ],
       "value": ""
+    }, {
+      "id": "72a7ddbc-8881-4db0-b418-f76dffce54fa",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.user-name",
+      "targets": [
+        ["css=.user-name", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/h3", "xpath:idRelative"],
+        ["xpath=//aside/div/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'ChefElenaES')]", "xpath:innerText"]
+      ],
+      "value": "ChefElenaES"
+    }, {
+      "id": "ec9af207-c769-4c0d-92f0-a55740a042c9",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.user-handle",
+      "targets": [
+        ["css=.user-handle", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/p", "xpath:idRelative"],
+        ["xpath=//aside/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'@chefelenaes')]", "xpath:innerText"]
+      ],
+      "value": "@chefelenaes"
+    }, {
+      "id": "75eb154e-e1f0-4e37-8a1f-4356badd720b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(1) > .stat-number",
+      "targets": [
+        ["css=div:nth-child(1) > .stat-number", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div/span", "xpath:idRelative"],
+        ["xpath=//div/div/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'1')]", "xpath:innerText"]
+      ],
+      "value": "1"
+    }, {
+      "id": "5d66f00b-f6bf-4f9f-b490-198ad10c57ce",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(2) > .stat-number",
+      "targets": [
+        ["css=div:nth-child(2) > .stat-number", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div[2]/span", "xpath:idRelative"],
+        ["xpath=//div/div/div[2]/span", "xpath:position"]
+      ],
+      "value": "0"
+    }, {
+      "id": "cd1c57cc-dc56-46b8-a523-1b9bd714f583",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(3) > .stat-number",
+      "targets": [
+        ["css=div:nth-child(3) > .stat-number", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div[3]/span", "xpath:idRelative"],
+        ["xpath=//div[3]/span", "xpath:position"]
+      ],
+      "value": "0"
+    }, {
+      "id": "108351e1-b012-46d9-ab8d-410b0811d840",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(1) > .stat-label",
+      "targets": [
+        ["css=div:nth-child(1) > .stat-label", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div/span[2]", "xpath:idRelative"],
+        ["xpath=//div/div/div/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Posts')]", "xpath:innerText"]
+      ],
+      "value": "Posts"
+    }, {
+      "id": "70f54539-4163-4c21-95dc-233689c83c55",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(2) > .stat-label",
+      "targets": [
+        ["css=div:nth-child(2) > .stat-label", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div[2]/span[2]", "xpath:idRelative"],
+        ["xpath=//div/div/div[2]/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Followers')]", "xpath:innerText"]
+      ],
+      "value": "Seguidores"
+    }, {
+      "id": "08750ce8-af53-4f70-96e9-70ca053364ef",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(3) > .stat-label",
+      "targets": [
+        ["css=div:nth-child(3) > .stat-label", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/div/div[3]/span[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'Following')]", "xpath:innerText"]
+      ],
+      "value": "Seguidos"
+    }, {
+      "id": "5c07f5c9-5cfd-4b63-abb3-4f68397c03a0",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.user-description",
+      "targets": [
+        ["css=.user-description", "css:finder"],
+        ["xpath=//div[@id='root']/div/aside/div/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'Especialista en tapas y arroces.')]", "xpath:innerText"]
+      ],
+      "value": "Especialista en tapas y arroces."
     }]
   }, {
     "id": "37bcf830-dcd9-4217-938b-2d0c3f99d475",
@@ -326,7 +449,7 @@
         ["xpath=//div[@id='root']/div/div/div[2]/form/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
-      "value": "aaaaaa@gmail.com"
+      "value": "elena.sanchez@test.com"
     }, {
       "id": "26e0664a-871f-4fde-ad73-42e69587d780",
       "comment": "",
@@ -642,7 +765,7 @@
         ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
         ["xpath=//div[4]/form/input", "xpath:position"]
       ],
-      "value": "usuario11"
+      "value": "usuario20"
     }, {
       "id": "b9d50820-f154-4128-83db-c89d6a9619dd",
       "comment": "",
@@ -668,7 +791,7 @@
         ["xpath=//div[@id='root']/div/div/div[4]/form/input[2]", "xpath:idRelative"],
         ["xpath=//div[4]/form/input[2]", "xpath:position"]
       ],
-      "value": "usuario11@gmail.com"
+      "value": "usuario20@gmail.com"
     }, {
       "id": "e881bcd3-3299-4169-9701-4b848b685147",
       "comment": "",
@@ -708,12 +831,17 @@
       ],
       "value": ""
     }, {
-      "id": "1e6fd1e5-92e1-4482-9cf9-f4e0e4e280ed",
+      "id": "cc35e16f-d663-48f1-b82a-c70305488019",
       "comment": "",
-      "command": "assertTitle",
-      "target": "Inicio / RecipeVault",
-      "targets": [],
-      "value": ""
+      "command": "assertText",
+      "target": "css=.section-title",
+      "targets": [
+        ["css=.section-title", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/h2", "xpath:idRelative"],
+        ["xpath=//h2", "xpath:position"],
+        ["xpath=//h2[contains(.,'Posts')]", "xpath:innerText"]
+      ],
+      "value": "Posts"
     }]
   }, {
     "id": "4ea34781-f588-459c-94f2-b601edd0063e",
@@ -766,7 +894,7 @@
         ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
         ["xpath=//div[4]/form/input", "xpath:position"]
       ],
-      "value": "usuario10"
+      "value": "ChefElenaES"
     }, {
       "id": "d58d1d79-5d3d-42f8-9ffb-8612e19f44e2",
       "comment": "",
@@ -926,7 +1054,7 @@
         ["xpath=//p", "xpath:position"],
         ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
       ],
-      "value": "usuario10@gmail.com"
+      "value": "elena.sanchez@test.com"
     }, {
       "id": "bfd42dab-ca36-44fd-a9dc-8aada3acd1f2",
       "comment": "",
@@ -1175,6 +1303,56 @@
       ],
       "value": "La contraseña debe de tener al menos 6 caracteres"
     }, {
+      "id": "1f5de763-e498-41ff-aa5d-543fefe10a8e",
+      "comment": "",
+      "command": "type",
+      "target": "id=ruser",
+      "targets": [
+        ["id=ruser", "id"],
+        ["name=username", "name"],
+        ["css=#ruser", "css:finder"],
+        ["xpath=//input[@id='ruser']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/input", "xpath:idRelative"],
+        ["xpath=//div[4]/form/input", "xpath:position"]
+      ],
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }, {
+      "id": "a001b56b-595d-483a-93b9-af38050bcddd",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(5)",
+      "targets": [
+        ["css=.help", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario no puede exceder los 30 caracteres')]", "xpath:innerText"]
+      ],
+      "value": "El nombre de usuario no puede exceder los 30 caracteres"
+    }, {
+      "id": "6196a473-8f05-4dc5-9c3c-583b8d540707",
+      "comment": "",
+      "command": "type",
+      "target": "id=remail",
+      "targets": [
+        ["css=.error-message", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p", "xpath:idRelative"],
+        ["xpath=//p", "xpath:position"],
+        ["xpath=//p[contains(.,'El nombre de usuario o email ya se han utilizado anteriormente')]", "xpath:innerText"]
+      ],
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com"
+    }, {
+      "id": "778b586b-9185-449b-8010-1fcae97a4ee1",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.help:nth-child(10)",
+      "targets": [
+        ["css=.help:nth-child(10)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div[4]/form/p[2]", "xpath:idRelative"],
+        ["xpath=//p[2]", "xpath:position"],
+        ["xpath=//p[contains(.,'Debe de ser un email')]", "xpath:innerText"]
+      ],
+      "value": "El email no puede exceder los 40 caracteres"
+    }, {
       "id": "491fe3df-db55-4bb4-8418-e7de8f002103",
       "comment": "",
       "command": "type",
@@ -1266,7 +1444,7 @@
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["66fc845a-4b5b-483e-9e2d-fb45f56f39b5"]
+    "tests": ["66fc845a-4b5b-483e-9e2d-fb45f56f39b5", "06dbeb8c-dde7-417e-bb0f-54925f4c0369", "d11680a2-c68c-4f60-92d5-fbd111d4c95b", "37bcf830-dcd9-4217-938b-2d0c3f99d475", "5a5f7a8a-5ac7-4b98-bf3d-f5d01406e2ac", "5b1b61c8-e675-46a9-98e2-c45f99b81114", "4ea34781-f588-459c-94f2-b601edd0063e", "babfc797-f1ec-4178-845b-e2cc8844ee4f"]
   }],
   "urls": ["http://localhost:5173/"],
   "plugins": []

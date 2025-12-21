@@ -7,6 +7,7 @@ import type { UserInterface } from "./interfaces/UserInterface";
 import SimplifiedProfile from "./simplifiedProfile";
 import type { RecipePost } from "./postcard";
 import PostCard from "./postcard";
+import { Helmet } from "react-helmet";
 
 
 function Main_page() {
@@ -15,25 +16,13 @@ function Main_page() {
   const [postCount, setPostCount] = useState(0); 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    axios.get<UserInterface>('http://localhost:3000/users/me', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    axios.get<UserInterface>('http://localhost:3000/users/me', { withCredentials: true })
       .then(response => setMe(response.data))
       .catch(console.error);
-      
-    setPostCount(480); 
-      
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    axios.get<RecipePost[]>('http://localhost:3000/recipes/feed', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    axios.get<RecipePost[]>('http://localhost:3000/recipes/feed', { withCredentials: true })
       .then(response => {
         setPosts(response.data.slice(0, 15));
       })
@@ -42,10 +31,8 @@ function Main_page() {
 
   useEffect(() => {
         if (me) {
-            const token = localStorage.getItem("token");
-
             axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
             .catch(error => console.error(error));
@@ -56,6 +43,9 @@ function Main_page() {
 
   return (
     <div className="contenedor">
+      <Helmet>
+        <title>Inicio / RecipeVault</title>
+      </Helmet>
       {/* Lista de Posts y Búsqueda */}
       <main className="principal posts-area">
         

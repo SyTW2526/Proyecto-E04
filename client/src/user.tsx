@@ -4,17 +4,17 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
-import Recipe from "./recipe";
 import Navigation from "./navigation";
 import FollowButton from "./botonFollow";
 import type { UserInterface } from "./interfaces/UserInterface";
 import SimplifiedProfile from "./simplifiedProfile";
 import PostCard, { type RecipePost } from "./postcard";
+import { Helmet } from "react-helmet";
 
 const UserSchema = yup.object().shape({
-  username: yup.string().required("El nombre de usuario es obligatorio").min(3),
-  email: yup.string().email("Email inválido").required("Email obligatorio"),
-  bio: yup.string().max(200, "La bio no puede exceder 200 caracteres"),
+  username: yup.string().required("El nombre de usuario es obligatorio").min(4, 'El nombre de usuario debe tener al menos 4 caracteres').max(30, 'El nombre de usuario no puede exceder los 30 caracteres'),
+  email: yup.string().email("Email inválido").required("El email es obligatorio").max(40, 'El email no puede exceder los 40 caracteres'),
+  bio: yup.string().max(200, "La bio no puede exceder los 200 caracteres"),
 });
 
 function UserPage() {
@@ -35,9 +35,8 @@ function UserPage() {
   }, [id]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     axios.get('http://localhost:3000/users/me', {
-      headers: { Authorization: `Bearer ${token}` }
+      withCredentials: true
     })
       .then(response => setMe(response.data))
       .catch(console.error);
@@ -51,10 +50,8 @@ function UserPage() {
 
   useEffect(() => {
     if (me) {
-      const token = localStorage.getItem("token");
-  
       axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        withCredentials: true
       })
         .then(response => setPostCount(response.data.length))
         .catch(error => console.error(error));
@@ -63,10 +60,8 @@ function UserPage() {
 
   useEffect(() => {
     if (user) {
-      const token = localStorage.getItem("token");
-  
       axios.get(`http://localhost:3000/recipes?userId=${user._id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        withCredentials: true
       })
         .then(response => setPosts(response.data))
         .catch(error => console.error(error));
@@ -89,15 +84,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   formData.append("profilePic", file);
 
   try {
-    const token = localStorage.getItem("token");
     const response = await axios.patch(
       `http://localhost:3000/users/${me._id}/files`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data"
         },
+        withCredentials: true
       }
     );
 
@@ -118,6 +112,9 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className="contenedor">
+      <Helmet>
+        <title>{user.username} / RecipeVault</title>
+      </Helmet>
       <main className="principal">
         <h1>Perfil de Usuario</h1>
 
@@ -156,7 +153,16 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     {isMe && (
                       <>
                         <button onClick={() => setEditing(true)}>Editar</button>
-                        <button onClick={() => navigate('/home')}>Borrar</button>
+                        <button onClick={async () => {
+                            try {
+                              const response = await axios.delete('http://localhost:3000/users/' + user._id);
+                              console.log(response);
+
+                              navigate('/login');
+                            } catch (error) {
+
+                            }
+                          }}>Borrar</button>
                       </>
                     )}
                   </div>
@@ -164,8 +170,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
                   {/* Columna info de seguidores */}
                   <div className="fila-seguidores">
-                    <Link to='followers'><p><strong>Followers:</strong> {user.followers.length}</p></Link>
-                    <Link to='following'><p><strong>Follows:</strong> {user.following.length}</p></Link>
+                    <Link to='followers'><p><strong>Seguidores:</strong> {user.followers.length}</p></Link>
+                    <Link to='following'><p><strong>Seguidos:</strong> {user.following.length}</p></Link>
                   </div>
                 </div>
               </>
@@ -193,17 +199,17 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     <div>
                       <label>Nombre de usuario:</label><br/>
                       <input name="username" value={values.username} onChange={handleChange} onBlur={handleBlur} />
-                      {touched.username && errors.username && <p className="error">{errors.username}</p>}
+                      {touched.username && errors.username && <p className="help is-danger">{errors.username}</p>}
                     </div>
                     <div>
                       <label>Email:</label><br/>
                       <input name="email" value={values.email} onChange={handleChange} onBlur={handleBlur} />
-                      {touched.email && errors.email && <p className="error">{errors.email}</p>}
+                      {touched.email && errors.email && <p className="help is-danger">{errors.email}</p>}
                     </div>
                     <div>
                       <label>Biografía:</label>
                       <textarea name="bio" value={values.bio} onChange={handleChange} onBlur={handleBlur} />
-                      {touched.bio && errors.bio && <p className="error">{errors.bio}</p>}
+                      {touched.bio && errors.bio && <p className="help is-danger">{errors.bio}</p>}
                     </div>
                     <div className="botones-editar">
                       <button className="editButton" type="submit">Guardar</button>
@@ -220,7 +226,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         {/* Aquí puedes mapear los posts del usuario si los tienes */}
         <div className="posts-grid">
           {posts.length === 0 ? (
-            <p>No has guardado ninguna receta. ¡Guarda una!</p>
+            <p>Este usuario no ha compartido ninguna receta todavía.</p>
           ) : (
             posts.map(post => (
               <PostCard 
