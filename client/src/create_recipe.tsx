@@ -238,14 +238,18 @@ function CreateRecipe() {
                                     <div className="IzquierdaReceta">
                                         <div className="ImagenesPublicacion">
                                             <h3>Imágenes</h3>
+                                            <label htmlFor="inputImages" className="botonMasGeneral botonArchivo">
+                                                Añadir imágenes
+                                            </label>
                                             <input 
+                                                id="inputImages"
                                                 type="file" 
                                                 name="images" 
                                                 accept="image/*" 
                                                 multiple
+                                                hidden
                                                 onChange={(e) => {
                                                     if (!e.target.files) return;
-
                                                     setImageFiles(e.target.files);
                                                     setFieldValue("images", Array.from(e.target.files));
                                                 }}
@@ -254,14 +258,18 @@ function CreateRecipe() {
                                                 <p className="help is-danger">{errors.images}</p>
                                             )}
                                             <h3>Vídeos</h3>
+                                            <label htmlFor="inputVideos" className="botonMasGeneral botonArchivo">
+                                                Añadir vídeos
+                                            </label>
                                             <input 
+                                                id="inputVideos"
                                                 type="file" 
                                                 name="videos" 
                                                 accept="video/*"
                                                 multiple
+                                                hidden
                                                 onChange={(e) => {
                                                     if (!e.target.files) return;
-
                                                     setVideoFiles(e.target.files);
                                                     setFieldValue("videos", Array.from(e.target.files))
                                                 }}
@@ -357,15 +365,15 @@ function CreateRecipe() {
                                                                                 </option>
                                                                             ))}
                                                                         </select>
-
-                                                                        <input
-                                                                            type="text"
+                                                                   
+                                                                       <input
+                                                                           type="text"
                                                                             name={`ingredients[${index}].quantity`}
                                                                             value={values.ingredients[index].quantity}
                                                                             onChange={handleChange}
                                                                             onBlur={handleBlur}
                                                                         />
-
+                                                                   
                                                                         {values.ingredients.length > 1 && (
                                                                             <button
                                                                                 type="button"

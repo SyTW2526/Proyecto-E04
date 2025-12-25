@@ -8,25 +8,43 @@
 }
 
 .contenedorUsuarios {
-    min-width:80%;
-    height:90%;
-    background-color:#d2a679;
-    border-radius:20px;
-    padding:20px;
+    min-width: 80%;
+    height: 90%;
+    background-color: #eeba86;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .botonesFollow {
     width:100%;
     display:flex;
+    background-color:#f9f0e1;
+    justify-content: center; /* centra los botones */
+    gap: 10px;              /* espacio entre botones */
+    background-color: #f9f0e1;
+    padding: 10px 0;
+    border-radius: 15px;
 }
 
 .boton {
-    width:100%;
-    background-color:transparent;
+    width: auto;            /* deja de ocupar todo el ancho */
+    padding: 8px 20px;      /* tamaño del botón */
+    background-color: #eeba86;
+    border-radius: 25px;    /* más redondeado */
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    border: 2px solid #000; 
 }
+
 
 .boton.active {
     background-color:#f9f0e1;
+    border: 2px solid #000;
+    font-weight: 600;
+    transform: scale(0.97);
 }
 
 .boton:hover {
@@ -48,13 +66,16 @@
 
 .usuario-boton {
     display:flex;
-    margin-bottom:10px;
+    margin-bottom: 15px;
+    margin-top: 15px; 
 }
 
 .linkUsuario {
     width:90%;
     text-decoration: none;
     color: inherit;
+    margin-top: 20px;
+    overflow-y: auto;
 }
 
 .linkUsuario:hover {

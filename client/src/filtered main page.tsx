@@ -12,9 +12,9 @@ import axios from "axios";
 import { Helmet } from "react-helmet";
 
 const FilterKey = {
-  INGREDIENTS: 'ingredients',
-  CATEGORY: 'category',
-  TOOLS: 'tools',
+  INGREDIENTS: 'Ingredientes',
+  CATEGORY: 'Categoría',
+  TOOLS: 'Utensilios',
 } as const;
 
 type FilterKeyType = typeof FilterKey[keyof typeof FilterKey];
@@ -284,7 +284,7 @@ function SearchFilterView() {
 
       <div className="contenedor">
         <main className="principal">
-          <h2 className="section-title">Search</h2>
+          <h2 className="section-title">Búsqueda</h2>
 
           {/* Selector de Modo */}
           <div className="search-mode-tabs">
@@ -292,13 +292,13 @@ function SearchFilterView() {
               className={`mode-tab ${searchMode === 'recipes' ? 'active' : ''}`}
               onClick={() => { setSearchMode('recipes'); setUserResults(null); }}
             >
-              <Utensils size={18} /> Recipes
+              <Utensils size={18} /> Recetas
             </button>
             <button 
               className={`mode-tab ${searchMode === 'users' ? 'active' : ''}`}
               onClick={() => { setSearchMode('users'); setSearchResults(null); }}
             >
-              <Users size={18} /> Users
+              <Users size={18} /> Usuarios
             </button>
           </div>
           
@@ -307,7 +307,7 @@ function SearchFilterView() {
             <Search size={20} />
             <input 
               type="text" 
-              placeholder={searchMode === 'recipes' ? "Search recipes..." : "Search users by username..."}
+              placeholder={searchMode === 'recipes' ? "Busca recetas..." : "Busqueda por usuarios..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -343,7 +343,7 @@ function SearchFilterView() {
           {searchMode === 'recipes' && (
             <div className="advanced-search-section">
               <div className="advanced-search-header" onClick={() => setIsAdvancedSearchOpen(!isAdvancedSearchOpen)}>
-                <h3 className="advanced-search-title">Advanced Search</h3> 
+                <h3 className="advanced-search-title">Búsqueda Avanzada</h3> 
                 {!isAdvancedSearchOpen && (
                   <span className="advanced-filter-summary">
                     {buildFilterSummary(selectedIngredients, selectedCategories, selectedUtensils)}

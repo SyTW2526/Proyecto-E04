@@ -81,9 +81,30 @@
 }
 
 button {
-    background-color:#a7b9a9;
-    border-radius:15px;
-    margin-bottom:20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding: 10px 14px;
+    border: none;
+    cursor: pointer;
+}
+
+form button[type="submit"] {
+    background-color: #d9a29c;
+    color: #ffffff;
+}
+
+form button[type="submit"]:hover {
+    background-color: #c98f89;
+}
+
+form button[type="button"] {
+    background-color: transparent;
+    color: #5d4037;
+    border: 1px solid #d9a29c;
+}
+
+form button[type="button"]:hover {
+    background-color: #fff0ec;
 }
 
 .UsuarioResena {
@@ -199,9 +220,33 @@ button {
 }
 
 .botonResena {
-    width:150px;
-    background-color:#a7b9a9;
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start;
+    gap: 10px;
+    background: none;
+    border: none;
+    background-color: #d9a29c;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 5px;
 }
+
+.boton-panel:hover {
+    background-color: #f0f0f0;
+}
+
+.boton-panel.active {
+    background-color: #f5e4c8; 
+    color: #5d4037;
+    font-weight: bold;
+}
+
+
 
 .formularioResena {
     width:60%;

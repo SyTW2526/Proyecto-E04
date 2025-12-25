@@ -66,7 +66,7 @@
 
 /* === Tarjetas (bloques separados) === */
 .tarjeta {
-  background-color: #d2a679; /* chocolate claro */
+  background-color: #edb282; /* chocolate claro */
   padding: 25px;
   border-radius: 20px;
   margin-bottom: 30px;
@@ -102,7 +102,7 @@
 */
 
 .cambiar-foto button {
-  background-color: #a7b9a9;
+  background-color: #f0eee3;
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
