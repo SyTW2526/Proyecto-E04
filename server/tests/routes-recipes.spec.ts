@@ -158,14 +158,6 @@ describe('Recipe Routes: GET /recipes', () => {
     expect(res.body.length).toBe(1);
   });
 
-  test('Should return 404 if no recipes match the filters', async () => {
-    await request(app)
-      .get('/recipes')
-      .set('Authorization', `Bearer ${token}`)
-      .query({ name: 'PizzaInexistente' })
-      .expect(404);
-  });
-
   test('Should return 400 for invalid ID format', async () => {
     const res = await request(app)
       .get('/recipes')

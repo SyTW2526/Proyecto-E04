@@ -131,25 +131,24 @@ recipeRouter.get('/recipes', auth, async (req, res) => {
   }
   try {
     const recipes = await Recipe.find(filter).populate({path: 'userId', select: ['username', 'profilePic']});
-
-  if (recipes.length > 0) {
-    res.status(200).send(recipes);
     if (authenticatedRequest.user && name) {
       const searchString = (name as string).trim();
-      
-      const user = await User.findById(authenticatedRequest.user._id);
-      if (user) {
-        const newSearches = user.recentSearches.filter(s => s !== searchString); 
-        newSearches.unshift(searchString);
-        user.recentSearches = newSearches.slice(0, 5);
-        await user.save().catch(err => console.error('Error al guardar:', err));
+  
+      if (searchString.length > 0) {
+        const user = await User.findById(authenticatedRequest.user._id);
+        if (user) {
+          const filtered = user.recentSearches.filter(s => s.toLowerCase() !== searchString.toLowerCase());
+          const newHistory = [searchString, ...filtered].slice(0, 5);
+          await User.findByIdAndUpdate(
+            authenticatedRequest.user._id, 
+            { $set: { recentSearches: newHistory } },
+            { runValidators: false } 
+          ).catch(err => console.error('Error al actualizar historial:', err));
+          }
+        }
       }
-    }
-  } else {
-    res.status(404).send({ error: 'Receta no encontrada.' });
-  }
+    res.status(200).send(recipes || []);
   } catch (err) {
-    console.error('Error en la búsqueda de recetas:', err); 
     res.status(500).send({ error: 'Error interno del servidor al procesar la búsqueda.'});
   }
 });

@@ -205,7 +205,7 @@ function SearchFilterView() {
     if (entry) entry.setSelected(entry.selected.filter(item => item !== value));
   };
 
- const handleSearch = async (
+const handleSearch = async (
   term: string = searchTerm, 
   ing: string[] = selectedIngredients, 
   cat: string[] = selectedCategories, 
@@ -216,7 +216,10 @@ function SearchFilterView() {
   setIsAdvancedSearchOpen(false);
   
   const token = getToken();
-  const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': `Bearer ${token}` } : {}) };
+  const headers = { 
+    'Content-Type': 'application/json', 
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}) 
+  };
 
   try {
     if (searchMode === 'users') {
@@ -226,17 +229,7 @@ function SearchFilterView() {
         headers 
       });
       const data = await response.json();
-      const results = Array.isArray(data) ? data : [];
-      setUserResults(results);
-
-      if (results.length > 0 && term.trim()) {
-    const cleanTerm = term.trim(); 
-    if (!recentSearches.includes(cleanTerm)) {
-      const updated = [cleanTerm, ...recentSearches].slice(0, MAX_RECENT_SEARCHES);
-      updateUserSearches(updated);
-    }
-  }
-
+      setUserResults(Array.isArray(data) ? data : []);
     } else {
       setUserResults(null);
       const params = new URLSearchParams();
@@ -245,30 +238,24 @@ function SearchFilterView() {
       if (ing.length > 0) params.append('ingredientName', ing.join(','));
       if (cat.length > 0) params.append('category', cat.join(','));
       if (ut.length > 0) params.append('tools', ut.join(','));
-
+      
       const response = await fetch(`${BASE_API_URL}/recipes?${params.toString()}`, { 
         method: 'GET', 
         headers 
       });
       
-      if (!response.ok) {
-        setSearchResults([]);
-        return;
-      }
-
-      const data = await response.json();
-      const results = Array.isArray(data) ? data : [];
-      setSearchResults(results);
-
-      if (results.length > 0 && term.trim()) {
-        if (!recentSearches.includes(term.trim())) {
-          const updated = [term.trim(), ...recentSearches].slice(0, MAX_RECENT_SEARCHES);
-          updateUserSearches(updated);
-        }
+      const results = await response.json();
+      setSearchResults(Array.isArray(results) ? results : []);
+      const cleanTerm = term.trim();
+      if (cleanTerm) {
+        setRecentSearches(prev => {
+          const filtered = prev.filter(s => s.toLowerCase() !== cleanTerm.toLowerCase());
+          const updated = [cleanTerm, ...filtered].slice(0, MAX_RECENT_SEARCHES);
+          return updated;
+        });
       }
     }
   } catch (error) {
-    console.error("Search error:", error);
     setSearchResults([]);
   } finally {
     setIsLoading(false);
