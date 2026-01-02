@@ -23,14 +23,7 @@
 
 /* PARTE DERECHA */
 .panel-derecho {
-  width: 140px;               /* ancho fijo */
-  background-color: #fdf4e3;
-  border-left: 2px solid #e0cfa8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between; /* distribuye los botones con espacio */
-  padding: 40px 0;
+
 }
 
 /* BOTONES */

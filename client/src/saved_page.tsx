@@ -87,7 +87,7 @@ function SavedPage() {
 
         <div className="sidebar-navigation">
           <Navigation user={me} active={5} />
-          <div className="layout-link">Layout</div>
+          <div className="layout-link"></div>
         </div>
       </aside>
     </div>

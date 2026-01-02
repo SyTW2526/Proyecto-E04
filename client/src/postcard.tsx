@@ -71,9 +71,7 @@ const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userI
             <span className="post-user-name">{userName}</span>
           </a>
         </div>
-        <button className="post-options-button" aria-label="Opciones de publicación">
-          <MoreVertical size={20} />
-        </button>
+       
       </div>
       <a href={`/recipe/${id}`} className="post-detail-link" aria-label={`Ver receta: ${title}`}>              
       <div className="image-wrapper">

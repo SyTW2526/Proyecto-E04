@@ -84,7 +84,7 @@ function Main_page() {
 
         <div className="sidebar-navigation">
           <Navigation user={me} active={1}/>
-          <div className="layout-link">Layout</div>
+          <div className="layout-link"></div>
         </div>
       </aside>
     </div>
