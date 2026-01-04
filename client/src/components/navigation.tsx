@@ -1,6 +1,6 @@
 import { Home, Search, User, LogOut, Plus, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import './navigation.css';
+import './styles/navigation.css';
 import axios from "axios";
 import type { UserInterface } from "../interfaces/UserInterface";
 

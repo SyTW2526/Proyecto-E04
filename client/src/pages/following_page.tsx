@@ -1,10 +1,10 @@
-import "./user.css";
+import "./styles/user.css";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Navigation from "../components/navigation";
 import FollowButton from "../components/botonFollow";
-import './following_page.css'
+import './styles/following_page.css'
 import type { UserInterface } from "../interfaces/UserInterface";
 import SimplifiedProfile from "../components/simplifiedProfile";
 import { Helmet } from "react-helmet";

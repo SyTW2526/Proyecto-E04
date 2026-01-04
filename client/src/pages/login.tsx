@@ -1,5 +1,5 @@
 import axios from 'axios';
-import './login.css';
+import './styles/login.css';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as yup from 'yup';

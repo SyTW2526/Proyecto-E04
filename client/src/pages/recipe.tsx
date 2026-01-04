@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import { Star } from 'lucide-react';
 import axios from 'axios';
-import './recipe.css';
+import './styles/recipe.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as yup from 'yup';

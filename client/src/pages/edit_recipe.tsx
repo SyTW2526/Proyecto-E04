@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 // import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
-import './create_recipe.css';
+import './styles/create_recipe.css';
 import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
 import { useNavigate, useParams } from "react-router-dom";

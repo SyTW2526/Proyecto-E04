@@ -1,4 +1,3 @@
-import "./user.css";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +9,7 @@ import type { UserInterface } from "../interfaces/UserInterface";
 import SimplifiedProfile from "../components/simplifiedProfile";
 import PostCard, { type RecipePost } from "../components/postcard";
 import { Helmet } from "react-helmet";
+import "./styles/user.css";
 
 const UserSchema = yup.object().shape({
   username: yup.string().required("El nombre de usuario es obligatorio").min(4, 'El nombre de usuario debe tener al menos 4 caracteres').max(30, 'El nombre de usuario no puede exceder los 30 caracteres'),

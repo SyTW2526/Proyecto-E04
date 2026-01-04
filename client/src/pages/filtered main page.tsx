@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import type { ChangeEvent } from "react";
 import { Search, User, Plus, Clock, ChevronDown, ChevronUp, X, Users, Utensils } from "lucide-react"; 
-import './filtered_main_page.css'
+import './styles/filtered_main_page.css'
 import { useNavigate } from "react-router-dom";
 import Navigation from "../components/navigation";
 import SimplifiedProfile from "../components/simplifiedProfile";

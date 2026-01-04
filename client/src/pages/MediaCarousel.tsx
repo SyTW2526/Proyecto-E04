@@ -1,5 +1,5 @@
 import { useState } from "react";
-import './MediaCarousel.css';
+import './styles/MediaCarousel.css';
 
 interface Props {
   media: string[];

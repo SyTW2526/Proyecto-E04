@@ -1,4 +1,4 @@
-import "./main_page.css"; 
+import "./styles/main_page.css"; 
 import Navigation from "../components/navigation";
 import { useEffect, useState } from "react"; 
 import axios from "axios"; 
