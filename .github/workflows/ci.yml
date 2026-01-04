@@ -8,6 +8,9 @@ on:
 
 env:
   MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
+  NODE_ENV: test
+  ENABLE_SEED: "true"
+  VITE_API_URL: http://localhost:3000
 
 jobs:
 
@@ -49,20 +52,24 @@ jobs:
         #Frontend
 
       - name: Install frontend dependencies
-        working-directory: client   
+        working-directory: client
         run: npm install
 
-   #   - name: Install jsdom for Vitest
-   #     working-directory: client
-   #     run: npm install jsdom
-    
+      - name: Start backend
+        working-directory: server
+        run: npm run dev &
 
-   #   - name: Run frontend unit tests
-   #     working-directory: client
-   #     run: npm test
+      - name: Wait for backend
+        run: npx wait-on http://localhost:3000
 
-      # e2e tests (Cypress)
-
-      - name: Run Cypress E2E
+      - name: Start frontend
         working-directory: client
-        run: npx start-server-and-test dev http://localhost:5173 cypress:run
+        run: npm run dev &
+
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:5173
+
+      - name: Run E2E tests
+        working-directory: client
+        run: npm run test
+

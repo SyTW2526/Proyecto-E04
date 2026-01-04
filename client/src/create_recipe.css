@@ -76,6 +76,10 @@ select {
     flex-direction: column;
 }
 
+.CategoriaPublicacion {
+    margin-bottom: 50px;
+}
+
 .ContenedorPublicacion h3, 
 .SeccionTitulo,
 .IzquierdaReceta h3,

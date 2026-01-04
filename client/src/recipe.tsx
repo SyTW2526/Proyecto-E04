@@ -101,7 +101,7 @@ function Recipe() {
                     <div className="InformacionReceta">
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
-                                <a href={`/user/${receta.userId.username}`} className="profile-link">
+                                <a href={`/user/${receta.userId._id}`} className="profile-link">
                                     <img className="foto-perfil-grande" src={`http://localhost:3000/${receta.userId.profilePic}`} alt="Perfil" />
                                 </a>
                                 <div className="user-data-column">
@@ -192,8 +192,11 @@ function Recipe() {
                                 </div>
                             )}
 
-                            {resenasEmpty && !mostrarFormularioResena && (
+                            {resenasEmpty && !mostrarFormularioResena && !userIsOwner && (
                                 <p className="sin-resenas">Todavía no hay reseñas para esta receta. ¡Sé el primero en compartir la tuya!</p>
+                            )}
+                            {resenasEmpty && !mostrarFormularioResena && userIsOwner && (
+                                <p className="sin-resenas">Todavía no hay reseñas para esta receta. </p>
                             )}
 
                             {mostrarFormularioResena && (
