@@ -75,84 +75,47 @@ function FollowingPage({ type }: FollowProps) {
         <Helmet>
             <title>Follows de {me.username} / RecipeVault</title>
         </Helmet>
-        <div className="contenedorGeneral">
-            <div className="contenedorUsuarios">
-                <div className="usuarioFollows">
-                    <h3>{user.username}</h3>
+        <div className="contenedor">
+            <main className="principal">
+                <h2 className="section-title">Lista de {user.username}</h2>
+                
+                <div className="botones-nav-follow">
+                    <button 
+                        className={`boton-follow-toggle ${!showFollowing ? 'active' : ''}`}
+                        onClick={() => setShowFollowing(false)}
+                    >
+                        Seguidores
+                    </button>
+                    <button 
+                        className={`boton-follow-toggle ${showFollowing ? 'active' : ''}`}
+                        onClick={() => setShowFollowing(true)}
+                    >
+                        Seguidos
+                    </button>
                 </div>
-                <div className="botonesFollow">
-                    { showFollowing ? (
-                        <>
-                            <button className="boton inactive" onClick={() => {setShowFollowing(false)}}>Seguidores</button>
-                            <button className="boton active" onClick={() => {setShowFollowing(true)}}>Seguidos</button>
-                        </>
-                        ) : (
-                        <>
-                            <button className="boton active" onClick={() => {setShowFollowing(false)}}>Seguidores</button>
-                            <button className="boton inactive" onClick={() => {setShowFollowing(true)}}>Seguidos</button>
-                        </>
-                        )}
-                    
-                </div>
-                {showFollowing && 
-                    following.map((usr, index) => (
-                        <>
-                            <div className="usuario-boton">
-                                <Link className="linkUsuario" to={`/user/${usr._id}`}>
-                                    <div className="usuarioSimplificado" key={`usr${index}`}>
-                                        <img className="foto-perfil-grande" src={`http://localhost:3000/${usr.profilePic}`}></img>
-                                        <div className="datosUsuario" key={`data${index}`}>
-                                            <h4>{usr.username}</h4>
-                                            <p>{usr.bio}</p>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <div className="botonUsuario" key={`boton${index}`}>
-                                    {usr._id !== me._id ? (
-                                        <FollowButton
-                                            user={usr}
-                                            me={me}
-                                            setMe={setMe}
-                                        />
-                                    ) : (<></>)
-                                    }
-                                </div>
-                                
-                            </div>
-                            {index !== following.length-1 ? (<div className="linea"></div>) : (<></>)}
-                        </>
-                ))}
-                {!showFollowing &&
-                    followers.map((usr, index) => (
-                        <>
-                            <div className="usuario-boton" key={usr._id}>
-                                <Link className="linkUsuario" to={`/user/${usr._id}`}>
-                                    <div className="usuarioSimplificado">
-                                    <img
-                                        className="foto-perfil-grande"
-                                        src={`http://localhost:3000/${usr.profilePic}`}
-                                    />
-                                    <div className="datosUsuario">
-                                        <h4>{usr.username}</h4>
-                                        <p>{usr.bio}</p>
-                                    </div>
-                                    </div>
-                                </Link>
 
-                                <div className="botonUsuario">
-                                    {usr._id !== me._id && (
-                                    <FollowButton
-                                        user={usr}
-                                        me={me}
-                                        setMe={setMe}
-                                    />
-                                    )}
+                <div className="lista-usuarios">
+                    {(showFollowing ? following : followers).map((usr) => (
+                        <div className="usuario-item-card" key={usr._id}>
+                            <Link className="info-usuario-link" to={`/user/${usr._id}`}>
+                                <img 
+                                    className="foto-lista-usuarios"
+                                    src={usr.profilePic ? `http://localhost:3000/${usr.profilePic}` : `http://localhost:3000/default/Flaticon.png`}
+                                    onError={(e) => { e.currentTarget.src = "http://localhost:3000/default/Flaticon.png"; }}
+                                />
+                                <div className="textos-usuario">
+                                    <h4>{usr.username}</h4>
+                                    <p>{usr.bio || "Explorando recetas..."}</p>
                                 </div>
+                            </Link>
+                            
+                            <div className="accion-follow">
+                                {usr._id !== me._id && <FollowButton user={usr} me={me} setMe={setMe} />}
                             </div>
-                            {index !== following.length-1 ? (<div className="linea"></div>) : (<></>)}
-                        </>
+                        </div>
                     ))}
-            </div>
+                </div>
+            </main>
         </div>
         <aside className="panel-derecho profile-sidebar">
             <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>

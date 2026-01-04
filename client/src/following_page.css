@@ -1,87 +1,109 @@
-.contenedorGeneral {
-    min-width:70%;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background-color: #f9f0e1;
+.contenedor {
+    display: flex;
+    height: 100vh;
+    width: 100vw; 
+    background-color: #fdf4e3;
+    color: #3b2b2b;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
 }
 
-.contenedorUsuarios {
-    min-width: 80%;
-    height: 90%;
-    background-color: #eeba86;
-    border-radius: 20px;
-    padding: 20px;
+.principal {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: #f7e1c0;
+    height: 100vh;
+    overflow-y: auto; 
+}
+
+.panel-derecho {
+    width: 350px;
+    background-color: #fdf4e3; 
+    border-left: 2px solid #e0cfa8; 
     display: flex;
     flex-direction: column;
+    align-items: center;
+    padding: 30px 25px;
+    min-height: 100vh;
 }
 
-.botonesFollow {
-    width:100%;
-    display:flex;
-    background-color:#f9f0e1;
-    justify-content: center; /* centra los botones */
-    gap: 10px;              /* espacio entre botones */
-    background-color: #f9f0e1;
-    padding: 10px 0;
-    border-radius: 15px;
+.section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.boton {
-    width: auto;            /* deja de ocupar todo el ancho */
-    padding: 8px 20px;      /* tamaño del botón */
-    background-color: #eeba86;
-    border-radius: 25px;    /* más redondeado */
-    border: none;
+.botones-nav-follow {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.boton-follow-toggle {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: 1px solid #d2a679;
+    background-color: #edb282;
     cursor: pointer;
-    font-weight: 500;
-    border: 2px solid #000; 
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    transition: all 0.2s;
 }
 
-
-.boton.active {
-    background-color:#f9f0e1;
-    border: 2px solid #000;
-    font-weight: 600;
-    transform: scale(0.97);
+.boton-follow-toggle.active {
+    background-color: #eeba86;
+    color: white;
+    font-weight: bold;
+    border-color: #5d4037;
 }
 
-.boton:hover {
-    background-color:#fcf7ef;
-}
-
-.usuarioSimplificado {
-    display:flex;
-}
-
-.datosUsuario {
-    width:80%;
-}
-
-.usuarioSimplificado img {
-    max-height:70px;
-    max-width:70px;
-}
-
-.usuario-boton {
-    display:flex;
+.usuario-item-card {
+    background-color: #fffaf4;
+    border: 1.5px solid #d2a679;
+    border-radius: 15px;
+    padding: 15px 20px;
     margin-bottom: 15px;
-    margin-top: 15px; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(93, 64, 55, 0.05);
+    transition: transform 0.2s;
 }
 
-.linkUsuario {
-    width:90%;
+.usuario-item-card:hover {
+    transform: translateY(-2px);
+}
+
+.info-usuario-link {
     text-decoration: none;
     color: inherit;
-    margin-top: 20px;
-    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.linkUsuario:hover {
-    color: inherit;
+.foto-lista-usuarios {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d2a679;
 }
 
-.linea {
-    width:100%;
+.textos-usuario h4 {
+    margin: 0;
+    font-size: 17px;
+    color: #3b2b2b;
+}
+
+.textos-usuario p {
+    margin: 2px 0 0 0;
+    font-size: 13px;
+    color: #5d4037;
+    font-style: italic;
 }

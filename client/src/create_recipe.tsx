@@ -121,8 +121,19 @@ function CreateRecipe() {
 
     const navigate = useNavigate();
 
-    const [imageFiles, setImageFiles] = useState<FileList | null>(null);
-    const [videoFiles, setVideoFiles] = useState<FileList | null>(null);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [videoFiles, setVideoFiles] = useState<File[]>([]);
+    const removeImage = (indexToRemove: number, setFieldValue: any) => {
+        const updatedFiles = imageFiles.filter((_, index) => index !== indexToRemove);
+        setImageFiles(updatedFiles);
+        setFieldValue("images", updatedFiles);
+    };
+
+    const removeVideo = (indexToRemove: number, setFieldValue: any) => {
+        const updatedFiles = videoFiles.filter((_, index) => index !== indexToRemove);
+        setVideoFiles(updatedFiles);
+        setFieldValue("videos", updatedFiles);
+    };
     const [creationError, setCreationError] = useState('');
 
     const [me, setMe] = useState<UserInterface | null>(null);
@@ -236,8 +247,29 @@ function CreateRecipe() {
                             <div className="ContenedorPublicacion">
                                 <div className="InformacionPublicacion">
                                     <div className="IzquierdaReceta">
+                                        {/* sección de imágenes */}
                                         <div className="ImagenesPublicacion">
-                                            <h3>Imágenes</h3>
+                                            <h3>Imágenes</h3>    
+                                            <div className="ContenedorPreviews">
+                                                {imageFiles.map((file, index) => (
+                                                    <div key={index} className="PreviewItem">
+                                                        <div className="PreviewMediaWrapper">
+                                                            <img 
+                                                                src={URL.createObjectURL(file)} 
+                                                                alt={`Preview ${index}`}       
+                                                            />
+                                                            <button 
+                                                                type="button" 
+                                                                className="BotonEliminarMedia"
+                                                                onClick={() => removeImage(index, setFieldValue)} 
+                                                            >
+                                                                X
+                                                            </button>
+                                                        </div>
+                                                        <p className="NombreArchivoPreview">{file.name}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             <label htmlFor="inputImages" className="botonMasGeneral botonArchivo">
                                                 Añadir imágenes
                                             </label>
@@ -250,14 +282,46 @@ function CreateRecipe() {
                                                 hidden
                                                 onChange={(e) => {
                                                     if (!e.target.files) return;
-                                                    setImageFiles(e.target.files);
-                                                    setFieldValue("images", Array.from(e.target.files));
+                                                    const newFiles = Array.from(e.target.files);
+                                                    const updatedList = [...imageFiles, ...newFiles]; 
+                                                    setImageFiles(updatedList);
+                                                    setFieldValue("images", updatedList);
+                                                    e.target.value = ''; 
                                                 }}
                                             />
                                             {touched.images && errors.images && (
                                                 <p className="help is-danger">{errors.images}</p>
                                             )}
+                                        </div>
+                                        {/* Sección de videos */}
+                                        <div className="VideosPublicacion">
                                             <h3>Vídeos</h3>
+
+                                            <div className="ContenedorPreviews">
+                                                {videoFiles.map((file, index) => (
+                                                    <div key={index} className="PreviewItem VideoItem">
+                                                        <div className="PreviewMediaWrapper">
+                                                            <video 
+                                                                src={URL.createObjectURL(file)} 
+                                                                muted
+                                                                onMouseOver={(e) => e.currentTarget.play()}
+                                                                onMouseOut={(e) => {
+                                                                    e.currentTarget.pause();
+                                                                    e.currentTarget.currentTime = 0;
+                                                                }}
+                                                            />
+                                                            <button 
+                                                                type="button" 
+                                                                className="BotonEliminarMedia"
+                                                                onClick={() => removeVideo(index, setFieldValue)}
+                                                            >
+                                                                X
+                                                            </button>
+                                                        </div>
+                                                        <p className="NombreArchivoPreview">{file.name}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             <label htmlFor="inputVideos" className="botonMasGeneral botonArchivo">
                                                 Añadir vídeos
                                             </label>
@@ -270,8 +334,12 @@ function CreateRecipe() {
                                                 hidden
                                                 onChange={(e) => {
                                                     if (!e.target.files) return;
-                                                    setVideoFiles(e.target.files);
-                                                    setFieldValue("videos", Array.from(e.target.files))
+                                                    // Convertimos a Array y ACUMULAMOS
+                                                    const newFiles = Array.from(e.target.files);
+                                                    const updatedList = [...videoFiles, ...newFiles];
+                                                    setVideoFiles(updatedList);
+                                                    setFieldValue("videos", updatedList);
+                                                    e.target.value = '';
                                                 }}
                                             />
                                             {touched.videos && errors.videos && (
