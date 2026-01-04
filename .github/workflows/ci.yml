@@ -10,7 +10,7 @@ env:
   MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
   NODE_ENV: test
   ENABLE_SEED: "true"
-  VITE_API_URL: http://localhost:3000
+  VITE_API_URL: http://localhost:${port}
 
 jobs:
 
@@ -60,7 +60,7 @@ jobs:
         run: npm run dev &
 
       - name: Wait for backend
-        run: npx wait-on http://localhost:3000
+        run: npx wait-on http://localhost:${port}
 
       - name: Start frontend
         working-directory: client

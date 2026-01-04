@@ -2,16 +2,18 @@ import "./user.css";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import Navigation from "./navigation";
-import FollowButton from "./botonFollow";
+import Navigation from "../components/navigation";
+import FollowButton from "../components/botonFollow";
 import './following_page.css'
-import type { UserInterface } from "./interfaces/UserInterface";
-import SimplifiedProfile from "./simplifiedProfile";
+import type { UserInterface } from "../interfaces/UserInterface";
+import SimplifiedProfile from "../components/simplifiedProfile";
 import { Helmet } from "react-helmet";
 
 interface FollowProps {
   type: boolean
 }
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function FollowingPage({ type }: FollowProps) {
     const { id } = useParams();
@@ -24,13 +26,13 @@ function FollowingPage({ type }: FollowProps) {
     const [postCount, setPostCount] = useState(0);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/users/' + id)
+        axios.get(`http://localhost:${port}/users/` + id)
         .then(response => setUser(response.data))
         .catch(console.error);
     }, [id]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/users/me', {
+        axios.get(`http://localhost:${port}/users/me`, {
             withCredentials: true
         })
         .then(response => setMe(response.data))
@@ -39,7 +41,7 @@ function FollowingPage({ type }: FollowProps) {
 
     useEffect(() => {
         if (user && me) {
-            axios.get('http://localhost:3000/users/' + id + '/follows')
+            axios.get(`http://localhost:${port}/users/` + id + '/follows')
                 .then(data => setFollowing(data.data))
                 .catch(err => console.error(err));
         }
@@ -47,7 +49,7 @@ function FollowingPage({ type }: FollowProps) {
 
     useEffect(() => {
         if (user && me) {
-            axios.get('http://localhost:3000/users/' + id + '/followers')
+            axios.get(`http://localhost:${port}/users/` + id + '/followers')
                 .then(data => setFollowers(data.data))
                 .catch(err => console.error(err));
         }
@@ -55,7 +57,7 @@ function FollowingPage({ type }: FollowProps) {
 
     useEffect(() => {
         if (me) {
-            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
                 withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
@@ -100,8 +102,8 @@ function FollowingPage({ type }: FollowProps) {
                             <Link className="info-usuario-link" to={`/user/${usr._id}`}>
                                 <img 
                                     className="foto-lista-usuarios"
-                                    src={usr.profilePic ? `http://localhost:3000/${usr.profilePic}` : `http://localhost:3000/default/Flaticon.png`}
-                                    onError={(e) => { e.currentTarget.src = "http://localhost:3000/default/Flaticon.png"; }}
+                                    src={usr.profilePic ? `http://localhost:${port}/${usr.profilePic}` : `http://localhost:${port}/default/Flaticon.png`}
+                                    onError={(e) => { e.currentTarget.src = `http://localhost:${port}/default/Flaticon.png`; }}
                                 />
                                 <div className="textos-usuario">
                                     <h4>{usr.username}</h4>

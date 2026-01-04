@@ -1,17 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import './index.css'
-import Home from './home.tsx';
-import LogIn from './login.tsx'
-import UserPage from './user.tsx';
-import Recipe from './recipe.tsx';
-import EditRecipe from './edit_recipe.tsx';
-import CreateRecipe from './create_recipe.tsx';
-import Filtered from './filtered main page.tsx'
-import SearchFilterView from './filtered main page.tsx';
-import FollowingPage from './following_page.tsx';
-import SavedPage from './saved_page.tsx';
+import './index.css';
+import LogIn from './pages/login.tsx';
+import UserPage from './pages/user.tsx';
+import Recipe from './pages/recipe.tsx';
+import EditRecipe from './pages/edit_recipe.tsx';
+import CreateRecipe from './pages/create_recipe.tsx';
+import Filtered from './pages/filtered main page.tsx'
+import SearchFilterView from './pages/filtered main page.tsx';
+import FollowingPage from './pages/following_page.tsx';
+import SavedPage from './pages/saved_page.tsx';
+import Main_page from './pages/main_page.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/login" element={<LogIn />} />
           <Route path="/" element={<LogIn />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<Main_page />} />
           <Route path="/recipe/:id" element={<Recipe/>} />
           <Route path="/recipe/:id/edit" element={<EditRecipe/>} />
           <Route path="/publish/post" element={<CreateRecipe/>}/>

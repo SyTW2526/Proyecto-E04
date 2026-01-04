@@ -5,6 +5,8 @@ interface Props {
   media: string[];
 }
 
+const port = import.meta.env.VITE_PORT ?? 3000;
+
 export default function MediaCarousel({ media }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -29,9 +31,9 @@ export default function MediaCarousel({ media }: Props) {
 
       <div className="carousel-media">
         {isVideo ? (
-          <video controls src={`http://localhost:3000/${current}`} />
+          <video controls src={`http://localhost:${port}/${current}`} />
         ) : (
-          <img src={`http://localhost:3000/${current}`} alt="media" />
+          <img src={`http://localhost:${port}/${current}`} alt="media" />
         )}
       </div>
 

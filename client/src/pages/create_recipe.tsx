@@ -4,11 +4,11 @@ import './create_recipe.css';
 import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
 import { useNavigate } from "react-router-dom";
-import Navigation from "./navigation";
+import Navigation from "../components/navigation";
 import { useEffect, useState } from 'react';
 import React from 'react';
-import type { UserInterface } from './interfaces/UserInterface';
-import SimplifiedProfile from './simplifiedProfile';
+import type { UserInterface } from '../interfaces/UserInterface';
+import SimplifiedProfile from '../components/simplifiedProfile';
 import { Minus, X } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 
@@ -57,6 +57,8 @@ const ingredients = [
 const tools = [
     'cuchillo', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador'
 ]
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 export const RecipeSchema = yup.object().shape({
     name: yup.string().required('Se necesita poner un nombre a la receta').min(6, 'El nombre de la receta debe de tener al menos 6 caracteres').max(50, 'El nombre de la receta no puede tener más de 50 caracteres'),
@@ -140,7 +142,7 @@ function CreateRecipe() {
     const [postCount, setPostCount] = useState(0); 
     
     useEffect(() => {
-        axios.get<UserInterface>('http://localhost:3000/users/me', {
+        axios.get<UserInterface>(`http://localhost:${port}/users/me`, {
             withCredentials: true
         })
         .then(response => setMe(response.data))
@@ -149,7 +151,7 @@ function CreateRecipe() {
 
     useEffect(() => {
         if (me) {
-            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
                 withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
@@ -179,7 +181,7 @@ function CreateRecipe() {
                     validationSchema={RecipeSchema}
                     onSubmit={async (values: RecipeFormState) => {
                         try {
-                            const user = await axios.get('http://localhost:3000/users/me', {
+                            const user = await axios.get(`http://localhost:${port}/users/me`, {
                                 withCredentials: true
                             });
 
@@ -211,7 +213,7 @@ function CreateRecipe() {
                             console.log(imageFiles);
 
                             const response = await axios.post(
-                                "http://localhost:3000/recipes/files",
+                                `http://localhost:${port}/recipes/files`,
                                 formData,
                                 {
                                     headers: {
@@ -231,6 +233,7 @@ function CreateRecipe() {
                                 console.error(error);
                             } else {
                                 setCreationError('Error inesperado al crear la receta');
+                                console.error(error);
                             }
                         }
                     }}

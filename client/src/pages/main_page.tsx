@@ -1,14 +1,15 @@
 import { Search, MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
 import "./main_page.css"; 
-import Navigation from "./navigation";
+import Navigation from "../components/navigation";
 import { useEffect, useState } from "react"; 
 import axios from "axios"; 
-import type { UserInterface } from "./interfaces/UserInterface";
-import SimplifiedProfile from "./simplifiedProfile";
-import type { RecipePost } from "./postcard";
-import PostCard from "./postcard";
+import type { UserInterface } from "../interfaces/UserInterface";
+import SimplifiedProfile from "../components/simplifiedProfile";
+import type { RecipePost } from "../components/postcard";
+import PostCard from "../components/postcard";
 import { Helmet } from "react-helmet";
 
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function Main_page() {
   const [me, setMe] = useState<UserInterface | null>(null);
@@ -16,13 +17,13 @@ function Main_page() {
   const [postCount, setPostCount] = useState(0); 
 
   useEffect(() => {
-    axios.get<UserInterface>('http://localhost:3000/users/me', { withCredentials: true })
+    axios.get<UserInterface>(`http://localhost:${port}/users/me`, { withCredentials: true })
       .then(response => setMe(response.data))
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    axios.get<RecipePost[]>('http://localhost:3000/recipes/feed', { withCredentials: true })
+    axios.get<RecipePost[]>(`http://localhost:${port}/recipes/feed`, { withCredentials: true })
       .then(response => {
         setPosts(response.data.slice(0, 15));
       })
@@ -31,7 +32,7 @@ function Main_page() {
 
   useEffect(() => {
         if (me) {
-            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
                 withCredentials: true
             })
             .then(response => setPostCount(response.data.length))

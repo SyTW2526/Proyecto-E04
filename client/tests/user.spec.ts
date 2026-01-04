@@ -92,6 +92,15 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".submit:nth-child(13)")).click()
     assert(await driver.findElement(By.css(".user-name")).getText() == "usuario50")
     await driver.findElement(By.css(".logout")).click()
+    const input = await driver.wait(
+      until.elementLocated(By.id("lemail")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(input),
+      20000
+    )
     await driver.findElement(By.id("lemail")).click()
     await driver.findElement(By.id("lemail")).sendKeys("usuario50@gmail.com")
     await driver.findElement(By.id("lpassword")).click()
@@ -117,6 +126,15 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
     await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const foto = await driver.wait(
+      until.elementLocated(By.css(".foto-perfil")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(foto),
+      20000
+    )
     {
       const elements = await driver.findElements(By.css(".user-profile-info"))
       assert(!elements.length)
@@ -357,13 +375,27 @@ describe('User', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 1")
     assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "1")
     await driver.findElement(By.css("a:nth-child(1) strong")).click()
+    const usr = await driver.wait(
+      until.elementLocated(By.css(".usuario-item-card")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(usr),
+      20000
+    )
     {
-      const elements = await driver.findElements(By.css(".usuarioSimplificado"))
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
       assert(elements.length)
     }
-    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ItalianoCucina")
-    assert(await driver.findElement(By.css("h4")).getText() == "ChefElenaES")
-    await driver.findElement(By.css(".inactive")).click()
+    const text = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css("h4"))
+    ) as string
+
+    assert.strictEqual(text.trim(), "ChefElenaES")
+    assert(await driver.findElement(By.css(".section-title")).getText() == "Lista de ItalianoCucina")
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
     {
       const elements = await driver.findElements(By.css(".usuarioSimplificado"))
       assert(!elements.length)
@@ -371,10 +403,10 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
     assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
     assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 1")
-    await driver.findElement(By.css("a:nth-child(2) strong")).click()
-    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
+    await driver.findElement(By.css("a:nth-child(2) > p")).click()
+    assert(await driver.findElement(By.css(".section-title")).getText() == "Lista de ChefElenaES")
     {
-      const elements = await driver.findElements(By.css(".usuarioSimplificado"))
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
       assert(elements.length)
     }
     assert(await driver.findElement(By.css("h4")).getText() == "ItalianoCucina")
@@ -382,23 +414,19 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".botonFollow"))
       assert(elements.length)
     }
-    await driver.findElement(By.css(".inactive")).click()
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(1)")).click()
     {
       const elements = await driver.findElements(By.css(".active"))
       assert(elements.length)
     }
     {
-      const elements = await driver.findElements(By.css(".inactive"))
+      const elements = await driver.findElements(By.css(".boton-follow-toggle:nth-child(2)"))
       assert(elements.length)
     }
-    {
-      const elements = await driver.findElements(By.css(".usuarioSimplificado"))
-      assert(!elements.length)
-    }
-    await driver.findElement(By.css(".inactive")).click()
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
     await driver.findElement(By.css(".botonFollow")).click()
     {
-      const elements = await driver.findElements(By.css(".usuarioSimplificado"))
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
       assert(!elements.length)
     }
     assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "0")

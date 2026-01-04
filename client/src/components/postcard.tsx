@@ -1,9 +1,9 @@
 import { MoreVertical, Bookmark, Star, MessageSquare } from "lucide-react";
 import SaveButton from "./botonSave";
 import { useEffect, useState } from "react";
-import type { UserInterface } from "./interfaces/UserInterface";
+import type { UserInterface } from "../interfaces/UserInterface";
 import axios from "axios";
-import type { Review } from "./recipe";
+import type { Review } from "../pages/recipe";
 
 export interface RecipePost {
   _id: string;
@@ -40,6 +40,7 @@ interface ContentCardProps {
   setMe: React.Dispatch<React.SetStateAction<UserInterface | null>>;
 }
 
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userId, userName, categories, me, setMe }: ContentCardProps) => {
   const displayImage = Array.isArray(imageSrc) ? imageSrc[0] : imageSrc;
@@ -49,7 +50,7 @@ const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userI
   const [valoracion, setValoracion] = useState<string | number>('-');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/reviews?recipeId=' + id)
+    axios.get(`http://localhost:${port}/reviews?recipeId=` + id)
       .then(response => {
         setReviewCount(response.data.length);
         
@@ -64,7 +65,7 @@ const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userI
     <div className="tarjeta post-card">
       <div className="post-header-info">
         <a href={`/user/${userId}`} className="profile-link-button" aria-label={`Ver perfil de ${userName}`}>
-          <img src={`http://localhost:3000/${userProfilePic}`} alt={userName} className="post-user-profile-pic" />
+          <img src={`http://localhost:${port}/${userProfilePic}`} alt={userName} className="post-user-profile-pic" />
         </a>
           <div className="user-text-container">
           <a href={`/user/${userId}`} className="profile-link" aria-label={`Ver perfil de ${userName}`}>
@@ -75,7 +76,7 @@ const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userI
       </div>
       <a href={`/recipe/${id}`} className="post-detail-link" aria-label={`Ver receta: ${title}`}>              
       <div className="image-wrapper">
-        <img src={`http://localhost:3000/${displayImage}`} alt={title} className="imagen-post" />
+        <img src={`http://localhost:${port}/${displayImage}`} alt={title} className="imagen-post" />
           {isVideo && (
             <div className="video-overlay">
               <div className="play-button">▶️ Video</div>

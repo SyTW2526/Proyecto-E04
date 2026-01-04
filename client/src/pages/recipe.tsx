@@ -5,13 +5,13 @@ import './recipe.css';
 import { useNavigate, useParams } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as yup from 'yup';
-import Navigation from "./navigation";
+import Navigation from "../components/navigation";
 import MediaCarousel from './MediaCarousel';
-import SimplifiedProfile from './simplifiedProfile';
-import type { UserInterface } from './interfaces/UserInterface';
-import SaveButton from './botonSave';
+import SimplifiedProfile from '../components/simplifiedProfile';
+import type { UserInterface } from '../interfaces/UserInterface';
+import SaveButton from '../components/botonSave';
 import { Helmet } from 'react-helmet';
-import type { Recipe } from './interfaces/RecipeInterface';
+import type { Recipe } from '../interfaces/RecipeInterface';
 
 export interface Review {
     _id: string;
@@ -29,6 +29,8 @@ const ReviewSchema = yup.object().shape({
     text: yup.string().max(300, 'La reseña no puede tener más de 300 caracteres.')
 });
 
+const port = import.meta.env.VITE_PORT ?? 3000;
+
 function Recipe() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -43,11 +45,11 @@ function Recipe() {
 
     // Cargar datos de la receta y el usuario actual
     useEffect(() => {
-        axios.get('http://localhost:3000/recipes/' + id)
+        axios.get(`http://localhost:${port}/recipes/` + id)
             .then(response => setReceta(response.data))
             .catch(console.error);
 
-        axios.get('http://localhost:3000/users/me', { withCredentials: true })
+        axios.get(`http://localhost:${port}/users/me`, { withCredentials: true })
             .then(response => {
                 setUser(response.data);
                 setMe(response.data);
@@ -60,7 +62,7 @@ function Recipe() {
         if (!id) return;
         const fetchReviews = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                const response = await axios.get(`http://localhost:${port}/reviews?recipeId=${id}`);
                 setResenas(response.data);
             } catch (error: any) {
                 if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -74,7 +76,7 @@ function Recipe() {
     // Contador de posts del usuario
     useEffect(() => {
         if (me) {
-            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, { withCredentials: true })
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, { withCredentials: true })
                 .then(response => setPostCount(response.data.length))
                 .catch(console.error);
         }
@@ -102,7 +104,7 @@ function Recipe() {
                         <div className="IzquierdaReceta">
                             <div className="UsuarioReceta">
                                 <a href={`/user/${receta.userId._id}`} className="profile-link">
-                                    <img className="foto-perfil-grande" src={`http://localhost:3000/${receta.userId.profilePic}`} alt="Perfil" />
+                                    <img className="foto-perfil-grande" src={`http://localhost:${port}/${receta.userId.profilePic}`} alt="Perfil" />
                                 </a>
                                 <div className="user-data-column">
                                     <a href={`/user/${receta.userId.username}`} className="profile-link">
@@ -126,7 +128,7 @@ function Recipe() {
                                     <button onClick={async () => {
                                         if(window.confirm("¿Borrar receta?")) {
                                             try {
-                                                await axios.delete('http://localhost:3000/recipes/' + id);
+                                                await axios.delete(`http://localhost:${port}/recipes/` + id);
                                                 navigate('/home');
                                             } catch (e) { console.error(e); }
                                         }
@@ -207,8 +209,8 @@ function Recipe() {
                                         onSubmit={async (values) => {
                                             try {
                                                 const payload = { ...values, userId: user._id, recipeId: id as string };
-                                                await axios.post('http://localhost:3000/reviews', payload);
-                                                const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                                await axios.post(`http://localhost:${port}/reviews`, payload);
+                                                const resp = await axios.get(`http://localhost:${port}/reviews?recipeId=${id}`);
                                                 setResenas(resp.data);
                                                 setMostrarFormularioResena(false);
                                             } catch (error) { console.error(error); }
@@ -257,8 +259,8 @@ function Recipe() {
                                                 validationSchema={ReviewSchema}
                                                 onSubmit={async (values) => {
                                                     try {
-                                                        await axios.patch(`http://localhost:3000/reviews/${resena._id}`, values);
-                                                        const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                                        await axios.patch(`http://localhost:${port}/reviews/${resena._id}`, values);
+                                                        const resp = await axios.get(`http://localhost:${port}/reviews?recipeId=${id}`);
                                                         setResenas(resp.data);
                                                         setResenaEditando(null);
                                                     } catch (e) { console.error(e); }
@@ -284,7 +286,7 @@ function Recipe() {
                                         ) : (
                                             <>
                                                 <div className="UsuarioResena">
-                                                    <img className="resena-avatar" src={`http://localhost:3000/${resena.userId.profilePic}`} alt="Avatar" />
+                                                    <img className="resena-avatar" src={`http://localhost:${port}/${resena.userId.profilePic}`} alt="Avatar" />
                                                     <div className="resena-usuario-info">
                                                         <span className="resena-username">{resena.userId.username}</span>
                                                         <div className="rating-pill">
@@ -303,8 +305,8 @@ function Recipe() {
                                                         <button className="boton-accion borrar" onClick={async () => {
                                                             if(window.confirm("¿Borrar reseña?")) {
                                                                 try {
-                                                                    await axios.delete(`http://localhost:3000/reviews/${resena._id}`);
-                                                                    const resp = await axios.get(`http://localhost:3000/reviews?recipeId=${id}`);
+                                                                    await axios.delete(`http://localhost:${port}/reviews/${resena._id}`);
+                                                                    const resp = await axios.get(`http://localhost:${port}/reviews?recipeId=${id}`);
                                                                     setResenas(resp.data);
                                                                 } catch (e) { console.error(e); }
                                                             }

@@ -1,9 +1,11 @@
-import type { UserInterface } from "./interfaces/UserInterface";
+import type { UserInterface } from "../interfaces/UserInterface";
 
 interface ProfileProps {
   user: UserInterface,
   postCount: number
 }
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function SimplifiedProfile({ user, postCount }: ProfileProps) {
     const followersCount = user.followers.length;
@@ -13,7 +15,7 @@ function SimplifiedProfile({ user, postCount }: ProfileProps) {
     
     return (
         <div className="user-profile-info">           
-            <img src={`http://localhost:3000/${user.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
+            <img src={`http://localhost:${port}/${user.profilePic}` || "default_profile_pic.png"} alt={`Foto de perfil de ${usernameDisplay}`} className="foto-perfil-grande"/>
                             
             <h3 className="user-name">{usernameDisplay}</h3>
             <p className="user-handle">{handleDisplay}</p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { UserInterface } from "./interfaces/UserInterface";
+import type { UserInterface } from "../interfaces/UserInterface";
 import axios from "axios";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 
@@ -8,6 +8,8 @@ interface SaveButtonProps {
     setUser: React.Dispatch<React.SetStateAction<UserInterface | null>>;
     id: string;
 }
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function SaveButton({ user, setUser, id }: SaveButtonProps) {
     const [isSaved, setIsSaved] = useState<boolean>(false);
@@ -22,7 +24,7 @@ function SaveButton({ user, setUser, id }: SaveButtonProps) {
             try {
                 const newSaved = [...user.saved, id];
 
-                const response = await axios.patch('http://localhost:3000/users/' + user._id, { saved: newSaved });
+                const response = await axios.patch(`http://localhost:${port}/users/` + user._id, { saved: newSaved });
                 console.log(response);
 
                 setUser({ ...user, saved: newSaved });
@@ -39,7 +41,7 @@ function SaveButton({ user, setUser, id }: SaveButtonProps) {
             try {
                 const newSaved = user.saved.filter(f => f !== id);
 
-                const response = await axios.patch('http://localhost:3000/users/' + user._id, { saved: newSaved });
+                const response = await axios.patch(`http://localhost:${port}/users/` + user._id, { saved: newSaved });
                 console.log(response);
 
                 setUser({ ...user, saved: newSaved });

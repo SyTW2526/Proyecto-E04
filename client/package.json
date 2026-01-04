@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "env-cmd -f ./config/dev.env vite",
+    "dev:e2e": "env-cmd -f ./config/dev.env vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test:e2e": "cypress open",
@@ -33,6 +34,7 @@
     "@types/selenium-webdriver": "^4.35.4",
     "@vitejs/plugin-react": "^5.1.1",
     "cypress": "^15.7.0",
+    "env-cmd": "^11.0.0",
     "eslint": "^9.36.0",
     "geckodriver": "^6.1.0",
     "jsdom": "^27.2.0",

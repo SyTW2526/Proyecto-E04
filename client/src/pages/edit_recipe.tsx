@@ -5,11 +5,11 @@ import './create_recipe.css';
 import { Formik, Form, FieldArray } from "formik";
 import * as yup from 'yup';
 import { useNavigate, useParams } from "react-router-dom";
-import Navigation from "./navigation";
-import type { UserInterface } from './interfaces/UserInterface';
-import SimplifiedProfile from './simplifiedProfile';
+import Navigation from "../components/navigation";
+import type { UserInterface } from '../interfaces/UserInterface';
+import SimplifiedProfile from '../components/simplifiedProfile';
 import { Helmet } from 'react-helmet';
-import type { Recipe } from './interfaces/RecipeInterface';
+import type { Recipe } from '../interfaces/RecipeInterface';
 import { X } from 'lucide-react';
 import { isIngredientError, RecipeSchema } from './create_recipe';
 
@@ -55,6 +55,8 @@ const tools = [
     'cuchillo', 'tabla de cortar', 'sartén', 'olla', 'batidora', 'horno', 'microondas', 'espátula', 'cucharón', 'colador', 'caldero', 'rodillo', 'rallador'
 ]
 
+const port = import.meta.env.VITE_PORT ?? 3000;
+
 function EditRecipe() {
 
     const navigate = useNavigate();
@@ -63,7 +65,7 @@ function EditRecipe() {
 
     const [receta, setReceta] = useState<Recipe | null>(null);
     useEffect(() => {
-        axios.get('http://localhost:3000/recipes/' + id)
+        axios.get(`http://localhost:${port}/recipes/` + id)
         .then(response => {
             setReceta(response.data);
         })
@@ -76,7 +78,7 @@ function EditRecipe() {
     const [postCount, setPostCount] = useState(0); 
         
     useEffect(() => {
-        axios.get<UserInterface>('http://localhost:3000/users/me', {
+        axios.get<UserInterface>(`http://localhost:${port}/users/me`, {
             withCredentials: true
         })
         .then(response => setMe(response.data))
@@ -85,7 +87,7 @@ function EditRecipe() {
 
     useEffect(() => {
         if (me) {
-            axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
                 withCredentials: true
             })
             .then(response => setPostCount(response.data.length))
@@ -95,7 +97,7 @@ function EditRecipe() {
 
     const [user, setUser] = useState<{ _id: string } | null>(null);
     useEffect(() => {
-        axios.get('http://localhost:3000/users/me', {
+        axios.get(`http://localhost:${port}/users/me`, {
             withCredentials: true
         })
         .then(response => {
@@ -136,7 +138,7 @@ function EditRecipe() {
                     onSubmit={async (values: RecipeFormState) => {
                         try {
                             console.log(values)
-                            const response = await axios.patch('http://localhost:3000/recipes/' + id, values);
+                            const response = await axios.patch(`http://localhost:${port}/recipes/` + id, values);
                             console.log(response)
                             
                             if (response.status === 200) {
@@ -377,7 +379,7 @@ function EditRecipe() {
                                             {touched.steps && errors.steps && (
                                                 <p className="help is-danger">{errors.steps}</p>
                                             )}
-                                            <input type="submit" className="botonPublicar" value="Publicar"/>
+                                            <input type="submit" className="botonPublicar" value="Editar"/>
                                         </div>
                                         
                                     </div>

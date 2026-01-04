@@ -2,12 +2,14 @@ import { Home, Search, User, LogOut, Plus, Bookmark } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import './navigation.css';
 import axios from "axios";
-import type { UserInterface } from "./interfaces/UserInterface";
+import type { UserInterface } from "../interfaces/UserInterface";
 
 interface NavigationProps {
     user: UserInterface
     active: number
 }
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function Navigation({ user, active }: NavigationProps) {
     const navigate = useNavigate();
@@ -91,7 +93,7 @@ function Navigation({ user, active }: NavigationProps) {
 
                 <button className="boton-panel logout" onClick={async () => {
                     try {
-                        const response = await axios.post('http://localhost:3000/users/logout', {}, { withCredentials: true });
+                        const response = await axios.post(`http://localhost:${port}/users/logout`, {}, { withCredentials: true });
                         console.log(response);
 
                         navigate('/login');

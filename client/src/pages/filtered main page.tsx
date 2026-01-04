@@ -3,11 +3,11 @@ import type { ChangeEvent } from "react";
 import { Search, User, Plus, Clock, ChevronDown, ChevronUp, X, Users, Utensils } from "lucide-react"; 
 import './filtered_main_page.css'
 import { useNavigate } from "react-router-dom";
-import Navigation from "./navigation";
-import SimplifiedProfile from "./simplifiedProfile";
-import type { UserInterface } from "./interfaces/UserInterface";
-import type { RecipePost } from "./postcard";
-import PostCard from "./postcard";
+import Navigation from "../components/navigation";
+import SimplifiedProfile from "../components/simplifiedProfile";
+import type { UserInterface } from "../interfaces/UserInterface";
+import type { RecipePost } from "../components/postcard";
+import PostCard from "../components/postcard";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 
@@ -123,16 +123,10 @@ const parseSearchString = (searchString: string): ParsedFilters => {
   return filters;
 };
 
-type Recipe = {
-  _id?: string;
-  name?: string;
-  userId?: { username?: string } | null;
-  images?: string[] | null;
-  category?: string;
-};
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function SearchFilterView() {
-  const BASE_API_URL = 'http://localhost:3000'; 
+  const BASE_API_URL = `http://localhost:${port}`; 
   const navigate = useNavigate();
   
   // Estados de navegación y modo
@@ -259,7 +253,7 @@ function SearchFilterView() {
   const [postCount, setPostCount] = useState(0);
   useEffect(() => {
     if (me) {
-      axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+      axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
         withCredentials: true
       })
         .then(response => setPostCount(response.data.length))

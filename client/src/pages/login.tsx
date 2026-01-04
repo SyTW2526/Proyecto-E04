@@ -28,11 +28,13 @@ const SignUpSchema = yup.object().shape({
     password: yup.string().required('La contraseña es obligatoria').min(6, 'La contraseña debe de tener al menos 6 caracteres')
 })
 
+const port = import.meta.env.VITE_PORT ?? 3000;
+
 function LogIn() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://localhost:3000/users/me', {
+        axios.get(`http://localhost:${port}/users/me`, {
             withCredentials: true
         })
         .then(() => {
@@ -49,7 +51,7 @@ function LogIn() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async function signIn(signInData: any) {
         try {
-            const responseSignIn = await axios.post('http://localhost:3000/users/login', signInData, {
+            const responseSignIn = await axios.post(`http://localhost:${port}/users/login`, signInData, {
                 withCredentials: true
             });
             console.log(responseSignIn);
@@ -122,7 +124,7 @@ function LogIn() {
                                 validationSchema={SignUpSchema}
                                 onSubmit={async (values: SignUpFormState) => {
                                     try {
-                                        const response = await axios.post('http://localhost:3000/users', values);
+                                        const response = await axios.post(`http://localhost:${port}/users`, values);
                                         console.log(response);
 
                                         if (response.status === 201) {

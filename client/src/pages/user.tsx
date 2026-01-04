@@ -4,11 +4,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
-import Navigation from "./navigation";
-import FollowButton from "./botonFollow";
-import type { UserInterface } from "./interfaces/UserInterface";
-import SimplifiedProfile from "./simplifiedProfile";
-import PostCard, { type RecipePost } from "./postcard";
+import Navigation from "../components/navigation";
+import FollowButton from "../components/botonFollow";
+import type { UserInterface } from "../interfaces/UserInterface";
+import SimplifiedProfile from "../components/simplifiedProfile";
+import PostCard, { type RecipePost } from "../components/postcard";
 import { Helmet } from "react-helmet";
 
 const UserSchema = yup.object().shape({
@@ -16,6 +16,8 @@ const UserSchema = yup.object().shape({
   email: yup.string().email("Email inválido").required("El email es obligatorio").max(40, 'El email no puede exceder los 40 caracteres'),
   bio: yup.string().max(200, "La bio no puede exceder los 200 caracteres"),
 });
+
+const port = import.meta.env.VITE_PORT ?? 3000;
 
 function UserPage() {
   const { id } = useParams();
@@ -29,13 +31,13 @@ function UserPage() {
   const [postCount, setPostCount] = useState(0);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/users/' + id)
+    axios.get(`http://localhost:${port}/users/` + id)
       .then(response => setUser(response.data))
       .catch(console.error);
   }, [id]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/users/me', {
+    axios.get(`http://localhost:${port}/users/me`, {
       withCredentials: true
     })
       .then(response => setMe(response.data))
@@ -50,7 +52,7 @@ function UserPage() {
 
   useEffect(() => {
     if (me) {
-      axios.get(`http://localhost:3000/recipes?userId=${me._id}`, {
+      axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
         withCredentials: true
       })
         .then(response => setPostCount(response.data.length))
@@ -60,7 +62,7 @@ function UserPage() {
 
   useEffect(() => {
     if (user) {
-      axios.get(`http://localhost:3000/recipes?userId=${user._id}`, {
+      axios.get(`http://localhost:${port}/recipes?userId=${user._id}`, {
         withCredentials: true
       })
         .then(response => setPosts(response.data))
@@ -85,7 +87,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   try {
     const response = await axios.patch(
-      `http://localhost:3000/users/${me._id}/files`,
+      `http://localhost:${port}/users/${me._id}/files`,
       formData,
       {
         headers: {
@@ -121,7 +123,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className="tarjeta usuario">
           <div className="fila-datos">
             <div className="fotoUsuario">
-              <img src={`http://localhost:3000/${user.profilePic}`} alt="Foto de perfil" className="foto-perfil" />
+              <img src={`http://localhost:${port}/${user.profilePic}`} alt="Foto de perfil" className="foto-perfil" />
               {isMe && (<div className="cambiar-foto">
                 <button onClick={handleButtonClick}>Cambiar foto</button>
 
@@ -155,12 +157,12 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         <button onClick={() => setEditing(true)}>Editar</button>
                         <button onClick={async () => {
                             try {
-                              const response = await axios.delete('http://localhost:3000/users/' + user._id);
+                              const response = await axios.delete(`http://localhost:${port}/users/` + user._id);
                               console.log(response);
 
                               navigate('/login');
                             } catch (error) {
-
+                              console.error(error);
                             }
                           }}>Borrar</button>
                       </>
@@ -186,7 +188,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 onSubmit={async (values) => {
                   try {
                     console.log(values)
-                    const response = await axios.patch('http://localhost:3000/users/' + me._id, values);
+                    const response = await axios.patch(`http://localhost:${port}/users/` + me._id, values);
                     setUser(response.data);
                     setEditing(false);
                   } catch (error) {

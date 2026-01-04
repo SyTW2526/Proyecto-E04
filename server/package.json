@@ -7,6 +7,7 @@
     "build": "tsc",
     "start": "node dist/routes/main-app.js",
     "dev": "tsc-watch --onSuccess \"env-cmd -f ./config/dev.env node dist/server.js\"",
+    "dev:e2e": "tsc-watch --onSuccess \"env-cmd -f ./config/e2e.env node dist/server.js\"",
     "doc": "typedoc",
     "test": "env-cmd -f ./config/test.env vitest run",
     "coverage": "env-cmd -f ./config/test.env vitest run --coverage --coverage.include '**/src/*'"
