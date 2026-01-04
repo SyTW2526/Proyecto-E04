@@ -21,11 +21,6 @@
   overflow-y: auto;  
 }
 
-/* PARTE DERECHA */
-.panel-derecho {
-
-}
-
 /* BOTONES */
 .boton-panel {
   display: flex;

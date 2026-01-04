@@ -348,22 +348,26 @@ body {
 .enum-tags-container {
     display: flex;
     align-items: center; 
-    gap: 10px; 
+    gap: 12px;
     flex-wrap: wrap; 
-    min-height: 50px; 
-    margin-bottom: 10px;
+    padding: 10px 0;
+    line-height: 1;      
 }
 
 .selected-enum-tag {
-    display: flex;
-    background-color: #ffffff;
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
-    border: 1px solid; 
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid #e0cfa8; 
+    border-radius: 50px; 
+    height: 42px;         
+    padding: 0 6px 0 18px; 
+    gap: 8px;
     font-size: 15px;
-    padding: 8px 15px;
-    border-radius: 30px; 
-    font-weight: 500;
+    color: #3b2b2b;
+    box-sizing: border-box;
+    line-height: 1;     
 }
 
 .selected-enum-tag--ingredients {
@@ -384,39 +388,25 @@ body {
     border-color: #b5c4b1; 
 }
 
-.remove-enum-tag-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #5d4037; 
-    padding: 0;
-    line-height: 0;
-    transition: color 0.2s;
-}
-
-.remove-enum-tag-button:hover {
-    color: #3b2b2b;
-}
-
-
 .plus-button {
     background-color: #d49692; 
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 42px; 
+    height: 42px; 
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     border: none;
-    transition: background-color 0.2s, transform 0.1s;
+    padding: 0;
+    margin: 0;  
+    box-sizing: border-box;
+    transition: transform 0.2s;
 }
 
 .plus-button:hover:not(:disabled) {
-    background-color: #c0857f; 
-    transform: scale(1.05);
+    transform: scale(1.1);
+    background-color: #c0857f;
 }
 
 .plus-button:disabled {
@@ -426,9 +416,9 @@ body {
 }
 
 .plus-icon-image {
-    width: 20px; 
-    height: 20px;
-    filter: brightness(0.9); 
+    width: 22px; 
+    height: 22px;
+    display: block; 
 }
 
 .filter-modal-overlay {
@@ -845,4 +835,24 @@ body {
 
 .user-avatar-placeholder {
   color: #666;
+}
+
+.remove-enum-tag-button {
+    background-color: #f0f0f0; 
+    border: none;
+    border-radius: 50%;
+    width: 30px;  
+    height: 30px; 
+    display: grid;
+    place-items: center; 
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-enum-tag-button:hover {
+    background-color: #d49692;
+    color: white;
 }

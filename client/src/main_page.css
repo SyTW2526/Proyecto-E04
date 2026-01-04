@@ -259,12 +259,12 @@
 }
 
 .category-tag {
-    background-color: #5d4037; 
-    color: #fdf4e3; 
+    background-color: #c16b65; 
+    color: #ffffff;            
     font-size: 11px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 8px;        
     text-transform: capitalize; 
     line-height: 1;
 }
@@ -286,13 +286,17 @@
 }
 
 .post-detail-link {
-    text-decoration: none;
-    color: inherit; 
-    display: block;
+    text-decoration: none; 
+    color: inherit;        
 }
 
 .tarjeta.post-card {
-    position: relative; 
+    background-color: #fffaf4; 
+    border: 1px solid #e0cfa8; 
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(93, 64, 55, 0.08); 
+    transition: transform 0.2s ease;
 }
 
 .post-save-button-outter {
@@ -335,10 +339,10 @@
     display: flex;
     flex-direction: row; 
     align-items: center; 
-    justify-content: space-between;  
-    margin-top: 5px; 
-    margin-bottom: 5px; 
-    padding: 0 5px; 
+    justify-content: flex-start; 
+    gap: 12px;                  
+    margin-bottom: 12px; 
+    padding: 0; 
 }
 
 .post-user-profile-pic {
@@ -350,9 +354,9 @@
 }
 
 .post-user-name {
-    font-size: 16px; 
-    font-weight: bold;
-    color: #5d4037;
+    font-size: 15px; 
+    font-weight: 700;
+    color: #5d4037; 
 }
 
 .post-location {
@@ -365,10 +369,7 @@
 
 .user-text-container {
     display: flex;
-    flex-direction: column; 
-    justify-content: center; 
-    margin-left: 12px; 
-    margin-top: -2px; 
+    flex-direction: column;
 }
 
 .tarjeta.post-card {
@@ -381,6 +382,10 @@
     text-align: left;
     display: flex;
     flex-direction: column;
+}
+
+.tarjeta.post-card:hover {
+    transform: translateY(-4px); 
 }
 
 .post-options-button {
@@ -504,4 +509,13 @@
     align-self: center; 
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     border: 3px solid #f5e4c8; 
+}
+
+.post-title {
+    font-size: 18px;      
+    font-weight: bold;
+    color: #3b2b2b;        
+    margin: 8px 0 0 0;     
+    font-family: 'Georgia', serif;
+    line-height: 1.2;
 }

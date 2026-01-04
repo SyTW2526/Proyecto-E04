@@ -369,7 +369,7 @@ function SearchFilterView() {
                         {value.selected.map(item => (
                           <span key={item} className={`selected-enum-tag selected-enum-tag--${key}`}>
                             {item} 
-                            <button onClick={() => handleRemoveFilter(key as FilterKeyType, item)}><X size={12} /></button>
+                            <button className="remove-enum-tag-button" onClick={() => handleRemoveFilter(key as FilterKeyType, item)}><X size={12} /></button>
                           </span>
                         ))}
                         <button className="plus-button" onClick={() => setOpenSelector(key as FilterKeyType)}>
