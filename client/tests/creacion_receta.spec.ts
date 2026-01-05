@@ -44,6 +44,15 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    const boton1 = await driver.wait(
+      until.elementLocated(By.css(".boton-panel:nth-child(3)")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(boton1),
+      20000
+    )
     await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
     {
       const elements = await driver.findElements(By.css(".post-card:nth-child(2)"))

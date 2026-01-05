@@ -49,6 +49,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css("input")).click()
     await driver.findElement(By.css("input")).sendKeys("gazpacho")
     await driver.findElement(By.css("input")).sendKeys(Key.ENTER)
+    const count = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count),
+      20000
+    )
     const text = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -82,6 +91,15 @@ describe('Search', function(this: Mocha.Suite) {
       assert(!elements.length)
     }
     await driver.findElement(By.css(".recent-search-tag")).click()
+    const count1 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count1),
+      20000
+    )
     const text1 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -160,6 +178,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
     assert(await driver.findElement(By.css(".advanced-filter-summary")).getText() == "2 Ing.")
+    const count2 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count2),
+      20000
+    )
     const text2 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -187,6 +214,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const count3 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count3),
+      20000
+    )
     const text3 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -226,6 +262,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(7)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const count4 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count4),
+      20000
+    )
     const text4 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -242,6 +287,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const count5 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count5),
+      20000
+    )
     const text5 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
@@ -297,6 +351,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const count6 = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(count6),
+      20000
+    )
     const text6 = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))

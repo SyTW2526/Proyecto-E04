@@ -90,6 +90,15 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("rpassword")).click()
     await driver.findElement(By.id("rpassword")).sendKeys("usuario")
     await driver.findElement(By.css(".submit:nth-child(13)")).click()
+    const usrnm = await driver.wait(
+      until.elementLocated(By.css(".user-name")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(usrnm),
+      20000
+    )
     assert(await driver.findElement(By.css(".user-name")).getText() == "usuario50")
     await driver.findElement(By.css(".logout")).click()
     const input = await driver.wait(
@@ -145,6 +154,15 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".post-card"))
       assert(elements.length)
     }
+    const button = await driver.wait(
+      until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(button),
+      20000
+    )
     await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
     assert(await driver.findElement(By.css("div:nth-child(1) > label")).getText() == "Nombre de usuario:")
     assert(await driver.findElement(By.css("div:nth-child(2) > label")).getText() == "Email:")
