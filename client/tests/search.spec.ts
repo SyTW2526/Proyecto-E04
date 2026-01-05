@@ -59,7 +59,12 @@ describe('Search', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".tarjeta"))
       assert(elements.length)
     }
-    assert(await driver.findElement(By.css(".post-title")).getText() == "Gazpacho Andaluz")
+    const title = await driver.executeScript(
+          "return arguments[0].textContent",
+          await driver.findElement(By.css(".post-title"))
+        ) as string
+    
+        assert.strictEqual(title.trim(), "Gazpacho Andaluz")
     await driver.findElement(By.css(".post-title")).click()
     const h2 = await driver.wait(
       until.elementLocated(By.css("h2")),
@@ -87,7 +92,12 @@ describe('Search', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".tarjeta"))
       assert(elements.length)
     }
-    assert(await driver.findElement(By.css(".post-title")).getText() == "Gazpacho Andaluz")
+    const title1 = await driver.executeScript(
+          "return arguments[0].textContent",
+          await driver.findElement(By.css(".post-title"))
+        ) as string
+    
+        assert.strictEqual(title1.trim(), "Gazpacho Andaluz")
     await driver.findElement(By.css(".lucide-chevron-down")).click()
     await driver.findElement(By.css(".lucide-chevron-up > path")).click()
     assert(await driver.findElement(By.css(".advanced-filter-summary")).getText() == "No filters")
@@ -183,7 +193,12 @@ describe('Search', function(this: Mocha.Suite) {
     ) as string
 
     assert.strictEqual(text3.trim(), "1 receta encontrada")
-    assert(await driver.findElement(By.css(".post-title")).getText() == "Croissant Casero")
+    const title2 = await driver.executeScript(
+          "return arguments[0].textContent",
+          await driver.findElement(By.css(".post-title"))
+        ) as string
+    
+        assert.strictEqual(title2.trim(), "Croissant Casero")
     await driver.findElement(By.css(".post-title")).click()
     const ing = await driver.wait(
       until.elementLocated(By.css(".IngredientesReceta li:nth-child(1)")),
@@ -288,7 +303,12 @@ describe('Search', function(this: Mocha.Suite) {
     ) as string
 
     assert.strictEqual(text6.trim(), "1 receta encontrada")
-    assert(await driver.findElement(By.css(".post-title")).getText() == "Gazpacho Andaluz")
+    const title3 = await driver.executeScript(
+          "return arguments[0].textContent",
+          await driver.findElement(By.css(".post-title"))
+        ) as string
+    
+        assert.strictEqual(title3.trim(), "Gazpacho Andaluz")
     await driver.findElement(By.css(".post-title")).click()
     const h21 = await driver.wait(
       until.elementLocated(By.css("h2")),

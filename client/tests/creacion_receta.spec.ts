@@ -126,16 +126,15 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
     await boton.click()
     assert(await driver.switchTo().alert().getText() == "¿Borrar receta?")
     await driver.switchTo().alert().accept()
-    const boton1 = await driver.wait(
-      until.elementLocated(By.css(".boton-panel:nth-child(3)")),
-      20000
-    )
-
-    await driver.wait(
-      until.elementIsVisible(boton1),
-      20000
-    )
-    await boton1.click()
+    await driver.wait(async () => {
+      try {
+        const el = await driver.findElement(By.css(".boton-panel:nth-child(3)"))
+        await el.click()
+        return true
+      } catch (e) {
+        return false
+      }
+    }, 10000)
     {
       const elements = await driver.findElements(By.css(".post-card:nth-child(2)"))
       assert(!elements.length)
