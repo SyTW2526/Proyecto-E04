@@ -275,7 +275,6 @@ function SearchFilterView() {
           onSelect={(value) => handleAddFilter(openSelector as FilterKeyType, value)}
           onClose={() => setOpenSelector('')}
       />
-
       <div className="contenedor">
         <main className="principal">
           <h2 className="section-title">Búsqueda</h2>
@@ -335,7 +334,7 @@ function SearchFilterView() {
               </div>
             </div>
           )}
-          
+
           {/* Búsqueda avanzada */}
           {searchMode === 'recipes' && (
             <div className="advanced-search-section">
