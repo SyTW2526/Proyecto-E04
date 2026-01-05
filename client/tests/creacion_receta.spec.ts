@@ -135,8 +135,12 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
         return false
       }
     }, 10000)
+    await driver.wait(async () => {
+      const elements = await driver.findElements(By.css(".post-card:nth-child(3)"))
+      return elements.length === 0
+    }, 30000)
     {
-      const elements = await driver.findElements(By.css(".post-card:nth-child(2)"))
+      const elements = await driver.findElements(By.css(".post-card:nth-child(3)"))
       assert(!elements.length)
     }
     await driver.findElement(By.css(".boton-panel:nth-child(1)")).click()

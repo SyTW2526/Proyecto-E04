@@ -107,7 +107,7 @@ function Recipe() {
                                     <img className="foto-perfil-grande" src={`http://localhost:${port}/${receta.userId.profilePic}`} alt="Perfil" />
                                 </a>
                                 <div className="user-data-column">
-                                    <a href={`/user/${receta.userId.username}`} className="profile-link">
+                                    <a href={`/user/${receta.userId._id}`} className="profile-link">
                                         <span className="post-user-name">{receta.userId.username}</span>
                                     </a>
                                     <div className="valoracionReceta">
