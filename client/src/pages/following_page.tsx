@@ -1,0 +1,133 @@
+import "./styles/user.css";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import Navigation from "../components/navigation";
+import FollowButton from "../components/botonFollow";
+import './styles/following_page.css'
+import type { UserInterface } from "../interfaces/UserInterface";
+import SimplifiedProfile from "../components/simplifiedProfile";
+import { Helmet } from "react-helmet";
+
+interface FollowProps {
+  type: boolean
+}
+
+const port = import.meta.env.VITE_PORT ?? 3000;
+
+function FollowingPage({ type }: FollowProps) {
+    const { id } = useParams();
+    
+    const [user, setUser] = useState<UserInterface | null>(null);
+    const [following, setFollowing] = useState<UserInterface[]>([]);
+    const [followers, setFollowers] = useState<UserInterface[]>([]);
+    const [me, setMe] = useState<UserInterface | null>(null);
+    const [showFollowing, setShowFollowing] = useState(type);
+    const [postCount, setPostCount] = useState(0);
+
+    useEffect(() => {
+        axios.get(`http://localhost:${port}/users/` + id)
+        .then(response => setUser(response.data))
+        .catch(console.error);
+    }, [id]);
+
+    useEffect(() => {
+        axios.get(`http://localhost:${port}/users/me`, {
+            withCredentials: true
+        })
+        .then(response => setMe(response.data))
+        .catch(console.error);
+    }, []);
+
+    useEffect(() => {
+        if (user && me) {
+            axios.get(`http://localhost:${port}/users/` + id + '/follows')
+                .then(data => setFollowing(data.data))
+                .catch(err => console.error(err));
+        }
+    }, [user, me]);
+
+    useEffect(() => {
+        if (user && me) {
+            axios.get(`http://localhost:${port}/users/` + id + '/followers')
+                .then(data => setFollowers(data.data))
+                .catch(err => console.error(err));
+        }
+    }, [user, me]);
+
+    useEffect(() => {
+        if (me) {
+            axios.get(`http://localhost:${port}/recipes?userId=${me._id}`, {
+                withCredentials: true
+            })
+            .then(response => setPostCount(response.data.length))
+            .catch(error => console.error(error));
+        }
+    }, [me])
+
+    if (!user || !me) return <></>;
+    
+    const followersCount = me.followers.length;
+    const followingCount = me.following.length;
+    const usernameDisplay = me.username; 
+    const handleDisplay = `@${me.username.toLowerCase()}`; 
+
+  return (
+    <>
+        <Helmet>
+            <title>Follows de {me.username} / RecipeVault</title>
+        </Helmet>
+        <div className="contenedor">
+            <main className="principal">
+                <h2 className="section-title">Lista de {user.username}</h2>
+                
+                <div className="botones-nav-follow">
+                    <button 
+                        className={`boton-follow-toggle ${!showFollowing ? 'active' : ''}`}
+                        onClick={() => setShowFollowing(false)}
+                    >
+                        Seguidores
+                    </button>
+                    <button 
+                        className={`boton-follow-toggle ${showFollowing ? 'active' : ''}`}
+                        onClick={() => setShowFollowing(true)}
+                    >
+                        Seguidos
+                    </button>
+                </div>
+
+                <div className="lista-usuarios">
+                    {(showFollowing ? following : followers).map((usr) => (
+                        <div className="usuario-item-card" key={usr._id}>
+                            <Link className="info-usuario-link" to={`/user/${usr._id}`}>
+                                <img 
+                                    className="foto-lista-usuarios"
+                                    src={usr.profilePic ? `http://localhost:${port}/${usr.profilePic}` : `http://localhost:${port}/default/Flaticon.png`}
+                                    onError={(e) => { e.currentTarget.src = `http://localhost:${port}/default/Flaticon.png`; }}
+                                />
+                                <div className="textos-usuario">
+                                    <h4>{usr.username}</h4>
+                                    <p>{usr.bio || "Explorando recetas..."}</p>
+                                </div>
+                            </Link>
+                            
+                            <div className="accion-follow">
+                                {usr._id !== me._id && <FollowButton user={usr} me={me} setMe={setMe} />}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </main>
+        </div>
+        <aside className="panel-derecho profile-sidebar">
+            <img src="/logo.png" alt="Recipe Vault Logo" className="recipe-vault-logo"/>
+            <SimplifiedProfile user={me} postCount={postCount}/>
+            <div className="sidebar-navigation">
+                <Navigation user={me} active={0} />
+            </div>
+        </aside>
+    </>
+  );
+}
+
+export default FollowingPage;

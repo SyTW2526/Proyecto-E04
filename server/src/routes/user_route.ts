@@ -110,8 +110,11 @@ userRouter.patch('/users/me', auth, async (req, res) => {
  */
 userRouter.delete('/users/me', auth, async (req, res) => {
     try {
+        const regex: RegExp = new RegExp("default/*");
+
+        if (!regex.test((req as AuthRequest).user.profilePic!) && (req as AuthRequest).user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists((req as AuthRequest).user.profilePic!);
         await User.findByIdAndDelete((req as AuthRequest).user._id);
-        res.status(200);
+        res.status(200).send((req as AuthRequest).user);
     } catch (err) {
         res.status(500).send(err);
     }
@@ -343,7 +346,8 @@ userRouter.delete('/users', async (req, res) => {
       } else {
         await User.findByIdAndDelete(user._id);
 
-        if (user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
+        const regex: RegExp = new RegExp("default/*");
+        if (!regex.test(user.profilePic!) && user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
 
         res.send(user);
       }

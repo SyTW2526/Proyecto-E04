@@ -2,28 +2,24 @@ name: CI
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: ["dev", "main"]
   pull_request:
-    branches: [ "dev", "main" ]
-
-env:
-  MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
+    branches: ["dev", "main"]
 
 jobs:
-
   build-and-test:
     runs-on: ubuntu-latest
 
     services:
-        mongodb:
-          image: mongo:6
-          ports:
-            - 27017:27017
-          options: >-
-            --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repo
@@ -32,11 +28,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-           node-version: "20"
+          node-version: "20"
 
-      
-
-       #Backend  
+      # Backend - Test unitarios
 
       - name: Install backend dependencies
         working-directory: server
@@ -44,25 +38,42 @@ jobs:
 
       - name: Run backend tests
         working-directory: server
+        env:
+          NODE_ENV: test
+          PORT: 5000
+          MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
+          ENABLE_SEED: "false"
         run: npm test
 
-        #Frontend
+      # Backend - Iniciar para tests E2E
+
+      - name: Start backend (E2E)
+        working-directory: server
+        env:
+          NODE_ENV: e2e
+          PORT: 3000
+          MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-e2e
+          ENABLE_SEED: "true"
+        run: npm run dev &
+
+      - name: Wait for backend
+        run: npx wait-on http://localhost:3000
+
+      # Frontend - Tests E2E
 
       - name: Install frontend dependencies
-        working-directory: client   
+        working-directory: client
         run: npm install
 
-   #   - name: Install jsdom for Vitest
-   #     working-directory: client
-   #     run: npm install jsdom
-    
-
-   #   - name: Run frontend unit tests
-   #     working-directory: client
-   #     run: npm test
-
-      # e2e tests (Cypress)
-
-      - name: Run Cypress E2E
+      - name: Start frontend
         working-directory: client
-        run: npx start-server-and-test dev http://localhost:5173 cypress:run
+        env:
+          VITE_API_URL: http://localhost:3000
+        run: npm run dev &
+
+      - name: Wait for frontend
+        run: npx wait-on http://localhost:5173
+
+      - name: Run E2E tests
+        working-directory: client
+        run: npm run test

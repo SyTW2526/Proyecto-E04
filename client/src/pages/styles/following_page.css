@@ -1,0 +1,109 @@
+.contenedor {
+    display: flex;
+    height: 100vh;
+    width: 100vw; 
+    background-color: #fdf4e3;
+    color: #3b2b2b;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+}
+
+.principal {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: #f7e1c0;
+    height: 100vh;
+    overflow-y: auto; 
+}
+
+.panel-derecho {
+    width: 350px;
+    background-color: #fdf4e3; 
+    border-left: 2px solid #e0cfa8; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 25px;
+    min-height: 100vh;
+}
+
+.section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    color: #5d4037;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.botones-nav-follow {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.boton-follow-toggle {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: 1px solid #d2a679;
+    background-color: #edb282;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    transition: all 0.2s;
+}
+
+.boton-follow-toggle.active {
+    background-color: #eeba86;
+    color: white;
+    font-weight: bold;
+    border-color: #5d4037;
+}
+
+.usuario-item-card {
+    background-color: #fffaf4;
+    border: 1.5px solid #d2a679;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(93, 64, 55, 0.05);
+    transition: transform 0.2s;
+}
+
+.usuario-item-card:hover {
+    transform: translateY(-2px);
+}
+
+.info-usuario-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.foto-lista-usuarios {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d2a679;
+}
+
+.textos-usuario h4 {
+    margin: 0;
+    font-size: 17px;
+    color: #3b2b2b;
+}
+
+.textos-usuario p {
+    margin: 2px 0 0 0;
+    font-size: 13px;
+    color: #5d4037;
+    font-style: italic;
+}

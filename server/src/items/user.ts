@@ -53,7 +53,7 @@ const UserSchema = new Schema<UserInterface>({
   },
   profilePic: {
     type: String,
-    default: "uploads/images/Flaticon.png"
+    default: "default/images/Flaticon.png"
   },
   bio: {
     type: String,
