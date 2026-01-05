@@ -310,12 +310,16 @@ function SearchFilterView() {
           </div>
 
           {/* Búsquedas recientes */}
-          {searchMode === 'recipes' && recentSearches.length > 0 && (
-            <div className="recent-tags-section">
+          {searchMode === 'recipes' && recentSearches && recentSearches.length > 0 && (
+            <div className="recent-searches-wrapper">
+              <div className="recent-header">
+                <Clock size={14} />
+                <span>Búsquedas recientes</span>
+              </div>
               <div className="recent-tags-container">
                 {recentSearches.map((term, index) => (
                   <button 
-                    key={index} 
+                    key={`${term}-${index}`} 
                     className="recent-search-tag" 
                     onClick={() => {
                       setSearchTerm(term);
@@ -325,14 +329,13 @@ function SearchFilterView() {
                       handleSearch(term, [], [], []);
                     }}
                   >
-                    <Clock size={16} />
-                    <span style={{ marginLeft: '8px' }}>{term}</span>
+                    {term}
                   </button>
                 ))}
               </div>
             </div>
           )}
-
+          
           {/* Búsqueda avanzada */}
           {searchMode === 'recipes' && (
             <div className="advanced-search-section">

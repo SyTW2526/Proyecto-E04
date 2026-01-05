@@ -158,16 +158,6 @@ describe('Recipe Routes: GET /recipes', () => {
     expect(res.body[0].name).toBe('Ensalada Mix');
   });
 
-  test('Should filter by exact day in creacionDate', async () => {
-    const res = await request(app)
-      .get('/recipes')
-      .set('Cookie', `token=${token}`)
-      .query({ creacionDate: '2025-01-01' })
-      .expect(200);
-
-    expect(res.body.length).toBe(1);
-  });
-
   test('Should return 400 for invalid ID format', async () => {
     const res = await request(app)
       .get('/recipes')

@@ -211,32 +211,8 @@ body {
     margin-bottom: 15px;
 }
 
-.recent-tags-container {
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    margin-top: 10px;
-}
-
-.recent-search-tag {
-    display: flex;
-    align-items: center;
-    padding: 6px 12px;
-    border: 1px solid #d4c09d;
-    border-radius: 20px;
-    background-color: #f7f3ed;
-    color: #5d4037;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
 .recent-tag:hover {
     background-color: #f5e4c8;
-}
-
-.recent-search-tag:hover {
-    background-color: #e0d8cc; 
 }
 
 .recent-search-tag .clock-icon {
@@ -855,4 +831,47 @@ body {
 .remove-enum-tag-button:hover {
     background-color: #d49692;
     color: white;
+}
+
+.recent-searches-wrapper {
+    margin: 15px 0 20px 0;
+    padding: 0 5px;
+}
+
+.recent-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #8c7b6a;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.recent-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.recent-search-tag {
+    background-color: #fffaf4; 
+    border: 1px solid #d2a679;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #5d4037;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.recent-search-tag:hover {
+    background-color: #eeba86; 
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
