@@ -58,6 +58,15 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".post-card:nth-child(2)"))
       assert(!elements.length)
     }
+    const boton2 = await driver.wait(
+      until.elementLocated(By.css(".boton-panel:nth-child(4)")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(boton2),
+      20000
+    )
     await driver.findElement(By.css(".boton-panel:nth-child(4)")).click()
     await driver.findElement(By.id("name")).click()
     await driver.findElement(By.id("name")).sendKeys("Nombre receta")
@@ -116,6 +125,15 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".UtensiliosReceta li:nth-child(1)")).getText() == "colador")
     assert(await driver.findElement(By.css(".UtensiliosReceta li:nth-child(2)")).getText() == "rodillo")
     await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const card = await driver.wait(
+      until.elementLocated(By.css(".post-card:nth-child(2)")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(card),
+      20000
+    )
     {
       const elements = await driver.findElements(By.css(".post-card:nth-child(2)"))
       assert(elements.length)

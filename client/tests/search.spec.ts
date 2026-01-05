@@ -90,6 +90,15 @@ describe('Search', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".tarjeta"))
       assert(!elements.length)
     }
+    const tag = await driver.wait(
+      until.elementLocated(By.css(".recent-search-tag")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(h2),
+      20000
+    )
     await driver.findElement(By.css(".recent-search-tag")).click()
     const count1 = await driver.wait(
       until.elementLocated(By.css(".results-count")),
@@ -398,6 +407,15 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    const span = await driver.wait(
+      until.elementLocated(By.css(".boton-panel:nth-child(2) > span")),
+      20000
+    )
+
+    await driver.wait(
+      until.elementIsVisible(span),
+      20000
+    )
     await driver.findElement(By.css(".boton-panel:nth-child(2) > span")).click()
     await driver.findElement(By.css(".mode-tab:nth-child(2)")).click()
     {
