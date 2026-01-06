@@ -348,6 +348,12 @@ describe('User', function(this: Mocha.Suite) {
     await panelButtons[2].click()
 
     //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const panelButton = await driver.wait(
+      until.elementsLocated(By.css(".boton-panel")),
+      20000
+    )
+    await panelButton[2].click()
+    
     //await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
     await clickNthButtonInContainer(driver, ".datosUsuario", 1)
 
@@ -529,7 +535,12 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".usuarioSimplificado"))
       assert(!elements.length)
     }
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const panelButtons = await driver.wait(
+     until.elementsLocated(By.css(".boton-panel")),
+     20000
+      )
+    await panelButtons[2].click()
     assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
     assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 1")
     await driver.findElement(By.css("a:nth-child(2) > p")).click()
