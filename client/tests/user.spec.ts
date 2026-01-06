@@ -64,9 +64,25 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".botonFollow"))
       assert(elements.length)
     }
-    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "La verdadera cocina del sur de Italia.")
-    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
-    assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 0")
+    //assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "La verdadera cocina del sur de Italia.")
+    const bio = await driver.wait(
+    until.elementLocated(By.css(".user-description")),
+    20000
+    )
+    assert.strictEqual(await bio.getText(), "La verdadera cocina del sur de Italia.")
+    // lo nuevo (arriba)
+    // assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    // assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 0")
+    const stats = await driver.wait(
+      until.elementsLocated(By.css(".user-stats p")),
+      20000
+    )
+
+    const texts = await Promise.all(stats.map(e => e.getText()))
+
+    assert(texts.includes("Seguidores: 0"))
+    assert(texts.includes("Seguidos: 0"))
+
     {
       const elements = await driver.findElements(By.css(".post-card"))
       assert(elements.length)
@@ -148,8 +164,20 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".user-profile-info"))
       assert(!elements.length)
     }
-    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
-    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
+    //assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
+    //assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
+    const username = await driver.wait(
+     until.elementLocated(By.css("h3")),
+     20000
+    )
+    await driver.wait(until.elementIsVisible(username), 20000)
+    assert.strictEqual(await username.getText(), "ChefElenaES")
+
+    const bio = await driver.wait(
+    until.elementLocated(By.css(".user-description")),
+    20000
+    )
+    assert.strictEqual(await bio.getText(), "Especialista en tapas y arroces.")
     {
       const elements = await driver.findElements(By.css(".post-card"))
       assert(elements.length)
