@@ -217,7 +217,8 @@ describe('User', function(this: Mocha.Suite) {
       assert(elements.length)
     }
     const button = await driver.wait(
-      until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+      //until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+      await clickNthButtonInContainer(driver, ".datosUsuario", 2),
       20000
     )
 
@@ -257,7 +258,8 @@ describe('User', function(this: Mocha.Suite) {
     await clickNthButtonInContainer(driver, ".datosUsuario", 1)
     assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
     assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
-    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    //await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1)
     await driver.findElement(By.name("username")).click()
     await driver.findElement(By.name("username")).clear()
     await driver.findElement(By.name("username")).sendKeys("ChefElenaESA")
@@ -296,13 +298,19 @@ describe('User', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".user-handle")).getText() == "@chefelenaesa")
     assert(await driver.findElement(By.css(".user-description")).getText() == "Especialista en tapas y arroces.A")
     //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
-    const boton = await driver.wait(
-      until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
-      20000
-    )
+   // const boton = await driver.wait(
+   //   until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+   //   20000
+   // )
+   const buttons = await driver.wait(
+    until.elementsLocated(By.css(".datosUsuario button")),
+    20000
+   )
+    assert(buttons.length >= 2, "No se encontraron al menos 2 botones")
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1) // índice 1 = segundo botón
 
     await driver.wait(
-      until.elementIsVisible(boton),
+      until.elementIsVisible(buttons[1]),
       20000
     )
    // await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
@@ -391,7 +399,12 @@ describe('User', function(this: Mocha.Suite) {
       20000
     )
     assert(await driver.findElement(By.css(".help:nth-child(3)")).getText() == "La bio no puede exceder los 200 caracteres")
-    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+    //await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+    const editButtons = await driver.wait(
+      until.elementsLocated(By.css(".editButton")),
+      20000
+    )
+    await editButtons[0].click()
     {
      // const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
      // assert(elements.length)
@@ -566,10 +579,21 @@ describe('User', function(this: Mocha.Suite) {
       assert(elements.length)
     }
     {
-      const elements = await driver.findElements(By.css(".boton-follow-toggle:nth-child(2)"))
-      assert(elements.length)
+     // const elements = await driver.findElements(By.css(".boton-follow-toggle:nth-child(2)"))
+     // assert(elements.length)
+     const toggles = await driver.wait(
+      until.elementsLocated(By.css(".boton-follow-toggle")),
+      20000
+    )
+    await toggles[1].click()
     }
-    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+   // await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+    const toggl = await driver.wait(
+     until.elementsLocated(By.css(".boton-follow-toggle")),
+     20000
+    )
+    await toggl[1].click()
+
     await driver.findElement(By.css(".botonFollow")).click()
     {
       const elements = await driver.findElements(By.css(".usuario-item-card"))
