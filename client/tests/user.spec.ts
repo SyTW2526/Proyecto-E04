@@ -18,10 +18,30 @@ async function selectByText(
   await select.selectByVisibleText(text)
 }
 
+async function clickNthButtonInContainer(
+  driver: WebDriver,
+  containerCss: string,
+  index: number
+) {
+  const buttons = await driver.wait(
+    until.elementsLocated(By.css(`${containerCss} button`)),
+    20000
+  )
+
+  await driver.wait(
+    until.elementIsVisible(buttons[index]),
+    20000
+  )
+
+  await buttons[index].click()
+}
+
+
 describe('User', function(this: Mocha.Suite) {
   this.timeout(600000)
-  let driver: WebDriver
-  let vars
+  let driver: WebDriver,
+  index: number,
+  containerSelector: string
 
   const options = new firefox.Options();
   options.addArguments('-headless');
@@ -132,9 +152,16 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).sendKeys("usuario")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
     assert(await driver.findElement(By.css(".user-name")).getText() == "usuario50")
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+   // await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const panelButtons = await driver.wait(
+      until.elementsLocated(By.css(".boton-panel")),
+      20000
+    )
+    await panelButtons[2].click()
+
     assert(await driver.findElement(By.css(".posts-grid > p")).getText() == "Este usuario no ha compartido ninguna receta todavía.")
-    await driver.findElement(By.css(".datosUsuario button:nth-child(3)")).click()
+    //await driver.findElement(By.css(".datosUsuario button:nth-child(3)")).click()
+    
     await driver.findElement(By.id("lemail")).click()
     await driver.findElement(By.id("lemail")).sendKeys("usuario50@gmail.com")
     await driver.findElement(By.id("lpassword")).click()
@@ -150,7 +177,13 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const panelButtons = await driver.wait(
+     until.elementsLocated(By.css(".boton-panel")),
+     20000
+    )
+    await panelButtons[2].click()
+
     const foto = await driver.wait(
       until.elementLocated(By.css(".foto-perfil")),
       20000
@@ -178,6 +211,7 @@ describe('User', function(this: Mocha.Suite) {
     20000
     )
     assert.strictEqual(await bio.getText(), "Especialista en tapas y arroces.")
+    //lo nuevo (arriba)
     {
       const elements = await driver.findElements(By.css(".post-card"))
       assert(elements.length)
@@ -191,17 +225,27 @@ describe('User', function(this: Mocha.Suite) {
       until.elementIsVisible(button),
       20000
     )
-    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    //await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1)
     assert(await driver.findElement(By.css("div:nth-child(1) > label")).getText() == "Nombre de usuario:")
     assert(await driver.findElement(By.css("div:nth-child(2) > label")).getText() == "Email:")
     assert(await driver.findElement(By.css("div:nth-child(3) > label")).getText() == "Biografía:")
     {
-      const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
-      assert(elements.length)
+      //const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
+      //assert(elements.length)
+      const editButtons = await driver.wait(
+       until.elementsLocated(By.css(".editButton")),
+       20000
+      )
+      await editButtons[0].click()
+
     }
     {
-      const elements = await driver.findElements(By.css(".editButton:nth-child(2)"))
-      assert(elements.length)
+     const editButtons = await driver.wait(
+     until.elementsLocated(By.css(".editButton")),
+     20000
+    )
+    await editButtons[1].click()
     }
     await driver.findElement(By.name("username")).click()
     await driver.findElement(By.name("username")).sendKeys("ChefElenaESA")
@@ -209,7 +253,8 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.name("email")).sendKeys("elenaa.sanchez@test.com")
     await driver.findElement(By.name("bio")).click()
     await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.A")
-    await driver.findElement(By.css(".editButton:nth-child(2)")).click()
+    //await driver.findElement(By.css(".editButton:nth-child(2)")).click()
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1)
     assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
     assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
     await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
@@ -222,7 +267,13 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.name("bio")).click()
     await driver.findElement(By.name("bio")).clear()
     await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.A")
-    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+   // await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+   const editButtons = await driver.wait(
+   until.elementsLocated(By.css(".editButton")),
+   20000
+   )
+   await editButtons[0].click()
+
     const h3 = await driver.wait(
       until.elementLocated(By.css("h3:nth-child(1)")),
       20000
@@ -244,7 +295,7 @@ describe('User', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".user-name")).getText() == "ChefElenaESA")
     assert(await driver.findElement(By.css(".user-handle")).getText() == "@chefelenaesa")
     assert(await driver.findElement(By.css(".user-description")).getText() == "Especialista en tapas y arroces.A")
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
     const boton = await driver.wait(
       until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
       20000
@@ -254,7 +305,8 @@ describe('User', function(this: Mocha.Suite) {
       until.elementIsVisible(boton),
       20000
     )
-    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+   // await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1)
     await driver.findElement(By.name("username")).click()
     await driver.findElement(By.name("username")).clear()
     await driver.findElement(By.name("username")).sendKeys("ChefElenaES")
@@ -264,7 +316,13 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.name("bio")).click()
     await driver.findElement(By.name("bio")).clear()
     await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.")
-    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+   // await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+    const editButton = await driver.wait(
+    until.elementsLocated(By.css(".editButton")),
+    20000
+   )
+   await editButton[0].click()
+
   })
   it('Edición de perfil incorrecta', async function() {
     await driver.get("http://localhost:5173/login")
@@ -274,17 +332,25 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
-    const boton = await driver.wait(
-      until.elementLocated(By.css(".boton-panel:nth-child(3)")),
-      20000
-    )
+    //const boton = await driver.wait(
+    //  until.elementLocated(By.css(".boton-panel:nth-child(3)")),
+    //  20000
+    //)
 
-    await driver.wait(
-      until.elementIsVisible(boton),
-      20000
+    //await driver.wait(
+    //  until.elementIsVisible(boton),
+    //  20000
+    //)
+    const panelButtons = await driver.wait(
+    until.elementsLocated(By.css(".boton-panel")),
+    20000
     )
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
-    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await panelButtons[2].click()
+
+    //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    //await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await clickNthButtonInContainer(driver, ".datosUsuario", 1)
+
     await driver.findElement(By.name("username")).click()
     await driver.findElement(By.name("username")).clear()
     await driver.findElement(By.name("email")).click()
@@ -321,8 +387,13 @@ describe('User', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".help:nth-child(3)")).getText() == "La bio no puede exceder los 200 caracteres")
     await driver.findElement(By.css(".editButton:nth-child(1)")).click()
     {
-      const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
-      assert(elements.length)
+     // const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
+     // assert(elements.length)
+     const editButtons = await driver.wait(
+     until.elementsLocated(By.css(".editButton")),
+     20000
+     )
+    await editButtons[0].click()
     }
     await driver.findElement(By.name("username")).clear()
     await driver.findElement(By.name("username")).sendKeys("ChefElenaES")
@@ -360,7 +431,13 @@ describe('User', function(this: Mocha.Suite) {
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
     await driver.findElement(By.css(".submit:nth-child(9)")).click()
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    //await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const panelButtons = await driver.wait(
+     until.elementsLocated(By.css(".boton-panel")),
+     20000
+    )
+    await panelButtons[2].click()
+
     {
       const elements = await driver.findElements(By.css(".user-profile-info"))
       assert(!elements.length)
@@ -371,11 +448,11 @@ describe('User', function(this: Mocha.Suite) {
     }
     assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
     {
-      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(2)"))
+      const elements = await clickNthButtonInContainer(driver, ".datosUsuario", 1) //await driver.findElements(By.css(".datosUsuario button:nth-child(2)"))
       assert(elements.length)
     }
     {
-      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(3)"))
+      const elements = await clickNthButtonInContainer(driver, ".datosUsuario", 2) //await driver.findElements(By.css(".datosUsuario button:nth-child(3)"))
       assert(elements.length)
     }
     {
@@ -441,7 +518,13 @@ describe('User', function(this: Mocha.Suite) {
 
     assert.strictEqual(text.trim(), "ChefElenaES")
     assert(await driver.findElement(By.css(".section-title")).getText() == "Lista de ItalianoCucina")
-    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+    //await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+    const toggles = await driver.wait(
+     until.elementsLocated(By.css(".boton-follow-toggle")),
+     20000
+    )
+    await toggles[1].click()
+
     {
       const elements = await driver.findElements(By.css(".usuarioSimplificado"))
       assert(!elements.length)
@@ -460,7 +543,13 @@ describe('User', function(this: Mocha.Suite) {
       const elements = await driver.findElements(By.css(".botonFollow"))
       assert(elements.length)
     }
-    await driver.findElement(By.css(".boton-follow-toggle:nth-child(1)")).click()
+    //await driver.findElement(By.css(".boton-follow-toggle:nth-child(1)")).click()
+    const toggle = await driver.wait(
+    until.elementsLocated(By.css(".boton-follow-toggle")),
+    20000
+    )
+    await toggle[1].click()
+
     {
       const elements = await driver.findElements(By.css(".active"))
       assert(elements.length)
