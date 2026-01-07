@@ -324,6 +324,7 @@ describe('User', function(this: Mocha.Suite) {
       assert(!elements.length)
     }
   })
+
  it('Renderización perfil propio', async function () {
   await driver.get("http://localhost:5173/login")
   await driver.manage().window().setRect({ width: 1500, height: 906 })
@@ -333,22 +334,19 @@ describe('User', function(this: Mocha.Suite) {
   await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
   await driver.findElement(By.css(".submit")).click()
 
-  // Esperar login
-  await driver.wait(until.urlContains("localhost:5173"), 20000)
-
-  // Ir DIRECTAMENTE al perfil propio
+  // Ir directamente al perfil propio
   await driver.get("http://localhost:5173/user/000000000000000000000001")
 
-  // Esperar a que cargue el perfil (foto o stats)
+  // Esperar a que cargue la foto de perfil (señal de que el user ya está)
   const profilePic = await driver.wait(
     until.elementLocated(By.css(".foto-perfil")),
     20000
   )
   await driver.wait(until.elementIsVisible(profilePic), 20000)
 
-  // Username (real)
+  // Username REAL
   const usernameEl = await driver.wait(
-    until.elementLocated(By.css("h4")),
+    until.elementLocated(By.css(".datosUsuario h3")),
     20000
   )
   assert.strictEqual(await usernameEl.getText(), "ChefElenaES")
@@ -359,7 +357,7 @@ describe('User', function(this: Mocha.Suite) {
     20000
   )
   assert.strictEqual(await postTitleEl.getText(), "Gazpacho Andaluz")
-  })
+ })
 
 
   it('Seguir y dejar de seguir', async function() {
