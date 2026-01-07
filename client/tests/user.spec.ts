@@ -104,7 +104,12 @@ describe('User', function(this: Mocha.Suite) {
   await driver.findElement(By.id("remail")).sendKeys("usuario50@gmail.com")
   await driver.findElement(By.id("rpassword")).sendKeys("usuario")
   await clickButtonAt(driver, ".submit", 1)
-
+  
+  await driver.wait(async () => {
+  const panels = await driver.findElements(By.css(".boton-panel"))
+  return panels.length >= 1
+  }, 30000)
+  
   const name = await driver.wait(
     until.elementLocated(By.css(".user-name")),
     20000
