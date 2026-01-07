@@ -55,7 +55,8 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.wait(until.urlContains("localhost:5173"), 20000)
 
     // Ir DIRECTAMENTE a Search (evita flakiness)
-    await driver.get("http://localhost:5173/search")
+    //await driver.get("http://localhost:5173/search")
+    await driver.findElement(By.css(".boton-panel:nth-child(2)")).click()
 
     // Esperar a que la vista Search esté renderizada (me cargado)
     await driver.wait(
