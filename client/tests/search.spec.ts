@@ -55,17 +55,18 @@ describe('Search', function(this: Mocha.Suite) {
     //) as string
     //lo nuevo
 
-    const text = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
+    await driver.wait(async () => {
+      const results = await driver.findElements(By.css(".tarjeta"))
+      const noResults = await driver.findElements(By.css(".no-results-box"))
+     return results.length > 0 || noResults.length > 0
+    }, 20000)
 
-    await driver.wait(
-      until.elementIsVisible(text),
-      20000
-    )
-    const textContent = await text.getText()
+    const textContent = await driver
+     .findElement(By.css(".results-count"))
+     .getText()
+
     assert.strictEqual(textContent.trim(), "1 receta encontrada")
+
     // termina lo nuevo
     //assert.strictEqual(text.trim(), "1 receta encontrada")
     {
@@ -103,15 +104,16 @@ describe('Search', function(this: Mocha.Suite) {
 
    // assert.strictEqual(text1.trim(), "1 receta encontrada")
     //lo nuevo
-    const text1 = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text1),
-      20000
-    )
-    const textContent1 = await text1.getText()
+    await driver.wait(async () => {
+      const results = await driver.findElements(By.css(".tarjeta"))
+      const noResults = await driver.findElements(By.css(".no-results-box"))
+      return results.length > 0 || noResults.length > 0
+    }, 20000)
+
+    const textContent1 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
     assert.strictEqual(textContent1.trim(), "1 receta encontrada")
     // termina lo nuevo
 
@@ -195,16 +197,16 @@ describe('Search', function(this: Mocha.Suite) {
 
    // assert.strictEqual(text2.trim(), "0 recetas encontradas")
     //lo nuevo
-    const text2 = await driver.wait(
-      until.elementIsLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text2),
-      20000
-    )
-    const textContent2 = await text2.getText()
-    assert.strictEqual(textContent2.trim(), "0 recetas encontradas")
+    await driver.wait(async () => {
+      const noResults = await driver.findElements(By.css(".no-results-box"))
+      return noResults.length > 0
+    }, 20000)
+
+    const textContent2 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
+      assert.strictEqual(textContent2.trim(), "0 recetas encontradas")
     // termina lo nuevo
     
     assert(await driver.findElement(By.css("p:nth-child(1)")).getText() == "No se han encontrado recetas con esos criterios.")
@@ -235,17 +237,17 @@ describe('Search', function(this: Mocha.Suite) {
    // ) as string
 
    // assert.strictEqual(text3.trim(), "1 receta encontrada")
-    const text3 = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text3),
-      20000
-    )
-    const textContent3 = await text3.getText()
-    assert.strictEqual(textContent3.trim(), "1 receta encontrada")
+    await driver.wait(async () => {
+      const results = await driver.findElements(By.css(".tarjeta"))
+      const noResults = await driver.findElements(By.css(".no-results-box"))
+      return results.length > 0 || noResults.length > 0
+    }, 20000)
 
+    const textContent3 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
+    assert.strictEqual(textContent3.trim(), "1 receta encontrada")
     const title2 = await driver.executeScript(
           "return arguments[0].textContent",
           await driver.findElement(By.css(".post-title"))
@@ -286,17 +288,17 @@ describe('Search', function(this: Mocha.Suite) {
    // ) as string
 
    // assert.strictEqual(text4.trim(), "1 receta encontrada")
-    const text4 = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text4),
-      20000
-    )
-    const textContent4 = await text4.getText()
-    assert.strictEqual(textContent4.trim(), "1 receta encontrada")
+    await driver.wait(async () => {
+    const results = await driver.findElements(By.css(".tarjeta"))
+    const noResults = await driver.findElements(By.css(".no-results-box"))
+    return results.length > 0 || noResults.length > 0
+    }, 20000)
 
+    const textContent4 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
+    assert.strictEqual(textContent4.trim(), "1 receta encontrada")
     {
       const elements = await driver.findElements(By.css(".category-tag:nth-child(1)"))
       assert(elements.length)
@@ -314,15 +316,16 @@ describe('Search', function(this: Mocha.Suite) {
     //) as string
 
     //assert.strictEqual(text5.trim(), "4 recetas encontradas")
-    const text5 = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text5),
-      20000
-    )
-    const textContent5 = await text5.getText()
+    await driver.wait(async () => {
+    const results = await driver.findElements(By.css(".tarjeta"))
+    const noResults = await driver.findElements(By.css(".no-results-box"))
+    return results.length > 0 || noResults.length > 0
+    }, 20000)
+
+    const textContent5 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
     assert.strictEqual(textContent5.trim(), "4 recetas encontradas")
 
 
@@ -381,15 +384,16 @@ describe('Search', function(this: Mocha.Suite) {
     //  await driver.findElement(By.css(".results-count"))
     //) as string
     //assert.strictEqual(text6.trim(), "1 receta encontrada")
-    const text6 = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
-    await driver.wait(
-      until.elementIsVisible(text6),
-      20000
-    )
-    const textContent6 = await text6.getText()
+    await driver.wait(async () => {
+      const results = await driver.findElements(By.css(".tarjeta"))
+      const noResults = await driver.findElements(By.css(".no-results-box"))
+      return results.length > 0 || noResults.length > 0
+    }, 20000)
+
+    const textContent6 = await driver
+      .findElement(By.css(".results-count"))
+      .getText()
+
     assert.strictEqual(textContent6.trim(), "1 receta encontrada")
     
     const title3 = await driver.executeScript(
