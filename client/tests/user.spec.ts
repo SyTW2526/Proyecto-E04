@@ -256,7 +256,18 @@ describe('User', function(this: Mocha.Suite) {
       20000
     )
     await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
-    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    //await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    const editButton = await driver.wait(
+     until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+     20000
+    );
+
+    await driver.wait(
+     until.elementIsVisible(editButton),
+      20000
+    ) 
+
+    await editButton.click();
     await driver.findElement(By.name("username")).click()
     await driver.findElement(By.name("username")).clear()
     await driver.findElement(By.name("email")).click()
