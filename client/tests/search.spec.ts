@@ -57,7 +57,7 @@ describe('Search', function(this: Mocha.Suite) {
     await searchBtn.click()
 
     // Buscar "gazpacho" en search-bar-main
-    const searchInput = await driver.wait(until.elementLocated(By.css(".search-bar-main")), 20000)
+    const searchInput = await driver.wait(until.elementLocated(By.css(".search-bar-main input")), 20000)
     await driver.wait(until.elementIsVisible(searchInput), 20000)
     await searchInput.click()
     await searchInput.sendKeys("gazpacho", Key.ENTER)
