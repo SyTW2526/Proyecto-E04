@@ -160,7 +160,7 @@ describe('Search', function(this: Mocha.Suite) {
 
     // Añadir 2º ingrediente
     await driver.findElement(By.css(".advanced-input-group .plus-button")).click()
-    await driver.findElement(By.css(".select-option-tag:nth-child(2)")).click()
+    await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
 
     // Comprobar resumen de filtros
     const summary = await driver.findElement(By.css(".advanced-filter-summary")).getText()
