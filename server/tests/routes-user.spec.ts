@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
 
+// Datos de prueba comunes
 const testUserData = {
   username: 'ChefMaster',
   _id: '000000000000000000000101',
@@ -19,6 +20,7 @@ const testUserData = {
   categories: ['pasta', 'vegano']
 };
 
+// Otro usuario para pruebas relacionadas con seguidores
 const otherUserData = {
   username: 'OtroChef',
   _id: '000000000000000000000102',
@@ -33,7 +35,7 @@ let token: string;
 const userEmail = 'test-delete@example.com';
 const userName = 'DeleteMeUser';
 
-
+// Limpiar y preparar la base de datos antes de cada prueba
 beforeEach(async () => {
   await User.deleteMany({});
   await Recipe.deleteMany({});
@@ -45,17 +47,20 @@ beforeEach(async () => {
   token = jwt.sign({ _id: userId }, JWT_SECRET);
 });
 
+// Limpiar la base de datos después de todas las pruebas
 afterAll(async () => {
   await User.deleteMany({});
   await Recipe.deleteMany({});
   await Review.deleteMany({});
 });
 
+// Tests para las rutas de usuario
 describe('User Routes POST', () => {
   beforeEach(async () => {
     await User.deleteMany({});
   });
 
+  //test de creación de usuario
   test('Should create a new user by explicitly sending valid categories', async () => {
     const newUserData = { 
       username: 'NuevoUnico', 
@@ -73,6 +78,7 @@ describe('User Routes POST', () => {
 
   });
 
+  //test de error al crear usuario con email inválido
   test('Should return 400 when provided with an invalid email', async () => {
     await request(app)
       .post('/users')
@@ -80,6 +86,7 @@ describe('User Routes POST', () => {
       .expect(400);
   });
 
+  //test de error al crear usuario con email ya existente
   test('Should return 401 for incorrect credentials', async () => {
     await request(app)
       .post('/users/login')
@@ -88,12 +95,14 @@ describe('User Routes POST', () => {
   });
 });
 
+// Tests para las rutas de usuario
 describe('User Routes POST', () => {
   beforeEach(async () => {
     await User.deleteMany();
     await new User(testUserData).save();
   });
 
+  //test de login de usuario
   test('Should login successfully with correct credentials', async () => {
     const response = await request(app)
       .post('/users/login')
@@ -106,6 +115,7 @@ describe('User Routes POST', () => {
     expect(response.body.user.email).toBe(testUserData.email);
   });
 
+  //test de error al hacer login con contraseña incorrecta
   test('Should return 401 for incorrect password', async () => {
     await request(app)
       .post('/users/login')
@@ -116,6 +126,7 @@ describe('User Routes POST', () => {
       .expect(401);
   });
 
+  //test de error al hacer login con email inexistente
   test('Should return 401 for non-existent email', async () => {
     await request(app)
       .post('/users/login')
@@ -127,6 +138,7 @@ describe('User Routes POST', () => {
   });
 });
 
+// Tests para las rutas de usuario autenticado
 describe('User Routes GET /users/me', () => {
   let token: string;
   const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
@@ -138,6 +150,7 @@ describe('User Routes GET /users/me', () => {
     token = jwt.sign({ _id: userId.toString() }, JWT_SECRET);
   });
 
+  //test de obtención del perfil del usuario autenticado
   test('Should return the profile of the authenticated user', async () => {
     const response = await request(app)
       .get('/users/me')
@@ -148,12 +161,14 @@ describe('User Routes GET /users/me', () => {
     expect(response.body.email).toBe(testUserData.email);
   });
 
+  //test de error al obtener perfil sin token
   test('Should return 401 if no token is provided', async () => {
     await request(app)
       .get('/users/me')
       .expect(401);
   });
 
+  //test de error al obtener perfil con token inválido
   test('Should return 401 if token is invalid', async () => {
     await request(app)
       .get('/users/me')
@@ -162,6 +177,7 @@ describe('User Routes GET /users/me', () => {
   });
 });
 
+// Tests para las rutas de actualización de usuario
 describe('User Routes PATCH /users/me', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
@@ -172,6 +188,7 @@ describe('User Routes PATCH /users/me', () => {
     token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET);
   });
 
+  //test de actualización exitosa de campos permitidos del perfil
   test('Should update allowed profile fields successfully', async () => {
     const updates: Partial<UserInterface> = {
       bio: 'Nueva biografía actualizada',
@@ -191,6 +208,7 @@ describe('User Routes PATCH /users/me', () => {
     expect(userResponse.password).toBeUndefined();
   });
 
+  //test de error al intentar actualizar campos prohibidos
   test('Should return 400 when trying to update prohibited fields', async () => {
     await request(app)
       .patch('/users/me')
@@ -199,6 +217,7 @@ describe('User Routes PATCH /users/me', () => {
       .expect(400);
   });
 
+  //test de error al enviar cuerpo vacío en la actualización
   test('Should return 400 if the update body is empty', async () => {
     await request(app)
       .patch('/users/me')
@@ -207,6 +226,7 @@ describe('User Routes PATCH /users/me', () => {
       .expect(400);
   });
 
+  //test de hash de nueva contraseña al actualizarla
   test('Should hash the new password if it is updated', async () => {
     const newPassword = 'NewSecretPassword123';
     
@@ -227,6 +247,7 @@ describe('User Routes PATCH /users/me', () => {
   });
 });
 
+// Tests para las rutas de búsqueda y obtención de usuarios
 describe('User Routes GET', () => {
   test('Should get users by searching part of the username', async () => {
     const response = await request(app)
@@ -239,6 +260,7 @@ describe('User Routes GET', () => {
     expect(response.body[0]).toHaveProperty('createdAt');
   });
 
+  //test de obtención de usuario por email exacto
   test('Should return user by exact email match', async () => {
     const response = await request(app)
       .get('/users')
@@ -250,6 +272,7 @@ describe('User Routes GET', () => {
     expect(Array.isArray(response.body[0].saved)).toBe(true);
   });
 
+  //test de obtención de usuario por categoría
   test('Should return 404 if no user matches the search criteria', async () => {
     await request(app)
       .get('/users')
@@ -258,6 +281,7 @@ describe('User Routes GET', () => {
   });
 });
 
+// Tests para las rutas de eliminación de usuario
 describe('User Routes DELETE /users/me', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
@@ -268,6 +292,7 @@ describe('User Routes DELETE /users/me', () => {
     token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET);
   });
 
+  //test de eliminación exitosa de cuenta del usuario autenticado
   test('Should delete the authenticated user account', async () => {
     await request(app)
       .delete('/users/me')
@@ -278,6 +303,7 @@ describe('User Routes DELETE /users/me', () => {
     expect(userInDb).toBeNull();
   });
 
+  //test de error al eliminar cuenta sin token
   test('Should return 401 if trying to delete without token', async () => {
     await request(app)
       .delete('/users/me')
@@ -287,6 +313,7 @@ describe('User Routes DELETE /users/me', () => {
     expect(userInDb).not.toBeNull();
   });
 
+  //test de error al eliminar cuenta con token inválido
   test('Should return 401 for invalid token during deletion', async () => {
     await request(app)
       .delete('/users/me')
@@ -295,6 +322,7 @@ describe('User Routes DELETE /users/me', () => {
   });
 });
 
+//tests para la ruta de logout de usuario
 describe('User Routes POST /users/logout', () => {
   let token: string;
   const JWT_SECRET: string = 'fallback-secret-for-dev-only-654321';
@@ -305,6 +333,7 @@ describe('User Routes POST /users/logout', () => {
     token = jwt.sign({ _id: user._id.toString() }, JWT_SECRET);
   });
 
+  //test de logout exitoso
   test('Should logout successfully and return a personalized message', async () => {
     const response = await request(app)
       .post('/users/logout')
@@ -315,6 +344,7 @@ describe('User Routes POST /users/logout', () => {
     expect(response.body.message).toBe(`${testUserData.username} ha cerrado sesión exitosamente.`);
   });
 
+  //test de error al hacer logout sin estar autenticado
   test('Should return 401 if trying to logout without being authenticated', async () => {
     const response = await request(app)
       .post('/users/logout')
@@ -323,6 +353,7 @@ describe('User Routes POST /users/logout', () => {
     expect(response.body.error).toBe('Por favor, autentíquese.');
   });
 
+  //test de error al hacer logout con token inválido
   test('Should return 401 with a malformed or expired token', async () => {
     await request(app)
       .post('/users/logout')
@@ -331,6 +362,7 @@ describe('User Routes POST /users/logout', () => {
   });
 });
 
+//tests para las rutas de obtención de usuarios con filtros avanzados
 describe('User Routes GET /users', () => {
   const user1 = {
     username: 'ChefMaster',
@@ -354,6 +386,7 @@ describe('User Routes GET /users', () => {
     await new User(user2).save(); 
   });
 
+  //test de obtención de usuarios por parte del nombre de usuario
   test('Should find users by partial username ', async () => {
     const response = await request(app)
       .get('/users')
@@ -365,6 +398,7 @@ describe('User Routes GET /users', () => {
     expect(users.some((u: any) => u.username === 'ChefMaster')).toBe(true);
   });
 
+  //test de obtención de usuarios por parte del email
   test('Should find users by partial email', async () => {
     const response = await request(app)
       .get('/users')
@@ -375,6 +409,7 @@ describe('User Routes GET /users', () => {
     expect(users.length).toBe(2);
   });
 
+  //test de obtención de usuarios por categoría
   test('Should filter by category', async () => {
     const response = await request(app)
       .get('/users')
@@ -386,6 +421,7 @@ describe('User Routes GET /users', () => {
     expect(users[0].username).toBe('ChefMaster');
   });
 
+  //test de obtención de todos los usuarios sin filtros
   test('Should return all users if no query parameters are provided', async () => {
     const response = await request(app)
       .get('/users')
@@ -394,6 +430,7 @@ describe('User Routes GET /users', () => {
     expect(response.body.length).toBe(2);
   });
 
+  //test de obtención de usuarios por combinación de filtros
   test('Should filter by both username and email combined', async () => {
     const response = await request(app)
       .get('/users')
@@ -408,6 +445,7 @@ describe('User Routes GET /users', () => {
     expect(users[0].username).toBe('ChefMaster');
   });
 
+  //test de error al no encontrar usuarios con los filtros dados
   test('Should return 404 if no user matches the filter', async () => {
     await request(app)
       .get('/users')
@@ -416,6 +454,7 @@ describe('User Routes GET /users', () => {
   });
 });
 
+//tests para la ruta de obtención de seguidores de un usuario específico
 describe('User Routes GET /users/:id/followers', () => {
   let targetUserId: string;
   let followerId: string;
@@ -434,6 +473,7 @@ describe('User Routes GET /users/:id/followers', () => {
     targetUserId = (targetUser._id as mongoose.Types.ObjectId).toString();
   });
 
+  //test de obtención de seguidores de un usuario específico
   test('Should return the list of followers for a specific user', async () => {
     const response = await request(app)
       .get(`/users/${targetUserId}/followers`)
@@ -447,6 +487,7 @@ describe('User Routes GET /users/:id/followers', () => {
     expect(followers[0].email).toBe(otherUserData.email);
   });
 
+  //test de obtención de seguidores cuando no hay ninguno
   test('Should return an empty array if the user has no followers', async () => {
     const response = await request(app)
       .get(`/users/${followerId}/followers`)
@@ -455,6 +496,7 @@ describe('User Routes GET /users/:id/followers', () => {
     expect(response.body).toEqual([]);
   });
 
+  //test de error al obtener seguidores de un usuario inexistente
   test('Should return 404 if the user does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -463,6 +505,7 @@ describe('User Routes GET /users/:id/followers', () => {
   });
 });
 
+//tests para la ruta de obtención de un usuario por ID
 describe('User Routes GET /users/:id', () => {
   let userId: string;
 
@@ -472,6 +515,7 @@ describe('User Routes GET /users/:id', () => {
     userId = (user._id as mongoose.Types.ObjectId).toString();
   });
 
+  //test de obtención de usuario por ID válido y existente
   test('Should get a user by a valid and existing ID', async () => {
     const response = await request(app)
       .get(`/users/${userId}`)
@@ -482,6 +526,7 @@ describe('User Routes GET /users/:id', () => {
     expect(userResponse.email).toBe(testUserData.email);
   });
 
+  //test de error al obtener usuario por ID válido pero inexistente
   test('Should return 404 for a non-existent but valid format ID', async () => {
     const randomId = new mongoose.Types.ObjectId().toString();
     
@@ -492,6 +537,7 @@ describe('User Routes GET /users/:id', () => {
     expect(response.body.error).toBe('Usuario no encontrado.');
   });
 
+  //test de error al obtener usuario por ID con formato inválido
   test('Should return 500 for an invalid ID format ', async () => {
     const invalidId = '123-id-no-valido';
     
@@ -501,6 +547,7 @@ describe('User Routes GET /users/:id', () => {
   });
 });
 
+//tests para la ruta de obtención de un usuario por ID
 describe('User Routes get:id', () => { 
 	beforeEach(async () => {
 		await User.deleteMany();
@@ -508,6 +555,7 @@ describe('User Routes get:id', () => {
 		userId = user._id.toString(); 
 	});
 
+  //test de obtención de usuario por ID
 	test('Should get a user by ID', async () => {
 		const response = await request(app)
 			.get(`/users/${userId.toString()}`) 
@@ -515,6 +563,7 @@ describe('User Routes get:id', () => {
 		expect(response.body.username).toBe(testUserData.username);
 	});
 
+  //test de error al obtener usuario por ID inexistente
 	test('Should return 404 for non-existent user ID', async () => {
 		const nonExistentId = new mongoose.Types.ObjectId();
 		await request(app)
@@ -523,6 +572,7 @@ describe('User Routes get:id', () => {
 	});
 });
 
+//tests para la ruta de actualización de usuario por filtros
 describe('User Routes PATCH /users (Update by Filter)', () => {
   beforeEach(async () => {
     await User.deleteMany({});
@@ -536,6 +586,7 @@ describe('User Routes PATCH /users (Update by Filter)', () => {
     }).save();
   });
 
+  //test de actualización exitosa de usuario por email
   test('Should update user successfully using email filter', async () => {
     const updates = { bio: 'Bio actualizada por email' };
 
@@ -548,6 +599,7 @@ describe('User Routes PATCH /users (Update by Filter)', () => {
     expect(response.body.bio).toBe(updates.bio);
   });
 
+  //test de actualización exitosa de usuario por username
   test('Should update user successfully using username filter ', async () => {
     const updates = { bio: 'Bio actualizada por username' };
     const response = await request(app)
@@ -560,6 +612,7 @@ describe('User Routes PATCH /users (Update by Filter)', () => {
     expect(response.body.bio).toBe(updates.bio);
   });
 
+  //test de error al enviar actualizaciones inválidas para el esquema
   test('Should return 400 if no filters are provided', async () => {
     await request(app)
       .patch('/users')
@@ -567,6 +620,7 @@ describe('User Routes PATCH /users (Update by Filter)', () => {
       .expect(400); 
   });
 
+  //test de error al no encontrar usuario con los filtros dados
   test('Should return 404 if no user matches the filter', async () => {
     await request(app)
       .patch('/users')
@@ -576,6 +630,7 @@ describe('User Routes PATCH /users (Update by Filter)', () => {
   });
 });
 
+//tests para la ruta de actualización de usuario por ID
 describe('User Routes PATCH /users/:id (Update by ID)', () => {
   let userId: string;
 
@@ -591,6 +646,7 @@ describe('User Routes PATCH /users/:id (Update by ID)', () => {
     userId = user._id.toString();
   });
 
+  //test de actualización exitosa de usuario por ID
   test('Should update user by a valid ID', async () => {
     const updates = { bio: 'Mi nueva bio por ID' };
 
@@ -603,6 +659,7 @@ describe('User Routes PATCH /users/:id (Update by ID)', () => {
     expect(response.body.bio).toBe(updates.bio);
   });
 
+  //test de error al enviar actualizaciones inválidas para el esquema
   test('Should return 400 if updates are invalid for the schema', async () => {
     await request(app)
       .patch(`/users/${userId}`)
@@ -610,6 +667,7 @@ describe('User Routes PATCH /users/:id (Update by ID)', () => {
       .expect(400);
   });
 
+  //test de error al intentar actualizar un usuario inexistente
   test('Should return 404 if ID is valid but user does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -619,6 +677,7 @@ describe('User Routes PATCH /users/:id (Update by ID)', () => {
   });
 });
 
+//tests para la ruta de eliminación de usuario por filtros
 describe('User Routes: DELETE by Query (?email or ?username)', () => {
   let userId: string;
   const userEmail = 'test-query@example.com';
@@ -657,6 +716,7 @@ describe('User Routes: DELETE by Query (?email or ?username)', () => {
     }).save();
   });
 
+  //test de eliminación exitosa de usuario y su contenido asociado por email exacto
   test('Should delete user and content using EXACT email', async () => {
     await request(app)
       .delete('/users')
@@ -668,6 +728,7 @@ describe('User Routes: DELETE by Query (?email or ?username)', () => {
     expect(await Review.countDocuments({ userId })).toBe(0);
   });
 
+  //test de eliminación exitosa de usuario por parte del nombre de usuario
   test('Should delete user using partial username (Regex)', async () => {
     await request(app)
       .delete('/users')
@@ -677,6 +738,7 @@ describe('User Routes: DELETE by Query (?email or ?username)', () => {
     expect(await User.findOne({ username: userName })).toBeNull();
   });
 
+  //test de error al no proporcionar filtros en la eliminación
   test('Should return 400 if no query parameters are provided', async () => {
     const response = await request(app)
       .delete('/users')
@@ -685,6 +747,7 @@ describe('User Routes: DELETE by Query (?email or ?username)', () => {
     expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
   });
 
+  //test de error al no encontrar usuario con los filtros dados
   test('Should return 404 if user is not found', async () => {
     await request(app)
       .delete('/users')
@@ -693,6 +756,7 @@ describe('User Routes: DELETE by Query (?email or ?username)', () => {
   });
 });
 
+//tests para la ruta de eliminación de usuario por ID
 describe('User Routes: DELETE by ID (/users/:id)', () => {
   let userId: string;
 
@@ -712,6 +776,7 @@ describe('User Routes: DELETE by ID (/users/:id)', () => {
     userId = user._id.toString();
   });
 
+  //test de eliminación exitosa de usuario por ID
   test('Should delete user by a valid ID', async () => {
     const response = await request(app)
       .delete(`/users/${userId}`)
@@ -721,6 +786,7 @@ describe('User Routes: DELETE by ID (/users/:id)', () => {
     expect(await User.findById(userId)).toBeNull();
   });
 
+  //test de eliminación de usuario sin borrar archivo por ser imagen por defecto
   test('Should NOT delete file if profilePic is the Flaticon default', async () => {
     const flaticonUser = await new User({
       username: 'FlaticonUser',
@@ -738,6 +804,7 @@ describe('User Routes: DELETE by ID (/users/:id)', () => {
     expect(await User.findById(flaticonUser._id)).toBeNull();
   });
 
+  //test de error al eliminar usuario por ID inexistente
   test('Should return 404 for a non-existent valid ID', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -745,6 +812,7 @@ describe('User Routes: DELETE by ID (/users/:id)', () => {
       .expect(404);
   });
 
+  //test de error al eliminar usuario por ID con formato inválido
   test('Should return 500 for an invalid ID format', async () => {
     await request(app)
       .delete('/users/esto-no-es-un-id')

@@ -1,5 +1,5 @@
 import "multer";
-
+// Extiende la interfaz Request de Express para incluir la propiedad 'files' utilizada por Multer
 declare global {
   namespace Express {
     interface Request {

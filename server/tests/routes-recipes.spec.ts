@@ -8,13 +8,14 @@ import jwt from 'jsonwebtoken';
 import { Review } from '../src/items/review.js';
 
 const JWT_SECRET = 'fallback-secret-for-dev-only-654321';
-
+//limpieza general después de todos los tests
 afterAll(async () => {
   await User.deleteMany({});
   await Recipe.deleteMany({});
   await Review.deleteMany({});
 });
 
+//tests de rutas relacionadas con recetas
 describe('Recipe Routes: POST /recipes', () => {
   let activeUserId: mongoose.Types.ObjectId;
 
@@ -31,6 +32,7 @@ describe('Recipe Routes: POST /recipes', () => {
     activeUserId = savedUser._id;
   });
 
+  //test de creación de receta
   test('SUCCESS: Should create a new recipe with valid data', async () => {
     const validRecipe = {
       name: 'Pasta Carbonara',
@@ -53,6 +55,7 @@ describe('Recipe Routes: POST /recipes', () => {
     expect(response.body.ingredients[0].ingredient).toBe('harina');
   });
 
+  //test de error al crear receta
   test('ERROR: Should return 400 if required fields are missing', async () => {
     const invalidRecipe = {
       name: 'Receta sin pasos ni ingredientes'
@@ -64,6 +67,7 @@ describe('Recipe Routes: POST /recipes', () => {
       .expect(400);
   });
 
+  //test de error al crear receta con herramienta inválida
   test('ERROR: Should fail if tool is not in the Enum list', async () => {
     const recipeWithInvalidTool = {
       name: 'Receta Error Herramienta',
@@ -82,6 +86,7 @@ describe('Recipe Routes: POST /recipes', () => {
   });
 });
 
+//tests de obtención de recetas
 describe('Recipe Routes: GET /recipes', () => {
   let token: string;
   let userId: string;
@@ -125,7 +130,7 @@ describe('Recipe Routes: GET /recipes', () => {
     }).save();
   });
 
-
+ //test de obtención de recetas con filtros
   test('Should filter by multiple categories using $all logic', async () => {
     const res = await request(app)
       .get('/recipes')
@@ -137,6 +142,7 @@ describe('Recipe Routes: GET /recipes', () => {
     expect(res.body[0].category).toContain('desayuno');
   });
 
+  //test de obtención de recetas por nombre de ingrediente
   test('Should filter by ingredient name', async () => {
     const res = await request(app)
       .get('/recipes')
@@ -147,6 +153,7 @@ describe('Recipe Routes: GET /recipes', () => {
     expect(res.body[0].name).toBe('Ensalada Mix');
   });
 
+ //test de obtención de recetas por múltiples herramientas
   test('Should filter by multiple tools using $all logic', async () => {
     const res = await request(app)
       .get('/recipes')
@@ -158,6 +165,7 @@ describe('Recipe Routes: GET /recipes', () => {
     expect(res.body[0].name).toBe('Ensalada Mix');
   });
 
+  //test de error por formato inválido de ID
   test('Should return 400 for invalid ID format', async () => {
     const res = await request(app)
       .get('/recipes')
@@ -169,6 +177,7 @@ describe('Recipe Routes: GET /recipes', () => {
   });
 });
 
+//tests de obtención del feed de recetas
 describe('Recipe Routes: GET /recipes/feed', () => {
   let token: string;
   let userId: string;
@@ -230,6 +239,7 @@ describe('Recipe Routes: GET /recipes/feed', () => {
     }).save();
   });
 
+ //test de obtención del feed mixto
   test('SUCCESS: Should return a mixed feed of followed, searched and general recipes', async () => {
     const response = await request(app)
       .get('/recipes/feed')
@@ -245,6 +255,7 @@ describe('Recipe Routes: GET /recipes/feed', () => {
     expect(recipes.some((r: any) => r.name === 'Pasta de un Desconocido')).toBe(true);
   });
 
+  //test de límite máximo de recetas en el feed
   test('Should not return more than 15 recipes', async () => {
     const extraRecipes = Array.from({ length: 20 }).map((_, i) => ({
       name: `Receta Relleno ${i}`,
@@ -265,6 +276,7 @@ describe('Recipe Routes: GET /recipes/feed', () => {
     expect(response.body.length).toBe(15);
   });
 
+  //test de obtención del feed para usuario sin seguimientos ni búsquedas
   test('EMPTY: Should return general recipes even if user follows no one and has no searches', async () => {
     const cleanUser = await new User({
       username: 'CleanUser',
@@ -287,6 +299,7 @@ describe('Recipe Routes: GET /recipes/feed', () => {
     expect(response.body.some((r: any) => r.name === 'Ensalada General')).toBe(true);
   });
 
+  //test de error al obtener el feed sin token
   test('ERROR: Should return 401 if no token is provided', async () => {
     await request(app)
       .get('/recipes/feed')
@@ -294,6 +307,7 @@ describe('Recipe Routes: GET /recipes/feed', () => {
   });
 });
 
+//tests de obtención de recetas guardadas
 describe('Recipe Routes: GET /recipes/saved', () => {
   let token: string;
   let userId: string;
@@ -348,6 +362,7 @@ describe('Recipe Routes: GET /recipes/saved', () => {
     token = jwt.sign({ _id: userId }, JWT_SECRET);
   });
 
+  //test de obtención de recetas guardadas con datos del autor
   test('SUCCESS: Should return all saved recipes with populated author data', async () => {
     const response = await request(app)
       .get('/recipes/saved')
@@ -366,6 +381,7 @@ describe('Recipe Routes: GET /recipes/saved', () => {
     expect(savedRecipes[0].userId.password).toBeUndefined();
   });
 
+  //test de obtención de recetas guardadas para usuario sin recetas guardadas
   test('EMPTY: Should return an empty array if the user has no saved recipes', async () => {
     const emptyUser = await new User({
       username: 'UserSinNada',
@@ -386,6 +402,7 @@ describe('Recipe Routes: GET /recipes/saved', () => {
     expect(response.body).toEqual([]);
   });
 
+  //test de error al obtener recetas guardadas sin token
   test('ERROR: Should return 401 if token is missing', async () => {
     await request(app)
       .get('/recipes/saved')
@@ -393,6 +410,7 @@ describe('Recipe Routes: GET /recipes/saved', () => {
   });
 });
 
+//tests de obtención de receta por ID
 describe('Recipe Routes: GET /recipes/:id', () => {
   let recipeId: string;
   let authorId: string;
@@ -424,6 +442,7 @@ describe('Recipe Routes: GET /recipes/:id', () => {
     recipeId = recipe._id.toString();
   });
 
+  //test de obtención de receta por ID con datos del autor
   test('SUCCESS: Should return the recipe with populated author data', async () => {
     const response = await request(app)
       .get(`/recipes/${recipeId}`)
@@ -436,6 +455,7 @@ describe('Recipe Routes: GET /recipes/:id', () => {
     expect(response.body.userId.password).toBeUndefined();
   });
 
+  //test de error al obtener receta por ID inexistente
   test('ERROR: Should return 404 if the ID format is valid but doesnt exist', async () => {
     const fakeId = new mongoose.Types.ObjectId(); 
     const response = await request(app)
@@ -445,6 +465,7 @@ describe('Recipe Routes: GET /recipes/:id', () => {
     expect(response.body.error).toBe('Receta no encontrada.');
   });
 
+  //test de error al obtener receta por ID con formato inválido
   test('ERROR: Should return 500 if the ID format is totally invalid', async () => {
     const invalidId = 'este-id-no-es-un-objectid';
 
@@ -457,6 +478,7 @@ describe('Recipe Routes: GET /recipes/:id', () => {
   });
 });
 
+//tests de actualización de recetas por filtros
 describe('Recipe Routes: PATCH /recipes ', () => {
   let authorId: string;
   let recipeName = 'Arroz con Leche';
@@ -484,7 +506,8 @@ describe('Recipe Routes: PATCH /recipes ', () => {
       category: ['postre']
     }).save();
   });
-
+  
+  //test de actualización de pasos de receta por nombre
   test('SUCCESS: Should update recipe steps using name filter', async () => {
     const response = await request(app)
       .patch('/recipes')
@@ -494,7 +517,8 @@ describe('Recipe Routes: PATCH /recipes ', () => {
 
     expect(response.body.steps).toBe('Nueva descripción de pasos corregida.');
   });
-
+  
+  //test de actualización de categoría y herramientas de receta por nombre
   test('ERROR: Should return 400 if no query filters are provided', async () => {
     const response = await request(app)
       .patch('/recipes')
@@ -503,7 +527,8 @@ describe('Recipe Routes: PATCH /recipes ', () => {
 
     expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
   });
-
+  
+  //test de error al actualizar receta con body vacío
   test('ERROR: Should return 400 if body is empty', async () => {
     await request(app)
       .patch('/recipes')
@@ -512,6 +537,7 @@ describe('Recipe Routes: PATCH /recipes ', () => {
       .expect(400);
   });
 
+  //test de error al actualizar receta con campos prohibidos
   test('ERROR: Should return 400 if update contains forbidden fields ', async () => {
     await request(app)
       .patch('/recipes')
@@ -520,6 +546,7 @@ describe('Recipe Routes: PATCH /recipes ', () => {
       .expect(400);
   });
 
+  //test de error al actualizar receta sin coincidencias
   test('ERROR: Should return 404 if no recipe matches the filter', async () => {
     await request(app)
       .patch('/recipes')
@@ -528,6 +555,7 @@ describe('Recipe Routes: PATCH /recipes ', () => {
       .expect(404);
   });
 
+  //test de error al actualizar receta con validación inválida
   test('ERROR: Should fail if update violates Enum validation ', async () => {
     await request(app)
       .patch('/recipes')
@@ -537,6 +565,7 @@ describe('Recipe Routes: PATCH /recipes ', () => {
   });
 });
 
+//tests de actualización de receta por ID
 describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
   let recipeId: string;
   let userId: string;
@@ -568,6 +597,7 @@ describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
     recipeId = recipe._id.toString();
   });
 
+  //test de actualización de campos permitidos de receta por ID
   test('SUCCESS: Should update allowed fields by ID', async () => {
     const updateData = {
       name: 'Receta Actualizada',
@@ -585,6 +615,7 @@ describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
     expect(response.body.tools).toContain('batidora');
   });
 
+  //test de error al actualizar receta por ID con body vacío
   test('ERROR: Should return 400 if update contains forbidden fields ', async () => {
     await request(app)
       .patch(`/recipes/${recipeId}`)
@@ -592,6 +623,7 @@ describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
       .expect(400);
   });
 
+  //test de error al actualizar receta por ID con campos prohibidos
   test('ERROR: Should return 400 if validation fails ', async () => {
     await request(app)
       .patch(`/recipes/${recipeId}`)
@@ -599,6 +631,7 @@ describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
       .expect(400);
   });
 
+  //test de error al actualizar receta por ID inexistente
   test('ERROR: Should return 404 if recipe ID is valid format but does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -608,6 +641,7 @@ describe('Recipe Routes: PATCH /recipes/:id (Update by ID)', () => {
   });
 });
 
+//tests de eliminación de recetas por filtros
 describe('Recipe Routes: DELETE /recipes ', () => {
   let recipeId: string;
   let userId: string;
@@ -647,6 +681,7 @@ describe('Recipe Routes: DELETE /recipes ', () => {
     }).save();
   });
 
+  //test de eliminación de receta por nombre y limpieza de reseñas
   test('SUCCESS: Should delete recipe by name and clean its reviews', async () => {
     const response = await request(app)
       .delete('/recipes')
@@ -659,6 +694,7 @@ describe('Recipe Routes: DELETE /recipes ', () => {
     expect(foundRecipe).toBeNull();
   });
 
+  //test de error al eliminar receta sin filtros
   test('ERROR: Should return 400 if no query parameters are provided', async () => {
     const response = await request(app)
       .delete('/recipes')
@@ -667,6 +703,7 @@ describe('Recipe Routes: DELETE /recipes ', () => {
     expect(response.body.error).toContain('Debe proporcionar al menos un filtro');
   });
 
+  //test de error al eliminar receta sin coincidencias
   test('ERROR: Should return 404 if no recipe matches the filter', async () => {
     await request(app)
       .delete('/recipes')
@@ -674,6 +711,7 @@ describe('Recipe Routes: DELETE /recipes ', () => {
       .expect(404);
   });
 
+  //test de manejo correcto de archivos (simulación)
   test('Should handle files correctly (Simulation)', async () => {
     const response = await request(app)
       .delete('/recipes')
@@ -685,6 +723,7 @@ describe('Recipe Routes: DELETE /recipes ', () => {
   });
 });
 
+//tests de eliminación de receta por ID
 describe('Recipe Routes: DELETE /recipes/:id', () => {
   let recipeId: string;
   let userId: string;
@@ -726,6 +765,7 @@ describe('Recipe Routes: DELETE /recipes/:id', () => {
     }).save();
   });
 
+  //test de eliminación de receta por ID y limpieza de reseñas
   test('SUCCESS: Should delete recipe by ID and trigger all cleanup logic', async () => {
     const response = await request(app)
       .delete(`/recipes/${recipeId}`)
@@ -741,6 +781,7 @@ describe('Recipe Routes: DELETE /recipes/:id', () => {
     expect(reviews.length).toBe(0);
   });
 
+  //test de error al eliminar receta por ID inexistente
   test('ERROR: Should return 404 if the ID is valid but the recipe does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -748,12 +789,14 @@ describe('Recipe Routes: DELETE /recipes/:id', () => {
       .expect(404);
   });
 
+  //test de error al eliminar receta por ID con formato inválido
   test('ERROR: Should return 500 if the ID format is invalid', async () => {
     await request(app)
       .delete('/recipes/esto-no-es-un-id')
       .expect(500);
   });
 
+  //test de manejo correcto de archivos (simulación)
   test('Should preserve "default" strings in the deleted object data', async () => {
     const response = await request(app)
       .delete(`/recipes/${recipeId}`)

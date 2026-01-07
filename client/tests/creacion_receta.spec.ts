@@ -17,7 +17,7 @@ async function selectByText(
   const select = new Select(selectEl)
   await select.selectByVisibleText(text)
 }
-
+//test de creación correcta de una receta
 describe('Creación correcta de una receta', function(this: Mocha.Suite) {
   this.timeout(600000)
   let driver: WebDriver
@@ -36,6 +36,7 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
   afterEach(async function() {
     await driver.quit();
   })
+  //test de creación correcta de una receta
   it('Creación correcta de una receta', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1500, height: 1000 })
@@ -174,6 +175,7 @@ describe('Creación correcta de una receta', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".logout")).click()
   })
 
+  //test de creación incorrecta de una receta
   it('Creación incorrecta de receta', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1500, height: 1000 })
