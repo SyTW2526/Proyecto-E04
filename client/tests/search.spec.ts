@@ -42,28 +42,28 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.manage().window().setRect({ width: 1500, height: 1000 })
 
     // Login
-    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
-    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
-    await driver.findElement(By.css(".submit")).click()
+    const emailInput = await driver.wait(until.elementLocated(By.id("lemail")), 20000)
+    await emailInput.sendKeys("elena.sanchez@test.com")
 
-    // Ir a Search (Botón estable)
-    const searchBtn = await driver.wait(
-      until.elementLocated(By.css(".boton-panel")),
-      20000
-    )
+    const passwordInput = await driver.wait(until.elementLocated(By.id("lpassword")), 20000)
+    await passwordInput.sendKeys("Password123!")
+
+    const submitBtn = await driver.wait(until.elementLocated(By.css(".submit")), 20000)
+    await submitBtn.click()
+
+    // Ir a Search (primer botón estable)
+    const searchBtn = await driver.wait(until.elementLocated(By.css(".boton-panel")), 20000)
     await driver.wait(until.elementIsVisible(searchBtn), 20000)
     await searchBtn.click()
 
-  // Buscar "gazpacho"
-    const input = await driver.wait(until.elementLocated(By.css("input")), 20000)
-    await input.sendKeys("gazpacho")
-    await input.sendKeys(Key.ENTER)
+    // Buscar "gazpacho" en search-bar-main
+    const searchInput = await driver.wait(until.elementLocated(By.css(".search-bar-main")), 20000)
+    await driver.wait(until.elementIsVisible(searchInput), 20000)
+    await searchInput.click()
+    await searchInput.sendKeys("gazpacho", Key.ENTER)
 
-  // Esperar resultados
-    const resultsCount = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-    )
+    // Esperar resultados
+    const resultsCount = await driver.wait(until.elementLocated(By.css(".results-count")), 20000)
     await driver.wait(until.elementIsVisible(resultsCount), 20000)
     let text = await resultsCount.getText()
     assert.strictEqual(text.trim(), "1 receta encontrada")
@@ -76,62 +76,51 @@ describe('Search', function(this: Mocha.Suite) {
 
     // Abrir receta
     await driver.findElement(By.css(".post-title")).click()
-      const h2 = await driver.wait(until.elementLocated(By.css("h2")), 20000)
+    const h2 = await driver.wait(until.elementLocated(By.css("h2")), 20000)
     await driver.wait(until.elementIsVisible(h2), 20000)
-      assert(await h2.getText() === "Gazpacho Andaluz")
+    assert.strictEqual(await h2.getText(), "Gazpacho Andaluz")
 
     // Volver a búsqueda
     await driver.get("http://localhost:5173/search")
-      let tarjetas = await driver.findElements(By.css(".tarjeta"))
-      assert.strictEqual(tarjetas.length, 0)
+    let tarjetas = await driver.findElements(By.css(".tarjeta"))
+    assert.strictEqual(tarjetas.length, 0)
 
     // Click en tag reciente si existe
     const recentTags = await driver.findElements(By.css(".recent-search-tag"))
     if (recentTags.length > 0) {
       await recentTags[0].click()
-      const resultsCountRecent = await driver.wait(
-        until.elementLocated(By.css(".results-count")),
-        20000
-    )
-    await driver.wait(until.elementIsVisible(resultsCountRecent), 20000)
-    text = await resultsCountRecent.getText()
+      const resultsCountRecent = await driver.wait(until.elementLocated(By.css(".results-count")), 20000)
+      await driver.wait(until.elementIsVisible(resultsCountRecent), 20000)
+      text = await resultsCountRecent.getText()
       assert.strictEqual(text.trim(), "1 receta encontrada")
 
-    const cardsRecent = await driver.findElements(By.css(".tarjeta"))
+      const cardsRecent = await driver.findElements(By.css(".tarjeta"))
       assert(cardsRecent.length > 0)
 
-    const titleRecent = await driver.findElement(By.css(".post-title")).getText()
+      const titleRecent = await driver.findElement(By.css(".post-title")).getText()
       assert.strictEqual(titleRecent.trim(), "Gazpacho Andaluz")
-  }
+    }
 
-  // Ejemplo de filtro avanzado (simplificado)
-    const advancedBtn = await driver.wait(
-      until.elementLocated(By.css(".lucide-chevron-down")),
-      20000
-  )
+    // Filtro avanzado ejemplo simplificado
+    const advancedBtn = await driver.wait(until.elementLocated(By.css(".lucide-chevron-down")), 20000)
     await driver.wait(until.elementIsVisible(advancedBtn), 20000)
     await advancedBtn.click()
-  
-    const firstIngredientBtn = await driver.wait(
-      until.elementLocated(By.css(".advanced-input-group .plus-button")),
-      20000
-  )
-    await firstIngredientBtn.click()
-    const ingredientOption = await driver.wait(
-      until.elementLocated(By.css(".select-option-tag")),
-      20000
-  )
-    await ingredientOption.click()
-    await driver.findElement(By.css(".final-search-button")).click()
 
-    const resultsCountFiltered = await driver.wait(
-      until.elementLocated(By.css(".results-count")),
-      20000
-  )
+    const firstIngredientBtn = await driver.wait(until.elementLocated(By.css(".advanced-input-group .plus-button")), 20000)
+    await firstIngredientBtn.click()
+
+    const ingredientOption = await driver.wait(until.elementLocated(By.css(".select-option-tag")), 20000)
+    await ingredientOption.click()
+
+    const finalSearchBtn = await driver.wait(until.elementLocated(By.css(".final-search-button")), 20000)
+    await finalSearchBtn.click()
+
+    const resultsCountFiltered = await driver.wait(until.elementLocated(By.css(".results-count")), 20000)
     await driver.wait(until.elementIsVisible(resultsCountFiltered), 20000)
     text = await resultsCountFiltered.getText()
     assert.strictEqual(text.trim(), "0 recetas encontradas")
-  })
+    })
+
 
 
   it('Búsqueda de usuarios', async function() {
