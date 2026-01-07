@@ -49,26 +49,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css("input")).click()
     await driver.findElement(By.css("input")).sendKeys("gazpacho")
     await driver.findElement(By.css("input")).sendKeys(Key.ENTER)
-    //const text = await driver.executeScript(
-    //  "return arguments[0].textContent",
-    //  await driver.findElement(By.css(".results-count"))
-    //) as string
-    //lo nuevo
+    const text = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-    await driver.wait(async () => {
-      const results = await driver.findElements(By.css(".tarjeta"))
-      const noResults = await driver.findElements(By.css(".no-results-box"))
-     return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent = await driver
-     .findElement(By.css(".results-count"))
-     .getText()
-
-    assert.strictEqual(textContent.trim(), "1 receta encontrada")
-
-    // termina lo nuevo
-    //assert.strictEqual(text.trim(), "1 receta encontrada")
+    assert.strictEqual(text.trim(), "1 receta encontrada")
     {
       const elements = await driver.findElements(By.css(".tarjeta"))
       assert(elements.length)
@@ -96,27 +82,12 @@ describe('Search', function(this: Mocha.Suite) {
       assert(!elements.length)
     }
     await driver.findElement(By.css(".recent-search-tag")).click()
+    const text1 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-   // const text1 = await driver.executeScript(
-   //   "return arguments[0].textContent",
-   //   await driver.findElement(By.css(".results-count"))
-   // ) as string
-
-   // assert.strictEqual(text1.trim(), "1 receta encontrada")
-    //lo nuevo
-    await driver.wait(async () => {
-      const results = await driver.findElements(By.css(".tarjeta"))
-      const noResults = await driver.findElements(By.css(".no-results-box"))
-      return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent1 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-    assert.strictEqual(textContent1.trim(), "1 receta encontrada")
-    // termina lo nuevo
-
+    assert.strictEqual(text1.trim(), "1 receta encontrada")
     {
       const elements = await driver.findElements(By.css(".tarjeta"))
       assert(elements.length)
@@ -189,26 +160,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
     assert(await driver.findElement(By.css(".advanced-filter-summary")).getText() == "2 Ing.")
-    
-   // const text2 = await driver.executeScript(
-   //   "return arguments[0].textContent",
-   //   await driver.findElement(By.css(".results-count"))
-   // ) as string
+    const text2 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-   // assert.strictEqual(text2.trim(), "0 recetas encontradas")
-    //lo nuevo
-    await driver.wait(async () => {
-      const noResults = await driver.findElements(By.css(".no-results-box"))
-      return noResults.length > 0
-    }, 20000)
-
-    const textContent2 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-      assert.strictEqual(textContent2.trim(), "0 recetas encontradas")
-    // termina lo nuevo
-    
+    assert.strictEqual(text2.trim(), "0 recetas encontradas")
     assert(await driver.findElement(By.css("p:nth-child(1)")).getText() == "No se han encontrado recetas con esos criterios.")
     {
       const elements = await driver.findElements(By.css(".no-results-box"))
@@ -230,24 +187,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const text3 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-   // const text3 = await driver.executeScript(
-   //   "return arguments[0].textContent",
-   //   await driver.findElement(By.css(".results-count"))
-   // ) as string
-
-   // assert.strictEqual(text3.trim(), "1 receta encontrada")
-    await driver.wait(async () => {
-      const results = await driver.findElements(By.css(".tarjeta"))
-      const noResults = await driver.findElements(By.css(".no-results-box"))
-      return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent3 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-    assert.strictEqual(textContent3.trim(), "1 receta encontrada")
+    assert.strictEqual(text3.trim(), "1 receta encontrada")
     const title2 = await driver.executeScript(
           "return arguments[0].textContent",
           await driver.findElement(By.css(".post-title"))
@@ -281,24 +226,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(7)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const text4 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-   // const text4 = await driver.executeScript(
-   //   "return arguments[0].textContent",
-   //   await driver.findElement(By.css(".results-count"))
-   // ) as string
-
-   // assert.strictEqual(text4.trim(), "1 receta encontrada")
-    await driver.wait(async () => {
-    const results = await driver.findElements(By.css(".tarjeta"))
-    const noResults = await driver.findElements(By.css(".no-results-box"))
-    return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent4 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-    assert.strictEqual(textContent4.trim(), "1 receta encontrada")
+    assert.strictEqual(text4.trim(), "1 receta encontrada")
     {
       const elements = await driver.findElements(By.css(".category-tag:nth-child(1)"))
       assert(elements.length)
@@ -309,26 +242,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const text5 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-    //const text5 = await driver.executeScript(
-    //  "return arguments[0].textContent",
-    //  await driver.findElement(By.css(".results-count"))
-    //) as string
-
-    //assert.strictEqual(text5.trim(), "4 recetas encontradas")
-    await driver.wait(async () => {
-    const results = await driver.findElements(By.css(".tarjeta"))
-    const noResults = await driver.findElements(By.css(".no-results-box"))
-    return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent5 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-    assert.strictEqual(textContent5.trim(), "4 recetas encontradas")
-
-
+    assert.strictEqual(text5.trim(), "4 recetas encontradas")
     {
       const elements = await driver.findElements(By.css(".tarjeta:nth-child(1)"))
       assert(elements.length)
@@ -378,24 +297,12 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
     await driver.findElement(By.css(".final-search-button")).click()
     await driver.executeScript("window.scrollTo(0,0)")
+    const text6 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".results-count"))
+    ) as string
 
-    //const text6 = await driver.executeScript(
-    //  "return arguments[0].textContent",
-    //  await driver.findElement(By.css(".results-count"))
-    //) as string
-    //assert.strictEqual(text6.trim(), "1 receta encontrada")
-    await driver.wait(async () => {
-      const results = await driver.findElements(By.css(".tarjeta"))
-      const noResults = await driver.findElements(By.css(".no-results-box"))
-      return results.length > 0 || noResults.length > 0
-    }, 20000)
-
-    const textContent6 = await driver
-      .findElement(By.css(".results-count"))
-      .getText()
-
-    assert.strictEqual(textContent6.trim(), "1 receta encontrada")
-    
+    assert.strictEqual(text6.trim(), "1 receta encontrada")
     const title3 = await driver.executeScript(
           "return arguments[0].textContent",
           await driver.findElement(By.css(".post-title"))
@@ -421,126 +328,46 @@ describe('Search', function(this: Mocha.Suite) {
   })
 
   it('Búsqueda de usuarios', async function() {
-    // login
     await driver.get("http://localhost:5173/login")
     await driver.manage().window().setRect({ width: 1181, height: 929 })
-
     await driver.findElement(By.id("lemail")).click()
     await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
     await driver.findElement(By.id("lpassword")).click()
     await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
-
-    //ir a search
-    const searchBtn = await driver.wait(
-      until.elementLocated(By.css(".boton-panel")),
-      20000
-    )
-    await driver.wait(until.elementIsVisible(searchBtn), 20000)
-    await searchBtn.click()
-     // Cambiar a modo usuarios
-  const usersTab = await driver.wait(
-    until.elementLocated(By.css(".mode-tab")),
-    20000
-  )
-  await usersTab.click()
-
-  // Al inicio no hay resultados
-  let userCards = await driver.findElements(By.css(".user-social-card"))
-  assert.strictEqual(userCards.length, 0)
-
-  // Buscar usuarios
-  const input = await driver.wait(
-    until.elementLocated(By.css("input")),
-    20000
-  )
-  await input.sendKeys("c")
-  await driver.findElement(By.css(".final-search-button")).click()
-
-  // Esperar resultados
-  await driver.wait(
-    until.elementLocated(By.css(".user-social-card")),
-    20000
-  )
-
-  userCards = await driver.findElements(By.css(".user-social-card"))
-  assert(userCards.length >= 2)
-
-  // Verificar usernames sin depender del orden
-  const usernames = await driver.findElements(By.css(".user-card-username"))
-  const texts = await Promise.all(usernames.map(u => u.getText()))
-
-  assert(texts.includes("@AndeanCooking"))
-  assert(texts.includes("@CanadianPantry"))
-
-  // Entrar al perfil de uno de ellos
-  const viewButtons = await driver.findElements(
-    By.css(".view-profile-button")
-  )
-  await viewButtons[0].click()
-
-  // Perfil cargado
-  const profileName = await driver.wait(
-    until.elementLocated(By.css("h3")),
-    20000
-  )
-  await driver.wait(until.elementIsVisible(profileName), 20000)
-  assert(await profileName.getText() === "AndeanCooking")
-
-  // Volver a search y buscar algo que no exista
-  await driver.findElement(By.css(".boton-panel")).click()
-  await driver.findElement(By.css(".mode-tab")).click()
-
-  const input2 = await driver.wait(
-    until.elementLocated(By.css("input")),
-    20000
-  )
-  await input2.clear()
-  await input2.sendKeys("jdhnfndsjh")
-  await driver.findElement(By.css(".final-search-button")).click()
-
-  // Esperar a que NO haya resultados
-  await driver.wait(async () => {
-    const elements = await driver.findElements(By.css(".user-social-card"))
-    return elements.length === 0
-  }, 20000)
-
-  userCards = await driver.findElements(By.css(".user-social-card"))
-  assert.strictEqual(userCards.length, 0)
-})
-   // await driver.findElement(By.css(".submit:nth-child(9)")).click()
-  //  await driver.findElement(By.css(".boton-panel:nth-child(2) > span")).click()
-  //  await driver.findElement(By.css(".mode-tab:nth-child(2)")).click()
- //   {
-  //    const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
-  //    assert(!elements.length)
-   // }
-  //  await driver.findElement(By.css("input")).click()
-  //  await driver.findElement(By.css("input")).sendKeys("c")
-  //  await driver.findElement(By.css(".final-search-button")).click()
-  //  {
-  //    const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
-  //    assert(elements.length)
-  //  }
-  //  {
-  //    const elements = await driver.findElements(By.css(".user-social-card:nth-child(2)"))
-  //    assert(elements.length)
-  //  }
-  //  assert(await driver.findElement(By.css(".user-social-card:nth-child(1) .user-card-username")).getText() == "@AndeanCooking")
-  //  assert(await driver.findElement(By.css(".user-social-card:nth-child(2) .user-card-username")).getText() == "@CanadianPantry")
-  //  await driver.findElement(By.css(".user-social-card:nth-child(1) .view-profile-button")).click()
-  //  {
-  //    const elements = await driver.findElements(By.css("h1"))
-  //    assert(elements.length)
-  //  }
-  //  assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "AndeanCooking")
-  //  await driver.findElement(By.css(".boton-panel:nth-child(2)")).click()
-  //  await driver.findElement(By.css(".mode-tab:nth-child(2)")).click()
-  //  await driver.findElement(By.css("input")).click()
-  //  await driver.findElement(By.css("input")).sendKeys("jdhnfndsjh")
-  //  await driver.findElement(By.css(".final-search-button")).click()
-  //  {
-  //    const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
-  //    assert(!elements.length)
-  //  }
- // })
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    await driver.findElement(By.css(".boton-panel:nth-child(2) > span")).click()
+    await driver.findElement(By.css(".mode-tab:nth-child(2)")).click()
+    {
+      const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
+      assert(!elements.length)
+    }
+    await driver.findElement(By.css("input")).click()
+    await driver.findElement(By.css("input")).sendKeys("c")
+    await driver.findElement(By.css(".final-search-button")).click()
+    {
+      const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
+      assert(elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".user-social-card:nth-child(2)"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css(".user-social-card:nth-child(1) .user-card-username")).getText() == "@AndeanCooking")
+    assert(await driver.findElement(By.css(".user-social-card:nth-child(2) .user-card-username")).getText() == "@CanadianPantry")
+    await driver.findElement(By.css(".user-social-card:nth-child(1) .view-profile-button")).click()
+    {
+      const elements = await driver.findElements(By.css("h1"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "AndeanCooking")
+    await driver.findElement(By.css(".boton-panel:nth-child(2)")).click()
+    await driver.findElement(By.css(".mode-tab:nth-child(2)")).click()
+    await driver.findElement(By.css("input")).click()
+    await driver.findElement(By.css("input")).sendKeys("jdhnfndsjh")
+    await driver.findElement(By.css(".final-search-button")).click()
+    {
+      const elements = await driver.findElements(By.css(".user-social-card:nth-child(1)"))
+      assert(!elements.length)
+    }
+  })
 })

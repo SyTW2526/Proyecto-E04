@@ -5,46 +5,23 @@ import Mocha from 'mocha';
 import firefox from 'selenium-webdriver/firefox.js';
 import { Select } from 'selenium-webdriver/lib/select.js'
 
-async function waitForButtons(
+async function selectByText(
   driver: WebDriver,
-  css: string,
-  min: number
+  selectLocator: By,
+  text: string
 ) {
-  await driver.wait(async () => {
-    const els = await driver.findElements(By.css(css))
-    return els.length >= min
-  }, 30000)
-  return driver.findElements(By.css(css))
+  const selectEl = await driver.wait(
+    until.elementLocated(selectLocator),
+    20000
+  )
+  const select = new Select(selectEl)
+  await select.selectByVisibleText(text)
 }
-
-async function clickButtonAt(
-  driver: WebDriver,
-  css: string,
-  index: number
-) {
-  const buttons = await waitForButtons(driver, css, index + 1)
-  await driver.wait(until.elementIsVisible(buttons[index]), 20000)
-  await buttons[index].click()
-}
-
-async function login(
-  driver: WebDriver,
-  email: string,
-  password: string
-) {
-  await driver.get("http://localhost:5173/login")
-  await driver.findElement(By.id("lemail")).sendKeys(email)
-  await driver.findElement(By.id("lpassword")).sendKeys(password)
-  await clickButtonAt(driver, ".submit", 0)
-}
-
-
 
 describe('User', function(this: Mocha.Suite) {
   this.timeout(600000)
-  let driver: WebDriver,
-  index: number,
-  containerSelector: string
+  let driver: WebDriver
+  let vars
 
   const options = new firefox.Options();
   options.addArguments('-headless');
@@ -60,289 +37,434 @@ describe('User', function(this: Mocha.Suite) {
     await driver.quit();
   })
 
-  it('Renderización perfil ajeno', async function () {
-  await login(driver, "elena.sanchez@test.com", "Password123!")
-  await driver.get("http://localhost:5173/user/000000000000000000000002")
+  it('Renderización perfil ajeno', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1181, height: 906 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    await driver.get("http://localhost:5173/user/000000000000000000000002")
+    const foto = await driver.wait(
+      until.elementLocated(By.css(".foto-perfil")),
+      20000
+    )
 
-  const foto = await driver.wait(
-    until.elementLocated(By.css(".foto-perfil")),
-    20000
-  )
-  await driver.wait(until.elementIsVisible(foto), 20000)
-
-  const username = await driver.wait(
-    until.elementLocated(By.css("h3")),
-    20000
-  )
-  assert.strictEqual(await username.getText(), "ItalianoCucina")
-
-  const bio = await driver.findElement(By.css(".user-description"))
-  assert.strictEqual(await bio.getText(), "La verdadera cocina del sur de Italia.")
-
-  const stats = await driver.findElements(By.css(".user-stats p"))
-  const texts = await Promise.all(stats.map(e => e.getText()))
-  assert(texts.includes("Seguidores: 0"))
-  assert(texts.includes("Seguidos: 0"))
-
-  const posts = await driver.findElements(By.css(".post-card"))
-  assert(posts.length > 0)
- })
-
-  it('Creación y borrado de perfil', async function () {
-  await login(driver, "usuario50@gmail.com", "usuario")
-
-  const error = await driver.wait(
-    until.elementLocated(By.css(".error-message")),
-    20000
-  )
-  assert.strictEqual(
-    await error.getText(),
-    "El usuario o la contraseña son incorrectos"
-  )
-
-  await driver.findElement(By.id("ruser")).sendKeys("usuario50")
-  await driver.findElement(By.id("remail")).sendKeys("usuario50@gmail.com")
-  await driver.findElement(By.id("rpassword")).sendKeys("usuario")
-  await clickButtonAt(driver, ".submit", 1)
-  
-  await driver.wait(async () => {
-  const panels = await driver.findElements(By.css(".boton-panel"))
-  return panels.length >= 1
-  }, 30000)
-  
-  const name = await driver.wait(
-    until.elementLocated(By.css(".user-name")),
-    20000
-  )
-  assert.strictEqual(await name.getText(), "usuario50")
-
-  await driver.findElement(By.css(".logout")).click()
-
-  await login(driver, "usuario50@gmail.com", "usuario")
-  assert.strictEqual(
-    await driver.findElement(By.css(".user-name")).getText(),
-    "usuario50"
-  )
-
-  await clickButtonAt(driver, ".boton-panel", 2)
-
-  const empty = await driver.wait(
-    until.elementLocated(By.css(".posts-grid > p")),
-    20000
-  )
-  assert.strictEqual(
-    await empty.getText(),
-    "Este usuario no ha compartido ninguna receta todavía."
-  )
- })
-
-  it('Edición de perfil correcta', async function () {
-  await login(driver, "elena.sanchez@test.com", "Password123!")
-  await clickButtonAt(driver, ".boton-panel", 2)
-
-  const username = await driver.wait(
-    until.elementLocated(By.css("h3")),
-    20000
-  )
-  assert.strictEqual(await username.getText(), "ChefElenaES")
-
-  await clickButtonAt(driver, ".datosUsuario button", 1)
-
-  await driver.findElement(By.name("username")).clear()
-  await driver.findElement(By.name("username")).sendKeys("ChefElenaESA")
-  await driver.findElement(By.name("email")).clear()
-  await driver.findElement(By.name("email")).sendKeys("elenaa.sanchez@test.com")
-  await driver.findElement(By.name("bio")).clear()
-  await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.A")
-
-  await clickButtonAt(driver, ".editButton", 0)
-
-  const h3 = await driver.wait(until.elementLocated(By.css("h3")), 20000)
-  assert.strictEqual(await h3.getText(), "ChefElenaESA")
- })
-
- it('Edición de perfil incorrecta', async function () {
-  await login(driver, "elena.sanchez@test.com", "Password123!")
-
-  await clickButtonAt(driver, ".boton-panel", 2)
-  await clickButtonAt(driver, ".datosUsuario button", 1)
-
-  const username = await driver.findElement(By.name("username"))
-  const email = await driver.findElement(By.name("email"))
-  const bio = await driver.findElement(By.name("bio"))
-
-  await username.clear()
-  await email.clear()
-
-  await driver.findElement(By.css(".formulario-editar-usuario")).click()
-
-  await driver.wait(until.elementLocated(By.css(".help")), 20000)
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(1) .help")).getText(),
-    "El nombre de usuario es obligatorio"
-  )
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(2) .help")).getText(),
-    "El email es obligatorio"
-  )
-
-  await username.sendKeys("Che")
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(1) .help")).getText(),
-    "El nombre de usuario debe tener al menos 4 caracteres"
-  )
-
-  await email.sendKeys("aa")
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(2) .help")).getText(),
-    "Email inválido"
-  )
-
-  await username.clear()
-  await username.sendKeys("a".repeat(50))
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(1) .help")).getText(),
-    "El nombre de usuario no puede exceder los 30 caracteres"
-  )
-
-  await email.clear()
-  await email.sendKeys("a".repeat(50) + "@gmail.com")
-  assert.strictEqual(
-    await driver.findElement(By.css("div:nth-child(2) .help")).getText(),
-    "El email no puede exceder los 40 caracteres"
-  )
-
-  await bio.clear()
-  await bio.sendKeys("a".repeat(250))
-  await driver.executeScript(
-    "arguments[0].dispatchEvent(new Event('input', { bubbles: true }))",
-    bio
-  )
-
-  const bioHelp = await driver.wait(
-    until.elementLocated(By.css("div:nth-child(3) .help")),
-    20000
-  )
-  assert.strictEqual(
-    await bioHelp.getText(),
-    "La bio no puede exceder los 200 caracteres"
-  )
-
-  await clickButtonAt(driver, ".editButton", 0)
-
-  await username.clear()
-  await username.sendKeys("ChefElenaES")
-  await email.clear()
-  await email.sendKeys("elena.sanchez@test.com")
-  await bio.clear()
-  await bio.sendKeys("Reseña")
-
-  await driver.wait(async () => {
-    return (await driver.findElements(By.css(".help"))).length === 0
-  }, 30000)
+    await driver.wait(
+      until.elementIsVisible(foto),
+      20000
+    )
+    {
+      const elements = await driver.findElements(By.css(".foto-perfil"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ItalianoCucina")
+    {
+      const elements = await driver.findElements(By.css(".botonFollow"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "La verdadera cocina del sur de Italia.")
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 0")
+    {
+      const elements = await driver.findElements(By.css(".post-card"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css(".post-user-name")).getText() == "ItalianoCucina")
+    assert(await driver.findElement(By.css(".post-title")).getText() == "Pasta Cacio e Pepe")
   })
+  it('Creación y borrado de perfil', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1181, height: 912 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("usuario50@gmail.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("usuario")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    assert(await driver.findElement(By.css(".error-message")).getText() == "El usuario o la contraseña son incorrectos")
+    await driver.findElement(By.id("ruser")).click()
+    await driver.findElement(By.id("ruser")).sendKeys("usuario50")
+    await driver.findElement(By.id("remail")).click()
+    await driver.findElement(By.id("remail")).sendKeys("usuario50@gmail.com")
+    await driver.findElement(By.id("rpassword")).click()
+    await driver.findElement(By.id("rpassword")).sendKeys("usuario")
+    await driver.findElement(By.css(".submit:nth-child(13)")).click()
+    const usrnm = await driver.wait(
+      until.elementLocated(By.css(".user-name")),
+      20000
+    )
 
-  it('Renderización perfil propio', async function () {
-  await login(driver, "elena.sanchez@test.com", "Password123!")
+    await driver.wait(
+      until.elementIsVisible(usrnm),
+      20000
+    )
+    assert(await driver.findElement(By.css(".user-name")).getText() == "usuario50")
+    await driver.findElement(By.css(".logout")).click()
+    const input = await driver.wait(
+      until.elementLocated(By.id("lemail")),
+      20000
+    )
 
-  await clickButtonAt(driver, ".boton-panel", 2)
-
-  {
-    const els = await driver.findElements(By.css(".user-profile-info"))
-    assert(!els.length)
-  }
-
-  await driver.wait(until.elementLocated(By.css(".foto-perfil")), 20000)
-
-  const h3 = await driver.findElement(By.css("h3"))
-  assert.strictEqual(await h3.getText(), "ChefElenaES")
-
-  await waitForButtons(driver, ".datosUsuario button", 2)
-  await waitForButtons(driver, ".cambiar-foto > button", 1)
-
-  assert.strictEqual(
-    await driver.findElement(By.css("p:nth-child(2)")).getText(),
-    "Especialista en tapas y arroces."
-  )
-
-  assert.strictEqual(
-    await driver.findElement(By.css("a:nth-child(1) > p")).getText(),
-    "Seguidores: 0"
-  )
-  assert.strictEqual(
-    await driver.findElement(By.css("a:nth-child(2) > p")).getText(),
-    "Seguidos: 0"
-  )
-
-  const posts = await driver.findElements(By.css(".post-card"))
-  assert(posts.length)
-
-  assert.strictEqual(
-    await driver.findElement(By.css(".post-user-name")).getText(),
-    "ChefElenaES"
-  )
-
-  const title = await driver.executeScript(
-    "return arguments[0].textContent",
-    await driver.findElement(By.css(".post-title"))
-  ) as string
-
-  assert.strictEqual(title.trim(), "Gazpacho Andaluz")
+    await driver.wait(
+      until.elementIsVisible(input),
+      20000
+    )
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("usuario50@gmail.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("usuario")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    assert(await driver.findElement(By.css(".user-name")).getText() == "usuario50")
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    assert(await driver.findElement(By.css(".posts-grid > p")).getText() == "Este usuario no ha compartido ninguna receta todavía.")
+    await driver.findElement(By.css(".datosUsuario button:nth-child(3)")).click()
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("usuario50@gmail.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("usuario")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    assert(await driver.findElement(By.css(".error-message")).getText() == "El usuario o la contraseña son incorrectos")
   })
+  it('Edición de perfil correcta', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1181, height: 906 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const foto = await driver.wait(
+      until.elementLocated(By.css(".foto-perfil")),
+      20000
+    )
 
-  it('Seguir y dejar de seguir', async function () {
-  await login(driver, "elena.sanchez@test.com", "Password123!")
-  await driver.get("http://localhost:5173/user/000000000000000000000002")
+    await driver.wait(
+      until.elementIsVisible(foto),
+      20000
+    )
+    {
+      const elements = await driver.findElements(By.css(".user-profile-info"))
+      assert(!elements.length)
+    }
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
+    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
+    {
+      const elements = await driver.findElements(By.css(".post-card"))
+      assert(elements.length)
+    }
+    const button = await driver.wait(
+      until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+      20000
+    )
 
-  const followers = By.css("a:nth-child(1) > p")
-  await driver.wait(until.elementLocated(followers), 20000)
+    await driver.wait(
+      until.elementIsVisible(button),
+      20000
+    )
+    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    assert(await driver.findElement(By.css("div:nth-child(1) > label")).getText() == "Nombre de usuario:")
+    assert(await driver.findElement(By.css("div:nth-child(2) > label")).getText() == "Email:")
+    assert(await driver.findElement(By.css("div:nth-child(3) > label")).getText() == "Biografía:")
+    {
+      const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
+      assert(elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".editButton:nth-child(2)"))
+      assert(elements.length)
+    }
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).sendKeys("ChefElenaESA")
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).sendKeys("elenaa.sanchez@test.com")
+    await driver.findElement(By.name("bio")).click()
+    await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.A")
+    await driver.findElement(By.css(".editButton:nth-child(2)")).click()
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
+    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
+    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).clear()
+    await driver.findElement(By.name("username")).sendKeys("ChefElenaESA")
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).clear()
+    await driver.findElement(By.name("email")).sendKeys("elenaa.sanchez@test.com")
+    await driver.findElement(By.name("bio")).click()
+    await driver.findElement(By.name("bio")).clear()
+    await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.A")
+    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+    const h3 = await driver.wait(
+      until.elementLocated(By.css("h3:nth-child(1)")),
+      20000
+    )
 
-  assert.strictEqual(await driver.findElement(followers).getText(), "Seguidores: 0")
+    await driver.wait(
+      until.elementIsVisible(h3),
+      20000
+    )
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaESA")
+    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.A")
+    assert(await driver.findElement(By.css(".post-user-name")).getText() == "ChefElenaESA")
+    await driver.findElement(By.css(".logout")).click()
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elenaa.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    assert(await driver.findElement(By.css(".user-name")).getText() == "ChefElenaESA")
+    assert(await driver.findElement(By.css(".user-handle")).getText() == "@chefelenaesa")
+    assert(await driver.findElement(By.css(".user-description")).getText() == "Especialista en tapas y arroces.A")
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    const boton = await driver.wait(
+      until.elementLocated(By.css(".datosUsuario button:nth-child(2)")),
+      20000
+    )
 
-  await driver.findElement(By.css(".botonFollow")).click()
-  await driver.wait(async () => {
-    return (await driver.findElement(followers).getText()) === "Seguidores: 1"
-  }, 20000)
+    await driver.wait(
+      until.elementIsVisible(boton),
+      20000
+    )
+    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).clear()
+    await driver.findElement(By.name("username")).sendKeys("ChefElenaES")
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).clear()
+    await driver.findElement(By.name("email")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.name("bio")).click()
+    await driver.findElement(By.name("bio")).clear()
+    await driver.findElement(By.name("bio")).sendKeys("Especialista en tapas y arroces.")
+    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+  })
+  it('Edición de perfil incorrecta', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1181, height: 906 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    const boton = await driver.wait(
+      until.elementLocated(By.css(".boton-panel:nth-child(3)")),
+      20000
+    )
 
-  await driver.findElement(By.css("a:nth-child(1) strong")).click()
-  await driver.wait(until.elementLocated(By.css(".usuario-item-card")), 20000)
+    await driver.wait(
+      until.elementIsVisible(boton),
+      20000
+    )
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    await driver.findElement(By.css(".datosUsuario button:nth-child(2)")).click()
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).clear()
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).clear()
+    await driver.findElement(By.css(".formulario-editar-usuario")).click()
+    assert(await driver.findElement(By.css("div:nth-child(1) > .help")).getText() == "El nombre de usuario es obligatorio")
+    assert(await driver.findElement(By.css("div:nth-child(2) > .help")).getText() == "El email es obligatorio")
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).sendKeys("Che")
+    assert(await driver.findElement(By.css("div:nth-child(1) > .help")).getText() == "El nombre de usuario debe tener al menos 4 caracteres")
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).sendKeys("aa")
+    assert(await driver.findElement(By.css("div:nth-child(2) > .help")).getText() == "Email inválido")
+    await driver.findElement(By.name("username")).click()
+    await driver.findElement(By.name("username")).sendKeys("Chejnfdnjhfdnvbjfdkjhfdsbhjfdnbjfdfdjbhfdnfbjdbhjsdbdfjbd")
+    assert(await driver.findElement(By.css("div:nth-child(1) > .help")).getText() == "El nombre de usuario no puede exceder los 30 caracteres")
+    await driver.findElement(By.name("email")).click()
+    await driver.findElement(By.name("email")).sendKeys("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@gmail.com")
+    assert(await driver.findElement(By.css("div:nth-child(2) > .help")).getText() == "El email no puede exceder los 40 caracteres")
+    await driver.findElement(By.name("bio")).click()
+    await driver.findElement(By.name("bio")).clear()
+    await driver.findElement(By.name("bio")).sendKeys("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    await driver.executeScript("arguments[0].dispatchEvent(new Event('input', { bubbles: true }))", await driver.findElement(By.name("bio")));
+    await driver.findElement(By.css(".formulario-editar-usuario > div:nth-child(3)")).click()
+    const help = await driver.wait(
+      until.elementLocated(By.css(".help:nth-child(3)")),
+      20000
+    )
 
-  assert.strictEqual(
-    await driver.findElement(By.css("h4")).getText(),
-    "ChefElenaES"
-  )
+    await driver.wait(
+      until.elementIsVisible(help),
+      20000
+    )
+    assert(await driver.findElement(By.css(".help:nth-child(3)")).getText() == "La bio no puede exceder los 200 caracteres")
+    await driver.findElement(By.css(".editButton:nth-child(1)")).click()
+    {
+      const elements = await driver.findElements(By.css(".editButton:nth-child(1)"))
+      assert(elements.length)
+    }
+    await driver.findElement(By.name("username")).clear()
+    await driver.findElement(By.name("username")).sendKeys("ChefElenaES")
+    await driver.findElement(By.name("email")).clear()
+    await driver.findElement(By.name("email")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.name("bio")).clear()
+    await driver.findElement(By.name("bio")).sendKeys("Reseña")
+    
+    {
+      const elements = await driver.findElements(By.css("div:nth-child(1) > .help"))
+      assert(!elements.length)
+    }
+    await driver.wait(async () => {
+      const elements = await driver.findElements(By.css("div:nth-child(2) > .help"))
+      return elements.length === 0
+    }, 30000)
+    {
+      const elements = await driver.findElements(By.css("div:nth-child(2) > .help"))
+      assert(!elements.length)
+    }
+    await driver.wait(async () => {
+      const elements = await driver.findElements(By.css("div:nth-child(3) > .help"))
+      return elements.length === 0
+    }, 30000)
+    {
+      const elements = await driver.findElements(By.css("div:nth-child(3) > .help"))
+      assert(!elements.length)
+    }
+  })
+  it('Renderización perfil propio', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1500, height: 906 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    {
+      const elements = await driver.findElements(By.css(".user-profile-info"))
+      assert(!elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".foto-perfil"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
+    {
+      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(2)"))
+      assert(elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(3)"))
+      assert(elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".cambiar-foto > button"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 0")
+    {
+      const elements = await driver.findElements(By.css(".post-card"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css(".post-user-name")).getText() == "ChefElenaES")
+    const text3 = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css(".post-title"))
+    ) as string
 
-  await clickButtonAt(driver, ".boton-follow-toggle", 1)
+    assert.strictEqual(text3.trim(), "Gazpacho Andaluz")
+  })
+  it('Seguir y dejar de seguir', async function() {
+    await driver.get("http://localhost:5173/login")
+    await driver.manage().window().setRect({ width: 1181, height: 906 })
+    await driver.findElement(By.id("lemail")).click()
+    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+    await driver.findElement(By.id("lpassword")).click()
+    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+    await driver.findElement(By.css(".submit:nth-child(9)")).click()
+    await driver.get("http://localhost:5173/user/000000000000000000000002")
+    const p = await driver.wait(
+      until.elementLocated(By.css("a:nth-child(1) > p")),
+      20000
+    )
 
-  await driver.wait(async () => {
-    return (await driver.findElements(By.css(".usuarioSimplificado"))).length === 0
-  }, 20000)
+    await driver.wait(
+      until.elementIsVisible(p),
+      20000
+    )
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "0")
+    await driver.findElement(By.css(".botonFollow")).click()
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 1")
+    assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "1")
+    await driver.findElement(By.css("a:nth-child(1) strong")).click()
+    const usr = await driver.wait(
+      until.elementLocated(By.css(".usuario-item-card")),
+      20000
+    )
 
-  await clickButtonAt(driver, ".boton-panel", 2)
+    await driver.wait(
+      until.elementIsVisible(usr),
+      20000
+    )
+    {
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
+      assert(elements.length)
+    }
+    const text = await driver.executeScript(
+      "return arguments[0].textContent",
+      await driver.findElement(By.css("h4"))
+    ) as string
 
-  assert.strictEqual(
-    await driver.findElement(By.css("a:nth-child(1) > p")).getText(),
-    "Seguidores: 0"
-  )
-  assert.strictEqual(
-    await driver.findElement(By.css("a:nth-child(2) > p")).getText(),
-    "Seguidos: 1"
-  )
+    assert.strictEqual(text.trim(), "ChefElenaES")
+    assert(await driver.findElement(By.css(".section-title")).getText() == "Lista de ItalianoCucina")
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+    {
+      const elements = await driver.findElements(By.css(".usuarioSimplificado"))
+      assert(!elements.length)
+    }
+    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 1")
+    await driver.findElement(By.css("a:nth-child(2) > p")).click()
+    assert(await driver.findElement(By.css(".section-title")).getText() == "Lista de ChefElenaES")
+    {
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
+      assert(elements.length)
+    }
+    assert(await driver.findElement(By.css("h4")).getText() == "ItalianoCucina")
+    {
+      const elements = await driver.findElements(By.css(".botonFollow"))
+      assert(elements.length)
+    }
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(1)")).click()
+    {
+      const elements = await driver.findElements(By.css(".active"))
+      assert(elements.length)
+    }
+    {
+      const elements = await driver.findElements(By.css(".boton-follow-toggle:nth-child(2)"))
+      assert(elements.length)
+    }
+    await driver.findElement(By.css(".boton-follow-toggle:nth-child(2)")).click()
+    await driver.findElement(By.css(".botonFollow")).click()
+    {
+      const elements = await driver.findElements(By.css(".usuario-item-card"))
+      assert(!elements.length)
+    }
+    assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "0")
+    await driver.get("http://localhost:5173/user/000000000000000000000002")
+    const p1 = await driver.wait(
+      until.elementLocated(By.css("a:nth-child(1) > p")),
+      20000
+    )
 
-  await driver.findElement(By.css("a:nth-child(2) > p")).click()
-  await driver.wait(until.elementLocated(By.css(".usuario-item-card")), 20000)
-
-  assert.strictEqual(
-    await driver.findElement(By.css("h4")).getText(),
-    "ItalianoCucina"
-  )
-
-  await clickButtonAt(driver, ".boton-follow-toggle", 1)
-
-  await driver.wait(async () => {
-    return (await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText()) === "0"
-  }, 20000)
- })
-
+    await driver.wait(
+      until.elementIsVisible(p1),
+      20000
+    )
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+    await driver.findElement(By.css(".botonFollow")).click()
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 1")
+    assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "1")
+    await driver.findElement(By.css(".botonFollow")).click()
+    assert(await driver.findElement(By.css("div:nth-child(3) > .stat-number")).getText() == "0")
+    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
+  })
 
 })
