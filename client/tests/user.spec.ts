@@ -335,9 +335,16 @@ describe('User', function(this: Mocha.Suite) {
   await driver.findElement(By.css(".submit")).click()
 
   // Ir directamente al perfil propio
-  await driver.get("http://localhost:5173/user/000000000000000000000001")
+ // await driver.get("http://localhost:5173/user/000000000000000000000001")
 
-  // Esperar a que cargue la foto de perfil (señal de que el user ya está)
+ // ========= Navegar al perfil desde la UI =========
+  const profileButton = await driver.wait(
+    until.elementLocated(By.css(".boton-panel:nth-child(3)")),
+    20000
+  )
+  await profileButton.click()
+
+  // Esperar a que cargue la foto de perfil 
   const profilePic = await driver.wait(
     until.elementLocated(By.css(".foto-perfil")),
     20000
