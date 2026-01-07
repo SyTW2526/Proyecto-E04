@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import type { UserInterface } from "../interfaces/UserInterface";
 import axios from "axios";
 
+/**
+ * FollowButtonProps. Información necesaria para el botón de seguir.
+ */
 interface FollowButtonProps {
   user: UserInterface;
   setUser?: React.Dispatch<React.SetStateAction<UserInterface | null>>;
@@ -11,6 +14,11 @@ interface FollowButtonProps {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * FollowButton. Renderiza un botón que permite seguir o dejar de seguir al usuario user por parte del usuario que ha iniciado sesión (me).
+ * @param param0 Usuarios user y me y función setUser y setMe para modificarlos al seguir o dejar de seguir. 
+ * @returns Botón renderizado.
+ */
 function FollowButton({ user, setUser, me, setMe }: FollowButtonProps) {
     const [isFollowing, setIsFollowing] = useState(false);
     

@@ -6,22 +6,34 @@ import * as yup from 'yup';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
+/**
+ * SignUpFormState. Interfaz para el formulario de sign-up.
+ */
 interface SignUpFormState  {
   username: string;
   email: string;
   password: string;
 }
 
+/**
+ * SignUpFormState. Interfaz para el formulario de sign-in.
+ */
 interface SignInFormState  {
   email: string;
   password: string;
 }
 
+/**
+ * Esquema SignInSchema. Permite controlar los errores del formulario del sign-in.
+ */
 const SignInSchema = yup.object().shape({
     email: yup.string().email('Debe de ser un email').required('El email es obligatorio'),
     password: yup.string().required('La contraseña es obligatoria').min(6, 'La contraseña debe de tener al menos 6 caracteres')
 })
 
+/**
+ * Esquema SignInSchema. Permite controlar los errores del formulario del sign-up.
+ */
 const SignUpSchema = yup.object().shape({
     username: yup.string().required('El nombre de usuario es obligatorio').min(4, 'El nombre de usuario debe de tener al menos 4 caracteres').max(30, 'El nombre de usuario no puede exceder los 30 caracteres'),
     email: yup.string().email('Debe de ser un email').required('El email es obligatorio').max(40, 'El email no puede exceder los 40 caracteres'),
@@ -30,6 +42,10 @@ const SignUpSchema = yup.object().shape({
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * LogIn. Renderiza la página de inicio de sesión y registro. Permite a un usuario iniciar sesión o crearse una cuenta en la aplicación.
+ * @returns Página renderizada.
+ */
 function LogIn() {
     const navigate = useNavigate();
 

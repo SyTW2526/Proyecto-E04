@@ -1,3 +1,6 @@
+/**
+ * Interfaz UserInterface. Información de un usuario.
+ */
 export interface UserInterface {
   _id: string;
   username: string;

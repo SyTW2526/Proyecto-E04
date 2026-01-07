@@ -26,6 +26,7 @@ app.use(reviewRouter);
 
 const port = process.env.PORT || 3000;
 
+// Función para iniciar el servidor después de conectar a la base de datos y sembrar datos si es necesario
 const startServer = async () => {
 	try {
 		await mongoConnectionPromise; 

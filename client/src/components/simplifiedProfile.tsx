@@ -1,5 +1,8 @@
 import type { UserInterface } from "../interfaces/UserInterface";
 
+/**
+ * ProfileProps. Información necesaria para el perfil simplificado.
+ */
 interface ProfileProps {
   user: UserInterface,
   postCount: number
@@ -7,6 +10,11 @@ interface ProfileProps {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * SimplifiedProfile. Renderiza la información simplificada (nombre de uusario, biografía, followers, following y número de posts) del usuario que ha iniciado sesión. 
+ * @param param0 Usuario user (el que ha iniciado sesión) y número de posts publicados, postCount.
+ * @returns Perfil simplificado renderizado.
+ */
 function SimplifiedProfile({ user, postCount }: ProfileProps) {
     const followersCount = user.followers.length;
     const followingCount = user.following.length;

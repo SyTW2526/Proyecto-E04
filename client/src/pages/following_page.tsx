@@ -9,12 +9,20 @@ import type { UserInterface } from "../interfaces/UserInterface";
 import SimplifiedProfile from "../components/simplifiedProfile";
 import { Helmet } from "react-helmet";
 
+/**
+ * FollowProps. Información necesaria para la página de seguidores y seguidos.
+ */
 interface FollowProps {
   type: boolean
 }
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * FollowingPage. Renderiza la página de seguidores y seguidos. Está dividida en dos, una parte para los seguidores y otra para los seguidos del usuario.
+ * @param param0 Tipo type permite que se muestre primero la página de seguidores o seguidos.
+ * @returns Página renderizada.
+ */
 function FollowingPage({ type }: FollowProps) {
     const { id } = useParams();
     

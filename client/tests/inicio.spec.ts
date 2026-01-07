@@ -17,7 +17,7 @@ async function selectByText(
   const select = new Select(selectEl)
   await select.selectByVisibleText(text)
 }
-
+//test de log-in correcto
 describe('Inicio', function(this: Mocha.Suite) {
   this.timeout(600000)
   let driver: WebDriver
@@ -37,6 +37,7 @@ describe('Inicio', function(this: Mocha.Suite) {
     await driver.quit();
   })
 
+  //test de log-in correcto
   it('Renderizacion correcta', async function() {
     await driver.get("http://localhost:5173/login")
     await driver.manage().window().setRect({ width: 1181, height: 902 })

@@ -5,6 +5,9 @@ import type { UserInterface } from "../interfaces/UserInterface";
 import axios from "axios";
 import type { Review } from "../pages/recipe";
 
+/**
+ * RecipePost. Interfaz de la publicación de una receta.
+ */
 export interface RecipePost {
   _id: string;
   name: string;
@@ -25,6 +28,9 @@ export interface RecipePost {
   } | null;
 }
 
+/**
+ * ContentCardProps. Interfaz de la información necesaria para la tarjeta de una receta.
+ */
 interface ContentCardProps {
   id: string; 
   title: string;
@@ -42,6 +48,11 @@ interface ContentCardProps {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * PostCard. Renderiza la tarjeta de una receta con su información simplificada. Al hacer click sobre ella, lleva a la página de la receta.
+ * @param param0 id de la receta, title el nombre de la receta, imageSrc fuente de la imagen, userProfilePic foto del usuario creador, userId ID del usuario creador, username nombre del usuario creador y categories categorías de la receta.
+ * @returns Tarjeta renderizada
+ */
 const PostCard = ({ id, title, imageSrc, rating, comments, userProfilePic, userId, userName, categories, me, setMe }: ContentCardProps) => {
   const displayImage = Array.isArray(imageSrc) ? imageSrc[0] : imageSrc;
   const isVideo = (imageSrc as string[]).some(src => src.includes('video') || src.includes('youtube'));

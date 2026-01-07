@@ -10,12 +10,14 @@ const userId = new mongoose.Types.ObjectId();
 const recipeId = new mongoose.Types.ObjectId();
 const reviewId = new mongoose.Types.ObjectId();
 
+//limpieza global tras todos los tests
 afterAll(async () => {
   await User.deleteMany({});
   await Recipe.deleteMany({});
   await Review.deleteMany({});
 });
 
+//tests de post/reviews
 describe('Review Routes: POST /reviews', () => {
   let userId: string;
   let recipeId: string;
@@ -46,6 +48,7 @@ describe('Review Routes: POST /reviews', () => {
     recipeId = recipe._id.toString();
   });
 
+  //test success y crear reseña válida
   test('SUCCESS: Should create a valid review', async () => {
     const reviewData = {
       userId: userId,
@@ -66,6 +69,7 @@ describe('Review Routes: POST /reviews', () => {
     expect(response.body).toHaveProperty('creationDate');
   });
 
+  //test error rating > 5
   test('ERROR: Should fail if rating is greater than 5', async () => {
     const invalidReview = {
       userId: userId,
@@ -81,6 +85,7 @@ describe('Review Routes: POST /reviews', () => {
     expect(response.body.message).toContain('La valoración tiene que tener un valor entre 0 y 5');
   });
 
+  //test error rating < 0
   test('ERROR: Should fail if rating is less than 0', async () => {
     await request(app)
       .post('/reviews')
@@ -92,6 +97,7 @@ describe('Review Routes: POST /reviews', () => {
       .expect(400);
   });
 
+  //test error campos obligatorios faltantes
   test('ERROR: Should fail if required fields are missing', async () => {
     await request(app)
       .post('/reviews')
@@ -103,6 +109,7 @@ describe('Review Routes: POST /reviews', () => {
   });
 });
 
+//tests de get/reviews
 describe('Review Routes: GET /reviews ', () => {
   let userId: string;
   let recipeId: string;
@@ -142,6 +149,7 @@ describe('Review Routes: GET /reviews ', () => {
     }).save();
   });
 
+  //test success filter recipeId y popular user data
   test('SUCCESS: Should filter reviews by recipeId and populate user data', async () => {
     const response = await request(app)
       .get('/reviews')
@@ -155,6 +163,7 @@ describe('Review Routes: GET /reviews ', () => {
     expect(response.body[0].userId.profilePic).toBeDefined();
   });
 
+  //test success filter userId
   test('SUCCESS: Should filter reviews by userId', async () => {
     const response = await request(app)
       .get('/reviews')
@@ -165,6 +174,7 @@ describe('Review Routes: GET /reviews ', () => {
     expect(response.body[0].userId._id).toBe(userId);
   });
 
+  //test success filter creationDate
   test('SUCCESS: Should filter by exact day in creationDate', async () => {
     const response = await request(app)
       .get('/reviews')
@@ -176,6 +186,7 @@ describe('Review Routes: GET /reviews ', () => {
     expect(responseDate).toContain(creationDateStr);
   });
 
+  //test success no reviews match
   test('SUCCESS: Should return an empty array if no reviews match', async () => {
     const otherRecipeId = new mongoose.Types.ObjectId();
     const response = await request(app)
@@ -186,6 +197,7 @@ describe('Review Routes: GET /reviews ', () => {
     expect(response.body).toEqual([]);
   });
 
+  //test error invalid userId format
   test('ERROR: Should return 400 for invalid userId format', async () => {
     const response = await request(app)
       .get('/reviews')
@@ -195,6 +207,7 @@ describe('Review Routes: GET /reviews ', () => {
     expect(response.body.error).toBe('ID de usuario no válido.');
   });
 
+  //test error invalid recipeId format
   test('ERROR: Should return 400 for invalid creationDate format', async () => {
     const response = await request(app)
       .get('/reviews')
@@ -205,6 +218,7 @@ describe('Review Routes: GET /reviews ', () => {
   });
 });
 
+//tests de get/reviews/:id
 describe('Review Routes: GET /reviews/:id', () => {
   let reviewId: string;
   let userId: string;
@@ -244,6 +258,7 @@ describe('Review Routes: GET /reviews/:id', () => {
     reviewId = review._id.toString();
   });
 
+  //test success get review details with populated user data
   test('SUCCESS: Should return review details with populated user data', async () => {
     const response = await request(app)
       .get(`/reviews/${reviewId}`)
@@ -256,6 +271,7 @@ describe('Review Routes: GET /reviews/:id', () => {
     expect(response.body.userId.password).toBeUndefined();
   });
 
+  //test error id valid pero no existe
   test('ERROR: Should return 404 if the ID is valid but does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const response = await request(app)
@@ -265,6 +281,7 @@ describe('Review Routes: GET /reviews/:id', () => {
     expect(response.body.error).toBe('Reseña no encontrada.');
   });
 
+  //test error id no válido
   test('ERROR: Should return 500 if the ID format is invalid', async () => {
     const response = await request(app)
       .get('/reviews/id-no-valido-123')
@@ -274,6 +291,7 @@ describe('Review Routes: GET /reviews/:id', () => {
   });
 });
 
+//tests de patch/reviews/:id
 describe('Review Routes: PATCH /reviews/:id', () => {
   let reviewId: string;
   let userId: string;
@@ -313,6 +331,7 @@ describe('Review Routes: PATCH /reviews/:id', () => {
     reviewId = review._id.toString();
   });
 
+  //test success update rating and text
   test('SUCCESS: Should update rating and text correctly', async () => {
     const updateData = {
       rating: 5,
@@ -328,6 +347,7 @@ describe('Review Routes: PATCH /reviews/:id', () => {
     expect(response.body.text).toBe('Cambié de opinión, ¡está buenísima!');
   });
 
+  //test error intentar actualizar userId
   test('ERROR: Should not allow updating forbidden fields', async () => {
     const response = await request(app)
       .patch(`/reviews/${reviewId}`)
@@ -337,6 +357,7 @@ describe('Review Routes: PATCH /reviews/:id', () => {
     expect(response.body.error).toBe('Update is not permitted');
   });
 
+  //test error rating out of range
   test('ERROR: Should fail if new rating is out of range', async () => {
     const response = await request(app)
       .patch(`/reviews/${reviewId}`)
@@ -345,6 +366,7 @@ describe('Review Routes: PATCH /reviews/:id', () => {
     expect(response.body.message).toBeDefined();
   });
 
+  //test error review no existe
   test('ERROR: Should return 404 if review does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -354,6 +376,7 @@ describe('Review Routes: PATCH /reviews/:id', () => {
   });
 });
 
+//tests de delete/reviews
 describe('Review Routes: DELETE /reviews ', () => {
   let userId: string;
   let recipeId: string;
@@ -391,6 +414,7 @@ describe('Review Routes: DELETE /reviews ', () => {
     ]);
   });
 
+  //test success delete all reviews for a recipe
   test('SUCCESS: Should delete all reviews for a specific recipe', async () => {
     const response = await request(app)
       .delete('/reviews')
@@ -403,6 +427,7 @@ describe('Review Routes: DELETE /reviews ', () => {
     expect(remaining).toBe(0);
   });
 
+  //test success delete reviews by specific date
   test('SUCCESS: Should delete reviews filtered by specific date', async () => {
     const response = await request(app)
       .delete('/reviews')
@@ -415,6 +440,7 @@ describe('Review Routes: DELETE /reviews ', () => {
     expect(totalInDb).toBe(1); 
   });
 
+  //test error no reviews match filters
   test('ERROR: Should return 404 if no reviews match the filters', async () => {
     const otherUserId = new mongoose.Types.ObjectId();
     const response = await request(app)
@@ -425,6 +451,7 @@ describe('Review Routes: DELETE /reviews ', () => {
     expect(response.body.error).toBe('Reseña no encontrada con el filtro proporcionado.');
   });
 
+  //test error invalid userId format
   test('ERROR: Should return 400 for invalid recipeId format', async () => {
     const response = await request(app)
       .delete('/reviews')
@@ -434,6 +461,7 @@ describe('Review Routes: DELETE /reviews ', () => {
     expect(response.body.error).toBe('ID de usuario no válido.');
   });
 
+  //test error invalid creationDate format
   test('ERROR: Should return 400 for invalid creationDate format', async () => {
     await request(app)
       .delete('/reviews')
@@ -442,6 +470,7 @@ describe('Review Routes: DELETE /reviews ', () => {
   });
 });
 
+//tests de delete/reviews/:id
 describe('Review Routes: DELETE /reviews/:id', () => {
   let reviewId: string;
   let userId: string;
@@ -481,6 +510,7 @@ describe('Review Routes: DELETE /reviews/:id', () => {
     reviewId = review._id.toString();
   });
 
+  //test success delete a specific review
   test('SUCCESS: Should delete a specific review and return its data', async () => {
     const response = await request(app)
       .delete(`/reviews/${reviewId}`)
@@ -493,6 +523,7 @@ describe('Review Routes: DELETE /reviews/:id', () => {
     expect(findReview).toBeNull();
   });
 
+  //test error 404
   test('ERROR: Should return 404 if the review ID does not exist', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     await request(app)
@@ -500,6 +531,7 @@ describe('Review Routes: DELETE /reviews/:id', () => {
       .expect(404);
   });
 
+ //test error id no válido
   test('ERROR: Should return 500 if the ID format is invalid', async () => {
     await request(app)
       .delete('/reviews/esto-no-es-un-id-valido')

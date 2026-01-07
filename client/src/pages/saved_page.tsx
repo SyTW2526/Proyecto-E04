@@ -10,6 +10,10 @@ import { Helmet } from "react-helmet";
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * SavedPage. Renderiza la página de recetas guardadas. Muestra las recetas guardadas.
+ * @returns Página renderizada.
+ */
 function SavedPage() {
   const [me, setMe] = useState<UserInterface | null>(null);
   const [posts, setPosts] = useState<RecipePost[]>([]); 

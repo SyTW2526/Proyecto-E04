@@ -18,6 +18,7 @@ async function selectByText(
   await select.selectByVisibleText(text)
 }
 
+//test de log-in correcto
 describe('LogIn', function(this: Mocha.Suite) {
   this.timeout(600000)
   let driver: WebDriver
@@ -36,6 +37,7 @@ describe('LogIn', function(this: Mocha.Suite) {
   afterEach(async function() {
     await driver.quit();
   })
+  //test de log-in correcto
   it('Log-in correcto', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1936, height: 1048 })
@@ -80,6 +82,7 @@ describe('LogIn', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css("div:nth-child(3) > .stat-label")).getText() == "Seguidos")
     assert(await driver.findElement(By.css(".user-description")).getText() == "Especialista en tapas y arroces.")
   })
+  //test de log-in con campos erróneos
   it('Log-in con campos erróneos', async function() {
     await driver.get("http://localhost:5173/")
     assert(await driver.getTitle() == "Log-In / RecipeVault")
@@ -106,6 +109,7 @@ describe('LogIn', function(this: Mocha.Suite) {
       assert(!elements.length)
     }
   })
+  //test de log-in con contraseña incorrecta
   it('Log-in con contraseña incorrecta', async function() {
     await driver.get("http://localhost:5173/")
     assert(await driver.getTitle() == "Log-In / RecipeVault")
@@ -118,6 +122,7 @@ describe('LogIn', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".error-message")).getText() == "El usuario o la contraseña son incorrectos")
     assert(await driver.getTitle() == "Log-In / RecipeVault")
   })
+  //test de log-in con usuario incorrecto
   it('Log-in con usuario incorrecto', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1181, height: 897 })
@@ -130,6 +135,7 @@ describe('LogIn', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".error-message")).getText() == "El usuario o la contraseña son incorrectos")
     assert(await driver.getTitle() == "Log-In / RecipeVault")
   })
+  //test de sign-up con campos erróneos
   it('Sign-up con campos erróneos', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1181, height: 897 })
@@ -173,6 +179,7 @@ describe('LogIn', function(this: Mocha.Suite) {
       assert(!elements.length)
     }
   })
+  //test de sign-up con usuario repetido
   it('Sign-up con correo repetido', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1181, height: 897 })
@@ -187,6 +194,7 @@ describe('LogIn', function(this: Mocha.Suite) {
     assert(await driver.findElement(By.css(".error-message")).getText() == "El nombre de usuario o email ya se han utilizado anteriormente")
     assert(await driver.getTitle() == "Log-In / RecipeVault")
   })
+  //test de sign-up con usuario repetido
   it('Sign-up con usuario repetido', async function() {
     await driver.get("http://localhost:5173/")
     await driver.manage().window().setRect({ width: 1181, height: 897 })

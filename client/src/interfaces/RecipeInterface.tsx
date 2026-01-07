@@ -1,3 +1,6 @@
+/**
+ * Interfaz Recipe. Información de una receta.
+ */
 export interface Recipe {
     _id: string;
     name: string;
