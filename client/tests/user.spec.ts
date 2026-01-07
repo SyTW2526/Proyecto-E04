@@ -350,7 +350,44 @@ describe('User', function(this: Mocha.Suite) {
     20000
   )
   assert.strictEqual(await usernameEl.getText(), "ChefElenaES")
+  
+  // Biografía
 
+  const bioEl = await driver.wait(
+    until.elementLocated(By.css(".datosUsuario p")),
+    20000
+  )
+  assert.strictEqual(
+    await bioEl.getText(),
+    "Especialista en tapas y arroces."
+  )
+
+  //boton editar perfil
+  const editProfileBtn = await driver.findElements(
+    By.css(".datosUsuario button")
+  )
+  assert(editProfileBtn.length >= 2)
+  //cambiar foto
+  const changePhotoBtn = await driver.findElements(
+    By.css(".cambiar-foto button")
+  )
+  assert(changePhotoBtn.length === 1)
+  //seguidores y seguidos
+  const followersEl = await driver.wait(
+    until.elementLocated(By.css("a[href*='followers'] p, a:nth-child(1) > p")),
+    20000
+  )
+  assert.strictEqual(await followersEl.getText(), "Seguidores: 0")
+
+  const followingEl = await driver.wait(
+    until.elementLocated(By.css("a[href*='following'] p, a:nth-child(2) > p")),
+    20000
+  )
+  assert.strictEqual(await followingEl.getText(), "Seguidos: 0")
+
+  //al menos un post renderizado
+  const posts = await driver.findElements(By.css(".post-card"))
+  assert(posts.length > 0)
   // Post renderizado
   const postTitleEl = await driver.wait(
     until.elementLocated(By.css(".post-title")),
