@@ -7,6 +7,11 @@ interface Props {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * MediaCarousel. Renderiza un carrusel de imágenes y vídeos.
+ * @param param0 Lista de imágenes y vídeos media.
+ * @returns Renderiza el carrusel.
+ */
 export default function MediaCarousel({ media }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -4,6 +4,9 @@ import './styles/navigation.css';
 import axios from "axios";
 import type { UserInterface } from "../interfaces/UserInterface";
 
+/**
+ * NavigationsProps. Información necesaria para la barra de navegación.
+ */
 interface NavigationProps {
     user: UserInterface
     active: number
@@ -11,6 +14,11 @@ interface NavigationProps {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * Navigation. Barra de navegación para moverse a través de la aplicación entre las pantallas principales. Incluye acceso directo a la pantalla de inicio, búsqueda, perfil, publicar, guardados y un botón para hacer log-out.
+ * @param param0 Usuario user (el que ha iniciado sesión) y active, para indicar en qué página se encuentra.
+ * @returns Barra de navegación renderizada.
+ */
 function Navigation({ user, active }: NavigationProps) {
     const navigate = useNavigate();
 
@@ -23,7 +31,6 @@ function Navigation({ user, active }: NavigationProps) {
     return (
         <>
             <div className="sidebar-navigation">
-                {/* Elementos de Navegación de la barra lateral */}
                 {active1 && (
                     <button className="boton-panel active" onClick={() => navigate('/home')}>
                         <Home size={24} />

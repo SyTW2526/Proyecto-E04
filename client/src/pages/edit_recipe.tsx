@@ -13,6 +13,9 @@ import type { Recipe } from '../interfaces/RecipeInterface';
 import { X } from 'lucide-react';
 import { isIngredientError, RecipeSchema } from './create_recipe';
 
+/**
+ * RecipeFormState. Interfaz con la información de recetas para el formulario.
+ */
 interface RecipeFormState {
     name: string;
     steps: string;
@@ -57,6 +60,10 @@ const tools = [
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * CreateRecipe. Renderiza una página que permite editar una receta ya existente, con un nombre, categorías, ingredientes, utensilios y pasos.
+ * @returns Página renderizada.
+ */
 function EditRecipe() {
 
     const navigate = useNavigate();

@@ -47,6 +47,8 @@ La aplicación se puede ejecutar con el siguiente comando tanto en el directorio
 npm run dev
 ```
 
+**Nota:** Puede que la primera vez que utilice la aplicación tarde un poco en cargar y parezca que se ha colgado. No se preocupe porque tarda, pero termina cargando y renderizando la página.
+
 ### Pruebas
 
 Para ejecutar las pruebas del backend, tiene que utilizar el comando:
@@ -71,3 +73,5 @@ npm run dev:e2e
 ```
 npm run test
 ```
+
+**Nota:** Es posible que los tests E2E fallen aleatoriamente por las distintas velocidades a las que puede cargar una página y sus elementos. En principio, la mayoría de veces funcionan correctamente, pero se le avisa para que lo tenga en cuenta.

@@ -12,9 +12,9 @@ import SimplifiedProfile from '../components/simplifiedProfile';
 import { Minus, X } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 
-//https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_640.png
-//https://comedera.com/wp-content/uploads/sites/9/2023/03/pastel-de-pistache.jpeg
-
+/**
+ * RecipeFormState. Interfaz con la información de recetas para el formulario.
+ */
 interface RecipeFormState {
     name: string;
     steps: string;
@@ -60,6 +60,9 @@ const tools = [
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * RecipeSchema. Esquema para controlar errores en el formulario.
+ */
 export const RecipeSchema = yup.object().shape({
     name: yup.string().required('Se necesita poner un nombre a la receta').min(6, 'El nombre de la receta debe de tener al menos 6 caracteres').max(50, 'El nombre de la receta no puede tener más de 50 caracteres'),
     steps: yup.string().required('La receta debe tener unos pasos a seguir').min(50, 'Los pasos de la receta deben de tener al menos 50 caracteres').max(3000, 'Los pasos de la receta no puede tener más de 3000 caracteres'),
@@ -113,12 +116,21 @@ export const RecipeSchema = yup.object().shape({
     videos: yup.array().of(yup.string()).max(3, 'No se pueden adjuntar más de tres vídeos')
 });
 
+/**
+ * IsIngredientError. Comprueba si el error es de un ingrediente.
+ * @param error Error a comprobar.
+ * @returns Booleano.
+ */
 export function isIngredientError(
   error: unknown
 ): error is { ingredient?: string; quantity?: string } {
   return typeof error === "object" && error !== null;
 }
 
+/**
+ * CreateRecipe. Renderiza una página que permite crear y publicar una receta, con un nombre, imágenes y/o vídeos, categorías, ingredientes, utensilios y pasos.
+ * @returns Página renderizada.
+ */
 function CreateRecipe() {
 
     const navigate = useNavigate();

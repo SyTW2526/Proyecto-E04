@@ -11,6 +11,9 @@ import PostCard, { type RecipePost } from "../components/postcard";
 import { Helmet } from "react-helmet";
 import "./styles/user.css";
 
+/**
+ * Esquema UserSchema. Controla los fallos del formulario de edición del usuario.
+ */
 const UserSchema = yup.object().shape({
   username: yup.string().required("El nombre de usuario es obligatorio").min(4, 'El nombre de usuario debe tener al menos 4 caracteres').max(30, 'El nombre de usuario no puede exceder los 30 caracteres'),
   email: yup.string().email("Email inválido").required("El email es obligatorio").max(40, 'El email no puede exceder los 40 caracteres'),
@@ -19,6 +22,10 @@ const UserSchema = yup.object().shape({
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * UserPage. Renderiza la página de un usuario. Muestra su información y sus recetas. Si es el usuario que ha iniciado sesión, permite editarlo, borrarlo y cambiarle la foto de perfil.
+ * @returns Página renderizada.
+ */
 function UserPage() {
   const { id } = useParams();
   const navigate = useNavigate();

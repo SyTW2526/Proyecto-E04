@@ -13,7 +13,6 @@ const storage = multer.diskStorage({
       folder += "videos/";
     }
 
-    // Crear carpeta si no existe
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
     }

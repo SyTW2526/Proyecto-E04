@@ -34,14 +34,3 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
-
-/**
- * <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LogIn />} />
-          <Route path="/" element={<LogIn />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/recipe/:id" element={<Recipe/>} />
-        </Routes>
-    </BrowserRouter>
- */

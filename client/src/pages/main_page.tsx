@@ -11,6 +11,10 @@ import { Helmet } from "react-helmet";
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * Main_page. Renderiza la página de inicio. Muestra las recomendaciones del usuario.
+ * @returns 
+ */
 function Main_page() {
   const [me, setMe] = useState<UserInterface | null>(null);
   const [posts, setPosts] = useState<RecipePost[]>([]); 

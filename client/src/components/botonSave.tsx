@@ -3,6 +3,9 @@ import type { UserInterface } from "../interfaces/UserInterface";
 import axios from "axios";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 
+/**
+ * SaveButtonProps. Información necesaria para el botón de guardado.
+ */
 interface SaveButtonProps {
     user: UserInterface;
     setUser: React.Dispatch<React.SetStateAction<UserInterface | null>>;
@@ -11,6 +14,11 @@ interface SaveButtonProps {
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * SaveButton. Renderiza un botón para guardar o dejar de guardar una receta.
+ * @param param0 Usuario user (el que ha iniciado sesión) y función setUser para modificarlo y añadirlo a su lista de guardados. id es el ID de la receta a guardar o dejar de guardar.
+ * @returns Botón renderizado.
+ */
 function SaveButton({ user, setUser, id }: SaveButtonProps) {
     const [isSaved, setIsSaved] = useState<boolean>(false);
     useEffect(() => {

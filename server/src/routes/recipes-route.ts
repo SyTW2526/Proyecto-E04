@@ -157,6 +157,9 @@ const shuffleArray = (array: Types.ObjectId[]) => {
   }
 }
 
+/**
+ * Manejador GET de /recipe/feed. Permite obtener las recetas recomendadas del usuario autorizado.
+ */
 recipeRouter.get('/recipes/feed', auth, async (req, res) => {
   const authenticatedRequest = req as AuthRequest;
   if (!authenticatedRequest.user) {
@@ -243,6 +246,9 @@ recipeRouter.get('/recipes/feed', auth, async (req, res) => {
   }
 });
 
+/**
+ * Manejador GET de /recipe/saved. Permite obtener las recetas guardadas del usuario autorizado.
+ */
 recipeRouter.get('/recipes/saved', auth, async (req, res) => {
   const authenticatedRequest = req as AuthRequest;
   if (!authenticatedRequest.user) {

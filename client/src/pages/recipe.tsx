@@ -13,6 +13,9 @@ import SaveButton from '../components/botonSave';
 import { Helmet } from 'react-helmet';
 import type { Recipe } from '../interfaces/RecipeInterface';
 
+/**
+ * Interfaz Review. Información de una reseña.
+ */
 export interface Review {
     _id: string;
     userId: {_id: string, username: string, profilePic:string};
@@ -22,6 +25,9 @@ export interface Review {
     creacionDate: Date;
 }
 
+/**
+ * Esquema ReviewSchema. Controla los errores del formulario de reseñas.
+ */
 const ReviewSchema = yup.object().shape({
     userId: yup.string(),
     recipeId: yup.string(),
@@ -31,6 +37,10 @@ const ReviewSchema = yup.object().shape({
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * Recipe. Renderiza la página de una receta. Muestra la información de una receta y permite reseñarla si no es del usuario que inicia sesión. Si lo es, permite editarla y borrarla.
+ * @returns Página renderizada.
+ */
 function Recipe() {
     const { id } = useParams();
     const navigate = useNavigate();

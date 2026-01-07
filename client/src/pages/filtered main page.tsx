@@ -40,6 +40,9 @@ const ALLOWED_UTENSILS: readonly string[] = [
   'rallador'
 ];
 
+/**
+ * FilterSelectorProps. Información necesario para los filtros de la búsqueda.
+ */
 interface FilterSelectorProps {
   type: FilterKeyType | '';
   options: string[];
@@ -48,6 +51,11 @@ interface FilterSelectorProps {
   onClose: () => void;
 }
 
+/**
+ * FilterSelector. Función para seleccionar los filtros de búsquedas.
+ * @param param0 Tipo de búsquedas type, opciones option, filtros seleccionados selectedFilters y funciones onSelect y onClose para seleccionar y cerrar. 
+ * @returns Selector renderizado.
+ */
 const FilterSelector: React.FC<FilterSelectorProps> = ({ type, options, selectedFilters, onSelect, onClose }) => {
   if (type === '') return null;
 
@@ -88,6 +96,13 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({ type, options, selected
   );
 };
 
+/**
+ * buildFilterSummary. Función para construir la información del filtro seleccionado con ingredientes, categorías y/o utensilios.
+ * @param ingredients Ingredientes en el filtro
+ * @param categories Categorías en el filtro
+ * @param utensils Utensilios en el filtro
+ * @returns Información del filtrado
+ */
 const buildFilterSummary = (ingredients: readonly string[] = [], categories: readonly string[] = [], utensils: readonly string[] = []): string => {
   const summaryParts: string[] = [];
   if (ingredients.length > 0) summaryParts.push(`${ingredients.length} Ing.`);
@@ -96,35 +111,14 @@ const buildFilterSummary = (ingredients: readonly string[] = [], categories: rea
   return summaryParts.length === 0 ? 'No filters' : summaryParts.join(' · ');
 };
 
-interface ParsedFilters {
-  searchTerm: string;
-  ingredients: string[];
-  categories: string[];
-  utensils: string[];
-}
 
-const parseSearchString = (searchString: string): ParsedFilters => {
-  const filters: ParsedFilters = { searchTerm: '', ingredients: [], categories: [], utensils: [] };
-  if (!searchString) return filters;
-  const parts = searchString.split('|').map(p => p.trim()).filter(Boolean);
-  for (const part of parts) {
-    const colonIndex = part.indexOf(':');
-    if (colonIndex === -1) continue; 
-    const type = part.substring(0, colonIndex).trim().toLowerCase();
-    const value = part.substring(colonIndex + 1).trim();
-    if (!value) continue;
-    switch (type) {
-      case 'nombre': filters.searchTerm = value; break;
-      case 'ingrediente': filters.ingredients.push(value); break;
-      case 'categoria': filters.categories.push(value); break;
-      case 'utensilio': filters.utensils.push(value); break;
-    }
-  }
-  return filters;
-};
 
 const port = import.meta.env.VITE_PORT ?? 3000;
 
+/**
+ * SearchFilterView. Renderiza la página de búsqueda, tanto de usuarios como de recetas. Permite buscar recetas por nombre, ingredientes, categorías y utensilios. Los usuarios se pueden buscar por nombre.
+ * @returns Página renderizada.
+ */
 function SearchFilterView() {
   const BASE_API_URL = `http://localhost:${port}`; 
   const navigate = useNavigate();

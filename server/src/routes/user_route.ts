@@ -34,6 +34,9 @@ userRouter.post('/users', async (req, res) => {
   }
 });
 
+/**
+ * Manejador POST de /users/login. Permite iniciar sesión como un usuario ya creado.
+ */
 userRouter.post('/users/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -168,6 +171,9 @@ userRouter.get('/users/:id', async (req, res) => {
   }
 });
 
+/**
+ * Manejador GET de /users/:id/follows. Permite obtener los usuarios que sigue el usuario con el ID id.
+ */
 userRouter.get('/users/:id/follows', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -185,6 +191,9 @@ userRouter.get('/users/:id/follows', async (req, res) => {
   }
 });
 
+/**
+ * Manejador GET de /users/:id/follows. Permite obtener los usuarios que siguen el usuario con el ID id.
+ */
 userRouter.get('/users/:id/followers', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -290,6 +299,9 @@ userRouter.patch('/users/:id', async (req, res) => {
   }
 });
 
+/**
+ * Manejador PATCH de /users/:id/files. Permite actualizar con archivos a un usuario por su ID.
+ */
 userRouter.patch('/users/:id/files', upload.fields([
     { name: "profilePic", maxCount: 1 }
   ]), async (req, res) => {
