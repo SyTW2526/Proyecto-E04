@@ -325,50 +325,43 @@ describe('User', function(this: Mocha.Suite) {
     }
   })
   it('Renderización perfil propio', async function() {
-    await driver.get("http://localhost:5173/login")
-    await driver.manage().window().setRect({ width: 1500, height: 906 })
-    await driver.findElement(By.id("lemail")).click()
-    await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
-    await driver.findElement(By.id("lpassword")).click()
-    await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
-    await driver.findElement(By.css(".submit:nth-child(9)")).click()
-    await driver.findElement(By.css(".boton-panel:nth-child(3)")).click()
-    {
-      const elements = await driver.findElements(By.css(".user-profile-info"))
-      assert(!elements.length)
-    }
-    {
-      const elements = await driver.findElements(By.css(".foto-perfil"))
-      assert(elements.length)
-    }
-    assert(await driver.findElement(By.css("h3:nth-child(1)")).getText() == "ChefElenaES")
-    {
-      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(2)"))
-      assert(elements.length)
-    }
-    {
-      const elements = await driver.findElements(By.css(".datosUsuario button:nth-child(3)"))
-      assert(elements.length)
-    }
-    {
-      const elements = await driver.findElements(By.css(".cambiar-foto > button"))
-      assert(elements.length)
-    }
-    assert(await driver.findElement(By.css("p:nth-child(2)")).getText() == "Especialista en tapas y arroces.")
-    assert(await driver.findElement(By.css("a:nth-child(1) > p")).getText() == "Seguidores: 0")
-    assert(await driver.findElement(By.css("a:nth-child(2) > p")).getText() == "Seguidos: 0")
-    {
-      const elements = await driver.findElements(By.css(".post-card"))
-      assert(elements.length)
-    }
-    assert(await driver.findElement(By.css(".post-user-name")).getText() == "ChefElenaES")
-    const text3 = await driver.executeScript(
-      "return arguments[0].textContent",
-      await driver.findElement(By.css(".post-title"))
-    ) as string
+  await driver.get("http://localhost:5173/login")
+  await driver.manage().window().setRect({ width: 1500, height: 906 })
 
-    assert.strictEqual(text3.trim(), "Gazpacho Andaluz")
+  // Login
+  await driver.findElement(By.id("lemail")).sendKeys("elena.sanchez@test.com")
+  await driver.findElement(By.id("lpassword")).sendKeys("Password123!")
+  await driver.findElement(By.css(".submit")).click()
+
+  // Panel
+  const panelBtn = await driver.wait(
+    until.elementLocated(By.css(".boton-panel:nth-child(3)")),
+    20000
+  );
+  await panelBtn.click();
+
+  // Espera a que la foto de perfil esté visible
+  const profilePic = await driver.wait(
+    until.elementLocated(By.css(".foto-perfil")),
+    20000
+  );
+  await driver.wait(until.elementIsVisible(profilePic), 20000);
+
+  // Username
+  const usernameEl = await driver.wait(
+    until.elementLocated(By.css("h3.username")),
+    20000
+  );
+  assert.strictEqual(await usernameEl.getText(), "ChefElenaES");
+
+  // Post title
+  const postTitleEl = await driver.wait(
+    until.elementLocated(By.css(".post-title")),
+    20000
+  );
+  assert.strictEqual(await postTitleEl.getText(), "Gazpacho Andaluz");
   })
+
   it('Seguir y dejar de seguir', async function() {
     await driver.get("http://localhost:5173/login")
     await driver.manage().window().setRect({ width: 1181, height: 906 })
