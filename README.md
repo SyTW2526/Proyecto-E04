@@ -32,3 +32,26 @@ La aplicación está desarrollada siguiendo una arquitectura **MERN**, utilizada
 - **Node.js** – Entorno de ejecución del backend.
 
 ---
+
+### Ejecución
+
+La aplicación se puede ejecutar con el siguiente comando tanto en el directorio client como en server:
+
+```npm run dev```
+
+### Pruebas
+
+Para ejecutar las pruebas del backend, tiene que utilizar el comando:
+
+```npm run test```
+
+Por otro lado, para ejecutar las pruebas de E2E del frontend, se hace uso de los siguientes comandos:
+
+En server:
+
+```npm run dev:e2e```
+
+Y en client ejecutar en una terminal el primero y en otra el segundo:
+
+```npm run dev:e2e```
+```npm run test```
