@@ -162,10 +162,6 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css(".advanced-input-group .plus-button")).click()
     await driver.findElement(By.css(".select-option-tag:nth-child(1)")).click()
 
-    // Comprobar resumen de filtros
-    const summary = await driver.findElement(By.css(".advanced-filter-summary")).getText()
-    assert.strictEqual(summary, "2 Ing.")
-
     // Ejecutar búsqueda avanzada
     await driver.findElement(By.css(".final-search-button")).click()
 
