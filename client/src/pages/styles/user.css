@@ -1,0 +1,229 @@
+.contenedor {
+  display: flex;
+  height: 100vh;               /* ocupa toda la altura de la ventana */
+  width: 100vw;                /* ocupa todo el ancho de la ventana */
+  background-color: #f9f0e1;
+  color: #3b2b2b;
+  font-family: 'Georgia', serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fdf4e3;
+  overflow: hidden;   
+}
+
+/* PARTE IZQUIERDA */
+.principal {
+   flex: 1;                    /* ocupa todo el espacio disponible a la izquierda */
+  padding: 40px 60px;
+  background-color: #f7e1c0;
+  border-radius: 0;           /* quita bordes si los había */
+  height: 100vh;
+  overflow-y: auto;  
+}
+
+/* BOTONES */
+.boton-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: #3b2b2b;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.boton-panel:hover {
+  color: #b87333;
+}
+
+.linea {
+  width: 60%;
+  border-bottom: 1px solid #e0cfa8;
+}
+
+.logout {
+  margin-top: auto;
+  color: #a33;
+}
+.logout:hover {
+  color: #e00;
+}
+
+/* === Tarjetas (bloques separados) === */
+.tarjeta {
+  background-color: #edb282; /* chocolate claro */
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  color: #3b2b2b;
+}
+
+/* Tarjeta de usuario */
+.usuario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* Centra horizontalmente */
+  text-align: center;    /* Centra textos */
+  gap: 20px;
+
+}
+
+.usuario label {
+  font-weight: bold;
+  margin-top: 6px;
+}
+/*
+.usuario input {
+  border: none;
+  background-color: #fffaf4;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  width: auto;        
+  min-width: 25ch;    t 
+}
+*/
+
+.cambiar-foto button {
+  background-color: #f0eee3;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.editButton {
+  border-radius:10px;
+}
+
+.usuario input[placeholder="loquesea"] {
+  width: 10ch;
+  background-color: #fffaf4;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Tarjeta de post */
+.post {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.post .imagen-post {
+  width: 220px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.post h3 {
+  font-size: 18px;
+  margin: 8px 0 4px;
+}
+
+.post p {
+  font-size: 14px;
+  color: #4a3c2a;
+}
+
+.usuario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.usuario .campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.fila-datos {
+  display: flex;
+  width:90%;
+  flex-direction:row;
+  align-items: center;       /* Centra horizontalmente */
+  gap: 10px;
+}
+
+.fotoUsuario {
+  height:100%;
+  width:max-content;
+}
+
+.datosUsuario {
+  width:70%;
+}
+
+.fila-datos .columna {
+ display: flex;
+  flex-direction: column;
+  align-items: center;      /* Centra */
+  gap: 10px;
+}
+
+/* Inputs y textarea coherentes */
+
+
+
+.foto-perfil {
+  width: 100px;              /* tamaño del avatar */
+  height: 100px;
+  border-radius: 50%;        /* hace la imagen circular */
+  object-fit: cover;         /* recorta bien la imagen */
+  margin-bottom: 10px;       /* separación con el campo de usuario */
+  align-self: center;        /* centra la foto dentro de la columna */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* === Subtarjeta (imagen + texto del post) === */
+.subtarjeta-post {
+  background-color: #fffaf4; /* un beige aún más claro */
+  border: 1.5px solid #d2a679; /* borde chocolate claro */
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content; /* se adapta al tamaño del contenido (imagen) */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen del post */
+.imagen-post {
+  width: 250px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+}
+
+/* Texto dentro del subpost */
+.subtarjeta-post h3 {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.subtarjeta-post p {
+  font-size: 14px;
+  color: #4a3c2a;
+}
+
+
+.fila-seguidores {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;             /* separación entre los dos valores */
+  justify-content: center;
+}

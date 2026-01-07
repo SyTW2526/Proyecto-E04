@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: ["dev", "main", "release", "final-e2e"]
+  pull_request:
+    branches: ["dev", "main"]
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Descripción"
+        default: "Action manual"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      # Backend - Test unitarios
+
+      - name: Install backend dependencies
+        working-directory: server
+        run: npm install
+
+      - name: Run backend tests
+        working-directory: server
+        env:
+          NODE_ENV: test
+          PORT: 5000
+          MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-test
+          ENABLE_SEED: "false"
+        run: npm test
+
+      # Backend - Iniciar para tests E2E
+
+      - name: Start backend (E2E)
+        working-directory: server
+        env:
+          NODE_ENV: e2e
+          PORT: 3000
+          MONGODB_URL: mongodb://127.0.0.1:27017/recipevault-db-e2e
+          ENABLE_SEED: "true"
+        run: npm run dev &
+
+      # Frontend - Tests E2E
+
+      - name: Install frontend dependencies
+        working-directory: client
+        run: npm install
+
+      - name: Start frontend
+        working-directory: client
+        env:
+          VITE_API_URL: http://localhost:3000
+        run: npm run dev &
+
+      - name: Run E2E tests
+        working-directory: client
+        run: npm run test

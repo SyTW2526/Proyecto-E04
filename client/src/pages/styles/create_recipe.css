@@ -1,0 +1,407 @@
+#root {
+    background-color: #fdf4e3;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+Form {
+    background:transparent;
+    border:transparent;
+}
+
+select {
+    background:transparent;
+    border:transparent;
+}
+
+.ContenedorGeneralReceta {
+    flex: 1;
+    height: 100vh;
+    padding: 40px 60px;
+    background-color: #f7e1c0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ContenedorDerecha {
+    width: 350px;
+    height: 100vh;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.NombreReceta {
+    width: 100%;
+    background: transparent;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #3b2b2b;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.NombreReceta:focus {
+    outline: none;
+    border-bottom-color: #d9a29c;
+}
+
+.ContenedorPublicacion {
+    width: 95%;
+    max-width: 1000px;
+    background-color: #fff8ee;
+    border-radius: 40px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin: 0 auto 40px auto;
+}
+
+.InformacionPublicacion {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.IzquierdaReceta {
+    flex: 1;
+    min-width: 300px;
+}
+
+.DerechaCReceta {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.CategoriaPublicacion {
+    margin-bottom: 50px;
+}
+
+.ContenedorPublicacion h3, 
+.SeccionTitulo,
+.IzquierdaReceta h3,
+.DerechaCReceta h3,
+.IngredientesReceta h3,
+.UtensiliosReceta h3,
+.CategoriaPublicacion h3,
+.ImagenesPublicacion h3,
+.VideosPublicacion h3,
+.TextoPublicacion h3 {
+    color: #b58d72 !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 20px !important;
+    margin-top: 25px !important; 
+    border-bottom: 1px solid #eee1cc !important;
+    padding-bottom: 8px !important;
+    width: 100% !important;
+    display: block !important;
+    text-align: left !important;
+}
+
+.filaUtensilio,
+.filaCategorias {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffcda4;
+    border-radius: 40px;
+    margin-bottom: 15px;
+    padding: 0 20px;
+    width: 100%;
+    max-width: 500px; 
+    height: 55px;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+.filaIngrediente {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffcda4; 
+    border-radius: 40px;
+    margin-bottom: 15px;
+    padding: 0 20px;
+    width: 140%;
+    max-width: 600px;          
+    height: 60px;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+.filaUtensilio select, 
+.filaCategorias select,
+.filaIngrediente select {
+    flex: 3; 
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    font-size: 1rem;
+    color: #3b2b2b;
+    min-width: 200px;
+    cursor: pointer;
+}
+
+.inputCantidad {
+    flex: 1 !important;
+    min-width: 100px !important;
+    max-width: 150px !important;
+    background-color: #ffffff !important; 
+    border: 2px solid #d9a29c !important; 
+    border-radius: 12px;
+    padding: 8px !important;
+    text-align: center;
+    color: #3b2b2b;
+    height: 35px;
+    outline: none;
+}
+
+.ImagenesPublicacion, .VideosPublicacion {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.botonEliminar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;    
+    height: 32px !important;
+    min-width: 32px !important;
+    background-color: #d9a29c !important; 
+    color: white !important;
+    border-radius: 50% !important;
+    border: none !important;
+
+    cursor: pointer !important;
+    pointer-events: auto !important; 
+    z-index: 10 !important;   
+    
+    font-size: 18px !important;
+    font-weight: bold;
+    margin-left: auto;      
+    padding: 0 !important;
+    transition: transform 0.2s;
+}
+
+.botonEliminar:hover {
+    background-color: #c98e87 !important;
+    transform: scale(1.1);
+}
+
+.botonArchivo:hover {
+    background-color: #f5a8a8;
+    color: white;
+    border-style: solid;
+}
+
+.botonMasGeneral {
+    background-color: transparent;
+    border: 2px dashed #d9a29c;
+    color: #302d2d;
+    border-radius: 15px;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.botonMasGeneral:hover {
+    background-color: #fceceb;
+}
+
+.inputPasos {
+    width: 100%;
+    min-height: 250px;
+    border: 1px solid #eee1cc;
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: vertical;
+    margin-top: 10px;
+    outline: none;
+}
+
+.botonPublicar {
+    background-color: #d9a29c;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 30px auto;
+    display: block;
+    transition: 0.3s;
+}
+
+.botonPublicar:hover {
+    background-color: #c98e87;
+    transform: translateY(-2px);
+}
+
+.panel-derecho {
+    padding: 20px;
+}
+
+.boton-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff8ee;
+    border: none;
+    color: #3b2b2b;
+    padding: 12px 15px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.boton-panel:hover {
+    background-color: #f5a8a8;
+    color: white;
+}
+
+.foto-perfil-grande {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 6px;
+}
+
+.help.is-danger {
+    color: #d9a29c;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: -12px;         
+    margin-bottom: 15px;
+    margin-left: 20px;
+    display: block;
+}
+
+.ContenedorPreviews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.PreviewItem {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    padding: 8px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee1cc;
+}
+
+.PreviewItem img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; 
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.NombreArchivoPreview {
+    font-size: 0.75rem;
+    color: #b58d72;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    margin: 0;
+}
+
+.PreviewItem video {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    background-color: #000; 
+    cursor: pointer;
+}
+
+.VideoItem {
+    position: relative;
+}
+
+.VideoItem::after {
+    content: '▶';
+    position: absolute;
+    top: 40px; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    pointer-events: none; 
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.VideoItem:hover::after {
+    opacity: 0;
+}
+
+.PreviewItem.VideoItem {
+    border-color: #d9a29c; 
+}
+
+.PreviewMediaWrapper {
+    position: relative; 
+    width: 80px;
+    height: 80px;
+    margin-bottom: 5px;
+}
+
+.PreviewMediaWrapper img,
+.PreviewMediaWrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 0; 
+}
+
+.BotonEliminarMedia {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    
+    width: 28px;
+    height: 28px;
+    background-color: rgba(217, 162, 156, 0.85); 
+    color: white;
+    border: none;
+    border-radius: 50%; 
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; 
+    transition: all 0.2s ease;
+    opacity: 0; 
+}
+
+.PreviewItem:hover .BotonEliminarMedia {
+    opacity: 1;
+}
+
+.BotonEliminarMedia:hover {
+    background-color: #c98e87;
+    transform: translate(-50%, -50%) scale(1.1); 
+}
