@@ -49,6 +49,16 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.findElement(By.css("input")).click()
     await driver.findElement(By.css("input")).sendKeys("gazpacho")
     await driver.findElement(By.css("input")).sendKeys(Key.ENTER)
+    const recentTags = await driver.findElements(By.css(".recent-search-tag"))
+    if (recentTags.length > 0) {
+     await recentTags[0].click()
+     const text1 = await driver.executeScript(
+     "return arguments[0].textContent",
+     await driver.findElement(By.css(".results-count"))
+     ) as string
+     assert.strictEqual(text1.trim(), "1 receta encontrada")
+    }
+
     const text = await driver.executeScript(
       "return arguments[0].textContent",
       await driver.findElement(By.css(".results-count"))
