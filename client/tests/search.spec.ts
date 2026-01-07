@@ -119,7 +119,7 @@ describe('Search', function(this: Mocha.Suite) {
     text = await resultsCountRecent.getText()
     assert.strictEqual(text.trim(), "1 receta encontrada")
   }
-
+  /*
   // Abrir búsqueda avanzada
     const advancedBtn = await driver.wait(
       until.elementLocated(By.css(".advanced-search-header")),
@@ -149,6 +149,36 @@ describe('Search', function(this: Mocha.Suite) {
     await driver.wait(until.elementIsVisible(resultsCountFiltered), 20000)
     text = await resultsCountFiltered.getText()
     assert.strictEqual(text.trim(), "0 recetas encontradas")
+    */
+
+    // Búsqueda avanzada 
+    await driver.findElement(By.css(".advanced-search-header")).click()
+
+    // Añadir 1er ingrediente
+    await driver.findElement(By.css(".advanced-input-group .plus-button")).click()
+    await driver.findElement(By.css(".select-option-tag")).click()
+
+    // Añadir 2º ingrediente
+    await driver.findElement(By.css(".advanced-input-group .plus-button")).click()
+    await driver.findElement(By.css(".select-option-tag:nth-child(2)")).click()
+
+    // Comprobar resumen de filtros
+    const summary = await driver.findElement(By.css(".advanced-filter-summary")).getText()
+    assert.strictEqual(summary, "2 Ing.")
+
+    // Ejecutar búsqueda avanzada
+    await driver.findElement(By.css(".final-search-button")).click()
+
+    const filteredCount = await driver.wait(
+      until.elementLocated(By.css(".results-count")),
+      20000
+    )
+    assert.strictEqual((await filteredCount.getText()).trim(), "0 recetas encontradas")
+
+    // UX sin resultados
+    const noResults = await driver.findElements(By.css(".no-results-box"))
+    assert(noResults.length === 1)
+
   })
 
 
