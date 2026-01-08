@@ -358,6 +358,21 @@ userRouter.delete('/users', async (req, res) => {
       } else {
         await User.findByIdAndDelete(user._id);
 
+        await User.updateMany(
+          {
+            $or: [
+              { followers: user._id },
+              { following: user._id }
+            ]
+          },
+          {
+            $pull: {
+              followers: user._id,
+              following: user._id
+            }
+          }
+        );
+
         const regex: RegExp = new RegExp("default/*");
         if (!regex.test(user.profilePic!) && user.profilePic !== "uploads/images/Flaticon.png") deleteFileIfExists(user.profilePic!);
 
@@ -379,13 +394,39 @@ userRouter.delete('/users/:id', async (req, res) => {
     if (!user) {
       res.status(404).send({ error: 'Usuario no encontrado.' });
     } else {
+      const recipes = await Recipe.find({ userId: user._id });
+
+      const recipeIds = recipes.map(r => r._id);
+
       const resultRecipe = await Recipe.deleteMany({ userId: user._id})
       const resultReview = await Review.deleteMany({ userId: user._id})
+
+      if (recipeIds.length > 0) {
+        await User.updateMany(
+          {},
+          { $pull: { saved: {$in: recipeIds} } }
+        );
+      }
 
       if (!resultRecipe.acknowledged || !resultReview.acknowledged) {
           res.status(500).send();
       } else {
         await User.findByIdAndDelete(user._id);
+
+        await User.updateMany(
+          {
+            $or: [
+              { followers: user._id },
+              { following: user._id }
+            ]
+          },
+          {
+            $pull: {
+              followers: user._id,
+              following: user._id
+            }
+          }
+        );
 
         const regex: RegExp = new RegExp("default/*");
 
