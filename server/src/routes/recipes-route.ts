@@ -433,6 +433,12 @@ recipeRouter.delete('/recipes', async (req, res) => {
         res.status(500).send();
       } else {
         await Recipe.findByIdAndDelete(recipe._id);
+
+        await User.updateMany(
+          { saved: recipe._id },
+          { $pull: { saved: recipe._id } }
+        );
+
         res.send(recipe);
       }
     }
@@ -470,6 +476,12 @@ recipeRouter.delete('/recipes/:id', async (req, res) => {
         res.status(500).send();
       } else {
         await Recipe.findByIdAndDelete(recipe._id);
+
+        await User.updateMany(
+          { saved: recipe._id },
+          { $pull: { saved: recipe._id } }
+        );
+
         res.send(recipe);
       }
     }
